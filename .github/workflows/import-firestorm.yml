@@ -1,0 +1,64 @@
+name: Import pinned Firestorm source (review PR)
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: import-firestorm-source
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out foundation
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Fetch verified release source and create review branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          UPSTREAM="https://github.com/FirestormViewer/phoenix-firestorm.git"
+          PIN="10bd3c9f930c76e1427ddd4ecece6cdf36b4406d"
+          BRANCH="feature/firestorm-source-import"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git ls-remote --exit-code --heads origin "$BRANCH" > /tmp/existing-branch || true
+          if [[ -s /tmp/existing-branch ]]; then
+            echo "Review branch already exists; refusing to overwrite it."
+            exit 1
+          fi
+          git remote add firestorm "$UPSTREAM"
+          git fetch --no-tags firestorm refs/heads/Firestorm_7.2.4:refs/remotes/firestorm/Firestorm_7.2.4
+          ACTUAL="$(git rev-parse refs/remotes/firestorm/Firestorm_7.2.4^{commit})"
+          if [[ "$ACTUAL" != "$PIN" ]]; then
+            echo "Pinned source changed: expected $PIN, observed $ACTUAL"
+            exit 1
+          fi
+          git switch -c "$BRANCH"
+          # Source-tree conflicts are resolved in favor of the existing foundation;
+          # every conflict and license must still be reviewed in the PR before merge.
+          git merge --allow-unrelated-histories --no-ff -X ours \
+            -m "import: pinned Firestorm 7.2.4 release source (review required)" "$PIN"
+          test -f indra/CMakeLists.txt || {
+            echo "Unexpected source layout after merge; do not publish this branch."
+            exit 1
+          }
+          git push origin "$BRANCH"
+
+      - name: Create review pull request (never merge automatically)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          gh pr create \
+            --base main \
+            --head feature/firestorm-source-import \
+            --title "Import Firestorm 7.2.4 sources for TrixieStorm Viewer" \
+            --body "Imports the pinned official Firestorm_7.2.4 source at 10bd3c9f930c76e1427ddd4ecece6cdf36b4406d. **Not a compiled viewer.** Review all upstream copyright/license and binary dependency notices, source-tree conflict resolution, build requirements and NexVerse-only Gen1/Gen2 policy before merging. No auto-merge. See docs/LEGAL.md and docs/GRID_POLICY.md."
