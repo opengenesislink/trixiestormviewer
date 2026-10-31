@@ -1,0 +1,27 @@
+# Build products
+build/
+build-*/
+out/
+dist/
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.pdb
+*.pyc
+__pycache__/
+.venv/
+.vscode/
+.idea/
+# generated icons are deterministic; source stays separate
+branding/generated/
+# Do not commit tokens or private settings
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12

@@ -1,0 +1,15 @@
+name: Foundation checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  docs-and-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate foundation only
+        run: bash scripts/verify-foundation.sh
+      - name: Explain scope
+        run: echo "This workflow does NOT compile Firestorm or verify OpenSimulator login."

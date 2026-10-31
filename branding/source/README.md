@@ -1,0 +1,1 @@
+# Original icon artwork\n\nPlace the project-supplied image here as `trixiestorm-logo.png`. Do not use upstream Firestorm/Second Life trademark assets. Consult `../ASSET_LICENSE.md`.\n
