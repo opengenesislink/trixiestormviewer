@@ -135,6 +135,7 @@ Diese Pfade sind **Designvorschläge**, keine bereits existierenden Firestorm-Un
 - [ ] Optional **Berliner Uhr (Europe/Berlin, MEZ/MESZ)** im eigenen OGL-UI anzeigen; nicht mit dem Legacy-Firestorm-`daylight_savings`-Flag verwechseln.
 - [ ] Trennung zwischen einer inworld simulierten Sonnen-/Tageszeit und realer Berliner Uhrzeit.
 - [ ] Keine kritischen Eingriffe in die gewohnten Firestorm-Bau-, Inventar- und Avatar-Funktionen ohne A/B-Test.
+- [ ] Zwei klare Anmeldemodi: Gen1 (Stable), Gen2 (Beta nach Freigabe), ohne fremde Grid-Auswahl.
 
 ### 3.3 OpenGenesisLINK-Funktionen (P1; einzeln freischaltbar)
 
@@ -142,7 +143,7 @@ Diese Pfade sind **Designvorschläge**, keine bereits existierenden Firestorm-Un
 |---|---|---|
 | World API | Status-/Gridinformationen und optionale Funktionen anzeigen | Nur dokumentierte, autorisierte Endpunkte; kein Raten von CAP-URLs |
 | OGLWeather | Regen, Schnee, Nebel, Wolken und lokale Effekte clientseitig darstellen | Nur mit gültigem serverseitigem Wetterzustand; sonst Standard-Viewer-Verhalten |
-| OGL Voice / LiveKit | Inworld-Voice in den Viewer einbinden | Sitzungsgebundene kurzlebige Tokens; andere Grids behalten ihre Voice-Fallbacks |
+| OGL Voice / LiveKit | Inworld-Voice in den Viewer einbinden | Sitzungsgebundene kurzlebige Tokens; getrennte Voice-/Beta-Konfiguration für Gen1/Gen2 |
 | NV$ Economy | Kontostand, Transaktionsdialog und Bestätigungen | Salden und Buchungen nur vom Server; kein unbestätigter lokaler Zahlungserfolg |
 | Marketplace | Artikelvorschau, Web-/Inworld-Deep-Links | Besitz, Lieferung und Kosten immer serverseitig prüfen |
 | OGL IAR Self-Service | Authentifizierter Import/Export mit 4-MiB-Blöcken, MD5/SHA-256, ETA | Nur eigener Avatar; große Dateien nicht komplett in den RAM lesen |
@@ -342,7 +343,7 @@ Jedes Arbeitspaket benötigt eine eigene Issue/PR mit reproduzierbaren Tests, Do
 |---|---|---|
 | Der Firestorm-Quellcode ist noch nicht im Viewer-Repo | Kein ausführbarer Ausgangsbuild | M1 vor Featureentwicklung abschließen |
 | Vulkan-Portierung ist deutlich aufwendiger als Shaderoptimierung | Hohe Kosten und Grafikregressionen | Erst R1, dann R2; getrenntes Forschungsfeature |
-| Neue PBR-/Wetter-Features fehlen auf anderen Grids | Fehlerhafte Optik oder Abstürze | Feature-Negotiation und Standard-Fallback |
+| Gen1/Gen2 unterstützen unterschiedliche PBR-/Wetter-Features | Fehlerhafte Optik oder Abstürze | Versionsabhängige Feature-Negotiation und Standard-Fallback |
 | Server-/Viewer-Protokolle driften | Login-/Inventar-/Voice-Probleme | Versionierte Verträge und Staging-Matrix |
 | Unterschiedliche GPU-Treiber | Instabilität/Renderfehler | Treibermatrix, Crash-Fallback, Featureflags |
 | Lizenzpflichten bei Drittbibliotheken | Verteilungsrisiko | Vor Build/Release juristisch und technisch auditieren |
