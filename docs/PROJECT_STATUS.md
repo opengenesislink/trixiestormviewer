@@ -12,7 +12,7 @@ Updated: 2026-10-31.
 | Gen1/Gen2 cache/profile separation | Not implemented | Required before Gen2 activation |
 | App icon pipeline | Prepared | `scripts/generate_icons.py` (source image must be present) |
 | Firestorm branch/commit | Verified | `Firestorm_7.2.4` → `10bd3c9f930c76e1427ddd4ecece6cdf36b4406d` |
-| Firestorm C++ code in repo | **Not yet** | Import script exists, import not executed |
+| Firestorm C++ code in repo | **Not yet** | Local import script + on-demand GitHub Actions PR workflow available; no import executed |
 | Linux x64 ReleaseOS build | Not verified | No build artifact |
 | Windows x64 ReleaseOS build | Not verified | No build artifact |
 | TrixieStorm executable/channel | Not implemented | Needs Firestorm code customization |
