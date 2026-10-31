@@ -1,13 +1,14 @@
 # TrixieStorm Viewer
 
-**TrixieStorm Viewer** is an independent OpenSimulator/Hypergrid viewer project based on the [Firestorm](https://github.com/FirestormViewer/phoenix-firestorm) C++ viewer, with optional [OpenGenesisLINK](https://github.com/opengenesislink/opengenesislinkserver) integrations.
+**TrixieStorm Viewer** is a Stadt-NexVerse-exclusive viewer project based on the [Firestorm](https://github.com/FirestormViewer/phoenix-firestorm) C++ viewer, with integrated [OpenGenesisLINK](https://github.com/opengenesislink/opengenesislinkserver) support.
 
 **Status (2026-10-31): repository foundation only.** Firestorm source has **not** yet been imported or compiled here. There is no verified downloadable TrixieStorm Viewer build.
 
 ## Product goals
-- Preserve standard OpenSimulator and Hypergrid login, inventory, avatar, building, teleport and communications.
+- **Exclusively connect to Stadt NexVerse.** Generation 1: `hg.stadt-nexverse.de`; upcoming Generation 2 beta: `beta.stadt-nexverse.de`. These are service hostnames, not yet verified full viewer login URLs.
+- Remove public third-party grid addition/selection. Any external Hypergrid teleport must be blocked in the final released client and enforced on the grid server where required; protocol compatibility is retained internally.
 - Provide a unique TrixieStorm Viewer application/channel identity and separate settings, cache and installation paths; coexist with upstream Firestorm.
-- Offer configurable, modern UI, accessible layouts, and optional OpenGenesisLINK services (World API, weather, voice, marketplace and economy) through safely negotiated capabilities.
+- Offer configurable, modern UI, accessible layouts, and OpenGenesisLINK services (World API, weather, voice, marketplace and economy) through safely negotiated capabilities.
 - Optimize the existing OpenGL/PBR rendering path first; evaluate Vulkan, advanced weather, water and lighting only later with measurements and OpenGL fallback.
 
 ## Firestorm source baseline
@@ -23,6 +24,8 @@ cd trixiestormviewer
 bash scripts/import_firestorm.sh
 ```
 
+**Grid configuration:** `config/nexverse-generations.json` describes the allowed deployment targets; it is not yet wired into the Firestorm source. The real login URI, TLS/port and redirects for each generation must be verified before shipping, and the Gen2 profile remains disabled until operational.
+
 This script creates `feature/firestorm-source-import`, fetches and verifies the pinned upstream commit and attempts to merge it, preserving upstream Git ancestry. It may stop for manual conflict resolution. **Review licensing and build requirements before any merge or distribution.** No script force-pushes to `main`.
 
 ## Documentation
@@ -30,7 +33,8 @@ This script creates `feature/firestorm-source-import`, fetches and verifies the 
 - [Current, evidence-based status](docs/PROJECT_STATUS.md)
 - [Developer and build instructions](docs/BUILD.md)
 - [Branding and application icons](docs/BRANDING.md)
-- [Architecture and compatibility principles](docs/ARCHITECTURE.md)
+- [Stadt NexVerse Generation 1/Generation 2 exclusive-grid policy](docs/GRID_POLICY.md)
+- [Architecture principles](docs/ARCHITECTURE.md)
 - [Licenses, attribution and distribution gate](docs/LEGAL.md)
 - [Contribution guide](CONTRIBUTING.md)
 

@@ -26,3 +26,7 @@ Generated in `branding/generated`: Linux PNGs (16, 32, 48, 64, 128, 256, 512), W
 Icons and naming are application assets, distinct from the program license. See `branding/ASSET_LICENSE.md`.
 
 The source graphic should be distributed only by or with permission of its rights holder. Do not claim rights beyond those granted.
+
+## Product exclusivity
+
+The brand is used **only for Stadt NexVerse**. The published application offers Generation 1 (`hg.stadt-nexverse.de`) and, once enabled, Generation 2 Beta (`beta.stadt-nexverse.de`), with **no arbitrary grid selection**. Distinct profiles, credentials and update channels are required for Stable versus Beta. See [GRID_POLICY.md](GRID_POLICY.md).

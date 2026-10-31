@@ -7,7 +7,7 @@
 **Server-Repository:** https://github.com/opengenesislink/opengenesislinkserver  
 **Status dieser Datei:** Entwicklungsplanung, **keine** Behauptung bereits fertiggestellter Funktionen.
 
-> **Grundsatz:** Ein unabhängiger, für OpenGenesisLINK optimierter Firestorm-Fork soll die volle OpenSim-/Hypergrid-Kompatibilität erhalten und schrittweise ein modernes Erscheinungsbild, eine verbesserte Bedienung und später einen optionalen NextGen-Renderer erhalten. Grafikfunktionen dürfen nicht auf Kosten von Inventar, Berechtigungen, Teleport, Voice oder Stabilität aktiviert werden.
+> **Grundsatz:** Ein ausschließlich für Stadt NexVerse vorgesehener Firestorm-Fork soll intern die notwendigen OpenSim-/Hypergrid-Protokolle erhalten und schrittweise ein modernes Erscheinungsbild, eine verbesserte Bedienung und später einen optionalen NextGen-Renderer erhalten. Grafikfunktionen dürfen nicht auf Kosten von Inventar, Berechtigungen, Teleport, Voice oder Stabilität aktiviert werden.
 
 ---
 
@@ -24,7 +24,7 @@ Vorgesehene, am 31.10.2026 gegen GitHub bestätigte Basis:
 - **Erste Zielsysteme:** Windows x86_64 und Linux x86_64; OpenSim-Konfiguration `ReleaseOS`.
 - **Rechte:** Upstream-Lizenz LGPL-2.1; Lizenzhinweise einzelner Dateien, Drittbibliotheken und Marken vor Veröffentlichung prüfen.
 - **Branding:** offizieller Produktname, Viewer-Channel und Anwendung: **TrixieStorm Viewer**.
-- **Partnertechnologie:** Powered by OpenGenesisLINK; **keine** Bindung ausschließlich an Stadt NexVerse.
+- **Partnertechnologie:** Powered by OpenGenesisLINK; **verbindliche Bindung ausschließlich an Stadt NexVerse** (Generation 1 und Generation 2 Beta).
 
 Ein Versions-/Channel-String aus einem Loginlog bestätigt weder die Echtheit des Programms noch dessen Buildherkunft. Server-Allowlist, Client-Authentifizierung und die Lizenz-/Build-Provenienz sind getrennte Fragen.
 
@@ -33,9 +33,24 @@ Ein Versions-/Channel-String aus einem Loginlog bestätigt weder die Echtheit de
 - **Technischer Projektname:** TrixieStorm Viewer (basierend auf Firestorm; OpenGenesisLINK-Integration).
 - **Verbindlicher Markenname:** TrixieStorm Viewer; Anwendungssymbol ist das vom Projekt bereitgestellte pink-violette TrixieStorm-Motiv. Der Name allein entscheidet nicht über Login-Rechte.
 - **Priorität 1:** funktionsgleicher OpenSim-Viewer mit stabilem Build, Upgrade- und Rollbackfähigkeit.
-- **Priorität 2:** OGL-spezifische Funktionen, ohne Verweigerung des Logins bei fremden kompatiblen Grids.
+- **Priorität 2:** Fest auf Stadt NexVerse Generation 1 und später Generation 2 (Beta) begrenzte Grid-Anmeldung; keine freien oder fremden Grid-Logins.
 - **Priorität 3:** schnelleres und hochwertigeres Rendering mit messbarem Nutzen.
 - **Keine Voraussetzung:** ein genereller Ersatz des OpenGenesisLINK-Servers, ein Wechsel seiner Datenbank oder eine neue Engine auf dem Regionssimulator.
+
+### 1.3 Zwei Generationen – verbindliches Grid-Ziel
+
+| Ziel | Hostname | Status | Release |
+|---|---|---|---|
+| Stadt NexVerse – Generation 1 | `hg.stadt-nexverse.de` | Bestehende Generation | Stable |
+| Stadt NexVerse – Generation 2 | `beta.stadt-nexverse.de` | Zukünftige Beta | Beta, zunächst nicht aktiv |
+
+**Diese beiden Hostnamen sind Ziel-/Servicebezeichnungen.** Ein Hypergrid-Host ist nicht zwangsläufig derselbe wie der OpenSim-Loginservice. Die echten URLs, TLS-Ports, Login-Pfade und Weiterleitungsziele sind pro Generation vor einem C++-Build zu bestätigen. Es werden keine unbestätigten Login-URIs fest in den Viewer geschrieben.
+
+Fremde Grids dürfen in der veröffentlichten Anwendung nicht per Grid Manager, Kommandozeile, Deep-Link oder Login-Redirect auswählbar sein. Ausgehende Hypergrid-Reisen zu fremden Grids gehören nicht zum Produkt. Die serverseitige Zugriffskontrolle und sämtliche nicht-loginbezogenen Dienste (Assets, Voice, Marketplace, CDN) werden separat geregelt.
+
+Die Profile erhalten getrennte Einstellungen, Caches, Sessiontokens, Zugangsdaten und ggf. getrennte Beta-/Stable-Updatekanäle; Generation 2 wird erst nach Freigabe eingeblendet. Der Viewer selbst bleibt **TrixieStorm Viewer**.
+
+Siehe [docs/GRID_POLICY.md](docs/GRID_POLICY.md) und [config/nexverse-generations.json](config/nexverse-generations.json).
 
 ### 1.3 Nichtziele für die ersten Versionen
 
@@ -43,7 +58,7 @@ Ein Versions-/Channel-String aus einem Loginlog bestätigt weder die Echtheit de
 - Vulkan, Hardware-Raytracing oder FPS-Zuwächse als bereits vorhanden bezeichnen.
 - Alte Firestorm-Installationen, Benutzereinstellungen oder Caches überschreiben.
 - Rechte, Wirtschaftstransaktionen oder Objektbesitz clientseitig entscheiden.
-- Nicht standardisierte OGL-Funktionen auf anderen OpenSim-/Hypergrid-Grids erzwingen.
+- Die Anmeldung an fremden OpenSim-/Hypergrid-Grids als Produktfunktion anbieten.
 
 ---
 
@@ -59,7 +74,7 @@ flowchart TB
     VK[Vulkan-Backend: experimentell]
     GRID[OpenGenesisLINK: ROBUST und Regionen]
     EXT[OGL optionale Dienste: World API, Economy, Weather, Voice]
-    OS[Standard-OpenSimulator / Hypergrid]
+    OS[Stadt NexVerse Gen 1 / Gen 2]
 
     UI --> APP
     APP --> CAPS
@@ -67,7 +82,7 @@ flowchart TB
     SCENE --> GL
     SCENE -. nach Renderer-Abstraktion .-> VK
     APP -->|LLUDP / HTTPS CAPS / Assets| GRID
-    APP -->|bestehende Standards| OS
+    APP -->|nur geprüfte NexVerse-Endpunkte| OS
     CAPS -->|nur bei verifizierter Ankündigung| EXT
 ```
 
@@ -102,14 +117,14 @@ Diese Pfade sind **Designvorschläge**, keine bereits existierenden Firestorm-Un
 
 ### 3.1 Login, Grid-Verwaltung und Identität (P0)
 
-- [ ] Standard-OpenSim-Login beibehalten, inklusive LLSD/XML-RPC, CAPS und Grid Manager.
-- [ ] Stadt-NexVerse als auswählbare Voreinstellung bereitstellen, fremde Grids weiterhin zulassen.
+- [ ] OpenSim-Loginprotokolle (LLSD/XML-RPC, CAPS) erhalten; freien Grid Manager und beliebige Grid-URLs in der TrixieStorm-Oberfläche entfernen/sperren.
+- [ ] Ausschließlich zwei fest vorgegebene Zielprofile zulassen: Gen 1 `hg.stadt-nexverse.de` und Gen 2 Beta `beta.stadt-nexverse.de`. Die vollständigen Login-URIs (Port, Protokoll, Pfad und Weiterleitungen) sind **vor Implementierung zu prüfen**; Hostnamen sind nicht automatisch Login-Endpunkte.
 - [ ] Eigenständige **Viewer-Channel-Kennung** im C++-Build nachweisbar setzen: `TrixieStorm Viewer`. Serverseitige Channel-Allowlist getrennt prüfen.
 - [ ] Eine Server-Zulassungsprüfung darf anhand von `channel` und `version` nur Kompatibilitätsfilter sein: beide Strings sind durch fremde Clients fälschbar.
 - [ ] Doppelte Sitzungen, ungültige Tokens, regionale Fehlermeldungen und Serverneustarts korrekt behandeln.
 - [ ] Separate Benutzerprofile, Cache-, Crashlog- und Settings-Verzeichnisse für OGL und unveränderten Firestorm.
 - [ ] Signierte Updatekanäle, opt-in Testbuilds und sicheres Downgrade.
-- [ ] Beim Gridwechsel sämtliche OGL-spezifischen Berechtigungen, CAP-URLs und temporären Sitzungszustände verwerfen.
+- [ ] Beim Wechsel Gen 1 ↔ Gen 2 alle Sitzungstokens, CAP-URLs, Credentials, Inventar- und Cachebezüge strikt trennen; Generation 2 erst nach erfolgreicher Bereitstellung freischalten.
 
 ### 3.2 Benutzeroberfläche (P1)
 
@@ -134,7 +149,7 @@ Diese Pfade sind **Designvorschläge**, keine bereits existierenden Firestorm-Un
 | OGL AssetService | Besseres Caching und schnellere Wiederverwendung | Keine Änderung am Asset-ID-/Berechtigungsmodell ohne Protokollvereinbarung |
 | OGL Energy | Optionale Energienetz-/Wetterdisplays | Reine Anzeige; keine echten Ausfälle oder finanzielle Abrechnung im Client |
 | FastRez / FastMap | Optimierte Wahrnehmung von Lade-/Sichtbarkeitszuständen | Servermodule sind nicht automatisch neue Client-Protokolle |
-| Hypergrid / Federation | Besucherfreundliche Gridwechsel, Such-/Teleportoptionen | Standard-Hypergrid muss weiter funktionieren; fremde Grids nicht abwerten |
+| Hypergrid / Federation | Interne Hypergrid-Protokolle für NexVerse erhalten | Keine Anmeldung/ausgehende Teleports zu fremden Grids über TrixieStorm; serverseitige Sperren separat sicherstellen |
 
 **Vertragsprinzip:** Ein vorhandener serverseitiger Endpunkt allein bedeutet **noch keine** funktionierende Viewerintegration. Je Feature sind Protokollversion, Berechtigungen, Fehlermeldungen, Rate Limits und Fallback separat zu implementieren.
 
@@ -209,7 +224,7 @@ GpuProfiler / FrameMetrics
 ### R5 – Technische Abnahmekriterien für Grafik
 
 - [ ] Bei gleichen Einstellungen, Auflösung, Szene und Treiberversion A/B-Messung gegen den gepinnten Firestorm-Baselinebuild.
-- [ ] Keine Blocker bei UI, Texturen, Alphasortierung, Skinned Avatars, PBR, Bauwerkzeugen oder Hypergrid-Regionwechsel.
+- [ ] Keine Blocker bei UI, Texturen, Alphasortierung, Skinned Avatars, PBR, Bauwerkzeugen oder Regionenwechseln innerhalb NexVerse.
 - [ ] Crashfreiheit über längere Sessions; Grafik-Reset und Recovery nach Device-Loss oder Treiberfehler.
 - [ ] Vor dem Test messbare Budgets vereinbaren (Beispiele, **noch nicht beschlossen**: p95-Framezeit nicht schlechter als +10 %, VRAM nicht schlechter als +15 % gegenüber Baseline bei vergleichbarer Qualität).
 - [ ] Optionales RT darf auf nicht unterstützter Hardware weder Login noch Rendering verhindern.
@@ -235,7 +250,7 @@ Der Helper prüft den sauberen Arbeitsbaum, holt den exakt gepinnten offiziellen
 - **Linux x64:** offizielle Toolchain des gepinnten Firestorm-Releases und `ReleaseOS`.
 - **Windows x64:** passende Visual-Studio-/Autobuild-Toolchain und `ReleaseOS`.
 - Anschließend einen **realen Viewer-Build** mit SHA, Dependency-Lock, Compiler-Version, OS, Build-Log und Prüfsumme archivieren.
-- Test gegen Stadt-NexVerse **und** mindestens ein unverändertes OpenSimulator-Testgrid.
+- Test gegen NexVerse Generation 1 **und** die autorisierte Generation-2-Stagingumgebung sobald verfügbar; kein Produkt-Login in fremde Grids.
 - Optional weitere Zielplattformen (z. B. Linux ARM64, macOS) erst nach Nachweis der Abhängigkeiten und CI-Kapazität.
 
 **Abhängigkeit:** Eine grüne Foundation-CI ist *kein* Beweis für einen erfolgreichen C++-Viewer-Build.
@@ -256,14 +271,14 @@ Der Helper prüft den sauberen Arbeitsbaum, holt den exakt gepinnten offiziellen
 | Phase | Priorität | Inhalt | Abnahme / Definition of Done | Status TrixieStorm Viewer |
 |---|---|---|---|---|
 | M0 | P0 | Architektur, Lizenzgrundlage, Importstrategie | Dokumente/CI + rechtliche Prüfung | Grundstruktur angelegt; rechtliches Audit offen |
-| M1 | P0 | Firestorm-Quellcodeimport und `ReleaseOS` | Linux/Windows x64 starten, Gridlogin, HG/Inventar/Teleport | Nicht nachgewiesen |
-| M2 | P0 | Branding, Installation, eigener Cache/Updater | Firestorm parallel ohne Konflikte, Rollback | Nicht nachgewiesen |
-| M3 | P1 | OGL CAP/World API, Voice, NV$, Marketplace | Authentifizierte Funktionen, Standard-Grid-Fallback | Nicht nachgewiesen |
+| M1 | P0 | Firestorm-Quellcodeimport und `ReleaseOS` | Linux/Windows x64 starten, NexVerse-Login und Inventar/Teleport | Nicht nachgewiesen |
+| M2 | P0 | Branding, Gen1/Gen2-Ziele, eigener Cache/Updater | Fremdgrids sperren; Generationen getrennt, Firestorm parallel möglich | Nicht nachgewiesen |
+| M3 | P1 | OGL CAP/World API, Voice, NV$, Marketplace | Autorisierte NexVerse-Funktionen, Gen1/Gen2-spezifische Verträge | Nicht nachgewiesen |
 | M4 | P1 | Moderne Oberfläche und Bedienung | Build-, Inventar- und Avatar-Regressionen | Nicht nachgewiesen |
 | M5-R0/R1 | P1 | Profiling, Optimierung vorhandener PBR-Engine | Vergleichsmessungen, stabile Renderqualität | Nicht nachgewiesen |
 | M5-R2/R3 | P2 | API-Abstraktion und Vulkan-Prototyp | Vulkan-Parität und OpenGL-Fallback | Forschung, nicht nachgewiesen |
 | M5-R4 | P2 | Wetter, Wasser, Upscaling, RT-Effekte | Hardwareprofil, opt-in, Performance- und Bildtests | Forschung, nicht nachgewiesen |
-| M6 | P2 | Hydro-/Terrain-/Federation-Erweiterungen | Sichere Protokolle und unveränderte Fremdgrids | Nicht nachgewiesen |
+| M6 | P2 | Hydro-/Terrain-/Federation-Erweiterungen | Sichere Protokolle innerhalb Stadt NexVerse | Nicht nachgewiesen |
 | M7 | P0 | Signed Releases, Privacy, SBOM, Testmatrix | Vollständige Produktabnahme | Nicht nachgewiesen |
 
 **Abhängigkeitsfolge:** `M0 → M1 → M2 → M3/M4 → M5 → M6 → M7`. Rendererforschung kann parallel ab M1 beginnen, ohne den eigentlichen Releasepfad aufzuhalten.
@@ -272,16 +287,16 @@ Der Helper prüft den sauberen Arbeitsbaum, holt den exakt gepinnten offiziellen
 
 1. **VIEW-001:** Firestorm-Upstream importieren, Pin/Provenienz und Dependency-Audit.
 2. **VIEW-002:** Linux/Windows-x64-`ReleaseOS`-CI mit installierbaren Artefakten.
-3. **VIEW-003:** OpenGenesisLINK-Login, Hypergrid, Inventar, Voice und Teleport baseline testen.
+3. **VIEW-003:** Gen1-Login, Inventar, Voice, NexVerse-interner Teleport und Negativtest fremder Grid-URLs; Gen2 sobald bereit.
 4. **VIEW-004:** Eigenes Branding und voneinander unabhängige Profile/Updatekanäle.
-5. **VIEW-005:** OGL-CAP-Manager mit Gridwechsel-Cleanup, Timeouts und negativen Authentifizierungstests.
+5. **VIEW-005:** OGL-CAP-Manager mit Gen1/Gen2-Sitzungstrennung, Token-/Cache-Cleanup, Timeouts und negativen Authentifizierungstests.
 6. **VIEW-006:** Modernes UI mit andockbaren Seitenleisten und Berliner Uhr.
 7. **VIEW-007:** GPU-Profiling und repräsentative Stadt-NexVerse-Testszenen.
 8. **VIEW-008:** Render-Resource-Grenzen definieren und OpenGL-Regression absichern.
 9. **VIEW-009:** Experimentellen Vulkan-Backend-Prototyp mit Fallback implementieren.
 10. **VIEW-010:** Volumetrisches Wetter, Wasser und optionale neue Lichtverfahren evaluieren.
 11. **VIEW-011:** Installer, Signaturen, Update-/Rollbacktest, Lizenzen und Datenschutz.
-12. **VIEW-012:** Beta-Abnahme auf echter Hardware und Standard-OpenSim-Grids.
+12. **VIEW-012:** Beta-Abnahme auf echter Hardware für Generation 1 und Generation 2 (sobald verfügbar); fremde Grid-Logins müssen gesperrt bleiben.
 
 Jedes Arbeitspaket benötigt eine eigene Issue/PR mit reproduzierbaren Tests, Dokumentation und einem abschaltbaren Migrationspfad. Vorhandene GitHub-Issues im Viewer-Repo prüfen, bevor Duplikate angelegt werden.
 
@@ -296,9 +311,10 @@ Jedes Arbeitspaket benötigt eine eigene Issue/PR mit reproduzierbaren Tests, Do
 | Gummybear Island / Shopping | Zahlreiche Produkte, Alpha, Anklicken | Texturen, Marketplace-Deep-Links |
 | Hamburg / Veranstaltung | Viele Avatare, Attachments, Animationen | Frame-Pacing, VRAM, Voice |
 | OGLWeather-Szenen | Regen, Schnee, Nebel, Tageszeiten | Grafikqualität und OpenGL-Fallback |
-| Beliebiger Standard-OpenSim-Grid | Login, HG, Inventar, Teleport | **Keine** OGL-Funktion erforderlich |
+| Fremder OpenSim-/Hypergrid-Login | Verweigerung der Auswahl und Anmeldung | Direkte CLI-, Deep-Link-, URL- und Redirect-Umgehungen untersuchen |
 | Variable Region / Grenzübergang | Kamera, Bewegung, Szene | Ressourcenfreigabe/Prefetch |
 | Verbindungsverlust / Tokenablauf | Sichere Fehlermeldung, Wiederaufnahme | Kein Cache- oder Tokenleck |
+| Generation 2 Beta | Separater Login und Cache nach Freigabe | TLS, Sessiongrenzen und Release-Channel prüfen |
 | Vulkan nicht verfügbar | Viewer startet weiterhin | Automatischer OpenGL-Fallback |
 | Parallelinstallation | Offizieller Firestorm unberührt | Profile, Updates, Deinstallation |
 
@@ -316,7 +332,7 @@ Jedes Arbeitspaket benötigt eine eigene Issue/PR mit reproduzierbaren Tests, Do
 - Firestorm-/Second-Life-Attribution und LGPL-Lizenzbedingungen beachten; je Datei und Binärbibliothek weitere Lizenzverpflichtungen prüfen.
 - Eigenes Logo, Icon und Branding; offizielle Firestorm- oder Second-Life-Markenzeichen nicht irreführend übernehmen.
 - Keine versteckte Datenerhebung oder erzwungene Kommunikation mit Drittservices.
-- OpenGL-Fallback beibehalten; GPU-spezifische Effekte nicht zu einer Mindestvoraussetzung für Standard-OpenSim machen.
+- OpenGL-Fallback beibehalten; GPU-spezifische Effekte nicht zur Mindestvoraussetzung für Stadt NexVerse machen.
 
 ---
 
@@ -331,7 +347,7 @@ Jedes Arbeitspaket benötigt eine eigene Issue/PR mit reproduzierbaren Tests, Do
 | Unterschiedliche GPU-Treiber | Instabilität/Renderfehler | Treibermatrix, Crash-Fallback, Featureflags |
 | Lizenzpflichten bei Drittbibliotheken | Verteilungsrisiko | Vor Build/Release juristisch und technisch auditieren |
 | Import überschreibt bestehende Projektgeschichte | Datenverlust im Repo | Import-Helper und Review-Branch, kein Force-Push |
-| OGL-Funktionen an externen Grids | Interoperabilität leidet | OGL optional, Standard-OpenSim-Pfade erhalten |
+| Fremdgrid-Login per UI/CLI/URL/Redirect | Exklusivität wäre umgehbar | Ziele validieren, fremde Grids in UI und Startparametern ablehnen, serverseitig ergänzend prüfen |
 
 Offene Produktentscheidungen vor M2: endgültiger Viewer-Name, Icon, Installerbezeichnung, Telemetriepolitik, Supportkanal und offizieller Updatehost. Vor R3 zusätzlich: Vulkan-GPU-Minimum, Shader-/SDK-Lizenzen und automatische Fallbackpolitik.
 
@@ -344,7 +360,7 @@ Ein modifizierter Firestorm-Viewer ist **erst dann** als einsatzbereit zu bezeic
 **Empfohlene Reihenfolge:**
 
 1. Quellcodeimport und Lizenzprüfung (`M1`).
-2. Reproduzierbare OpenSim-Viewer-Builds und reale Login-/Inventar-/Hypergrid-Tests.
+2. Reproduzierbare OpenSim-Viewer-Builds und reale NexVerse-Gen1-/Gen2-Login-, Inventar- und Teleporttests.
 3. Eigenständige Anwendung mit getrennten Datenverzeichnissen und Updates (`M2`).
 4. Neue Oberfläche und sichere OGL-Serviceadapter (`M3/M4`).
 5. Optimierter Firestorm-PBR-/OpenGL-Pfad mit dokumentierten Performancegewinnen (`R0/R1`).
@@ -366,3 +382,8 @@ Ein modifizierter Firestorm-Viewer ist **erst dann** als einsatzbereit zu bezeic
 - OpenGenesisLINK-Server: https://github.com/opengenesislink/opengenesislinkserver
 
 **Dokumenttyp:** Entwicklungsplanung, keine Erklärung abgeschlossener Funktionen. Fortschritt nur nach nachweisbaren Commits, Build-Artefakten und Tests aktualisieren.
+
+
+### Ergänzende Abnahme: Zwei-Generationen-Sperre
+
+Die Nutzbarkeit ausschließlich mit Stadt NexVerse Generation 1 bzw. der späteren Generation 2 ist **Produktanforderung und noch nicht implementiert**. Für M2 müssen Loginprofil, Desktop-Startargumente, Einstellungen, importierte Gridlisten, Teleportlinks und URL-Weiterleitungen getestet werden. Der Grid-Server muss die maßgeblichen Autorisierungsentscheidungen selbst durchführen; eine lokale Client-Sperre ist kein Kopierschutz und keine fälschungssichere Identität.

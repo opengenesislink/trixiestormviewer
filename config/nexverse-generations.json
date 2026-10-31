@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "product": "TrixieStorm Viewer",
+  "policy": "stadt-nexverse-only",
+  "description": "Specification manifest only. Not yet wired to Firestorm C++.",
+  "allow_custom_grids": false,
+  "allow_external_grid_logins": false,
+  "allow_outbound_external_hypergrid_teleports": false,
+  "generations": [
+    {
+      "id": "gen1",
+      "name": "Stadt NexVerse - Generation 1",
+      "hostname": "hg.stadt-nexverse.de",
+      "login_uri": null,
+      "login_uri_verified": false,
+      "release_channel": "stable",
+      "state": "current"
+    },
+    {
+      "id": "gen2",
+      "name": "Stadt NexVerse - Generation 2 (Beta)",
+      "hostname": "beta.stadt-nexverse.de",
+      "login_uri": null,
+      "login_uri_verified": false,
+      "release_channel": "beta",
+      "state": "future-disabled"
+    }
+  ],
+  "notes": [
+    "Hostnames are not automatically viewer login URLs.",
+    "Verify scheme, port, path, TLS certificates, CAPS and redirects before implementing the allowlist.",
+    "This manifest does not enforce runtime restrictions until integrated into the Firestorm source."
+  ]
+}

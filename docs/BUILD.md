@@ -26,8 +26,12 @@ Record commit SHA, exact SDK/compiler/autobuild versions, dependency revisions, 
 
 Set executable/product/channel IDs to `TrixieStorm Viewer`. Keep TrixieStorm paths, settings, cache, crash reports and updater independent from Firestorm. Use icons produced by `scripts/generate_icons.py` for installers, desktop files and executable resources.
 
-OpenGenesisLINK additions must remain optional on other OpenSim grids. Do not disable HTTPS certificate verification or trust arbitrary server-supplied URLs without authorization.
+OpenGenesisLINK integration is available only when connected to Stadt NexVerse Generation 1 or Generation 2. The public TrixieStorm build must not expose arbitrary grid management, login URL overrides or foreign Hypergrid travel. Do not disable HTTPS certificate verification or trust arbitrary server-supplied URLs without authorization.
 
 ## 4. Test/release gate
 
-A real installable Linux/Windows build must pass login, avatar appearance, inventory/permissions, Teleport/Hypergrid, voice, mesh/PBR, camera/build controls, region crossing, clean uninstall and side-by-side installation with Firestorm. Run tests on NexVerse *and* a standard OpenSimulator grid. See `ROADMAP.md`.
+A real installable Linux/Windows build must pass login, avatar appearance, inventory/permissions, Teleport/Hypergrid, voice, mesh/PBR, camera/build controls, region crossing, clean uninstall and side-by-side installation with Firestorm. Run tests on NexVerse Generation 1 and (once deployed) Generation 2, including rejection of foreign grid login and external HG teleport attempts. See `ROADMAP.md`.
+
+## Exclusive login target integration
+
+The source-level implementation must enforce the [grid policy](GRID_POLICY.md) when Firestorm is imported. The [manifest](../config/nexverse-generations.json) only documents target hostnames; `login_uri: null` is intentional because the real OpenSim login URL/port is not verified. The final client must safely reject unknown grid URLs, bypasses through CLI/deep links and foreign HG teleport. Distinguish authorized non-login services (CAPs/assets/media/voice) from login destinations. On Gen1↔Gen2 switch, securely invalidate session URLs/tokens and isolate cache and settings.
