@@ -24,6 +24,8 @@ cd trixiestormviewer
 bash scripts/import_firestorm.sh
 ```
 
+**Optional GitHub Actions import:** [Run the reviewed Firestorm import workflow](https://github.com/opengenesislink/trixiestormviewer/actions/workflows/import-firestorm.yml) via **Run workflow**. It attempts to create a source-import pull request, not a release, and requires Actions write permissions. No automatic merge into `main`.
+
 **Grid configuration:** `config/nexverse-generations.json` describes the allowed deployment targets; it is not yet wired into the Firestorm source. The real login URI, TLS/port and redirects for each generation must be verified before shipping, and the Gen2 profile remains disabled until operational.
 
 This script creates `feature/firestorm-source-import`, fetches and verifies the pinned upstream commit and attempts to merge it, preserving upstream Git ancestry. It may stop for manual conflict resolution. **Review licensing and build requirements before any merge or distribution.** No script force-pushes to `main`.
