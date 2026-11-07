@@ -105,12 +105,26 @@ void FSFloaterObjectExport::onIdle()
         }
         else if (mWaitTimer.getElapsedTimeF32() > MAX_INVENTORY_WAIT_TIME)
         {
+            if (++mInventoryTimeouts >= 3)
+            {
+                LL_WARNS("NexVerseExport") << "Export aborted: timed out waiting for object inventory"
+                    << LL_ENDL;
+                mAborted = true;
+                mExportState = IDLE;
+                gIdleCallbacks.deleteFunction(onIdle, this);
+                LLNotificationsUtil::add("ExportFailed");
+                closeFloater();
+                return;
+            }
             mWaitTimer.start();
             for (uuid_vec_t::const_iterator iter = mInventoryRequests.begin(); iter != mInventoryRequests.end(); ++iter)
             {
                 LLViewerObject* object = gObjectList.findObject((*iter));
-                object->dirtyInventory();
-                object->requestInventory();
+                if (object)
+                {
+                    object->dirtyInventory();
+                    object->requestInventory();
+                }
 
                 LL_DEBUGS("export") << "re-requested inventory of " << (*iter).asString() << LL_ENDL;
             }
@@ -136,13 +150,14 @@ void FSFloaterObjectExport::onIdle()
         }
         else if (mWaitTimer.getElapsedTimeF32() > MAX_ASSET_WAIT_TIME)
         {
-            //abort for now
-            LL_DEBUGS("export") << "Asset timeout with " << (S32)mAssetRequests.size() << " requests left." << LL_ENDL;
-            for (uuid_vec_t::iterator iter = mAssetRequests.begin(); iter != mAssetRequests.end(); ++iter)
-            {
-                LL_DEBUGS("export") << "Asset: " << (*iter).asString() << LL_ENDL;
-            }
-            mAssetRequests.clear();
+            LL_WARNS("NexVerseExport") << "Export aborted: " << mAssetRequests.size()
+                << " asset requests timed out; refusing an incomplete .oxp" << LL_ENDL;
+            mAborted = true;
+            mExportState = IDLE;
+            gIdleCallbacks.deleteFunction(onIdle, this);
+            LLNotificationsUtil::add("ExportFailed");
+            closeFloater();
+            return;
         }
         break;
     case TEXTURE_DOWNLOAD:
@@ -160,12 +175,35 @@ void FSFloaterObjectExport::onIdle()
             }
             mWaitTimer.stop();
 
-            llofstream file;
-            file.open(mFilename.c_str(), std::ios_base::out | std::ios_base::binary);
-            std::string zip_data = zip_llsd(mManifest);
-            file.write(zip_data.data(), zip_data.size());
+            if (mAborted)
+            {
+                LL_WARNS("NexVerseExport") << "Incomplete export rejected: one or more assets were missing"
+                    << LL_ENDL;
+                LLNotificationsUtil::add("ExportFailed");
+                closeFloater();
+                return;
+            }
+            const std::string zip_data = zip_llsd(mManifest);
+            llofstream file(mFilename.c_str(), std::ios_base::out | std::ios_base::binary);
+            if (!file.is_open() || !file.write(zip_data.data(), zip_data.size()))
+            {
+                LL_WARNS("NexVerseExport") << "Unable to write complete export file" << LL_ENDL;
+                file.close();
+                LLFile::remove(mFilename);
+                LLNotificationsUtil::add("ExportFailed");
+                closeFloater();
+                return;
+            }
             file.close();
-            LL_DEBUGS("export") << "Export finished and written to " << mFilename << LL_ENDL;
+            if (!file.good())
+            {
+                LLFile::remove(mFilename);
+                LLNotificationsUtil::add("ExportFailed");
+                closeFloater();
+                return;
+            }
+            LL_INFOS("NexVerseExport") << "Permission-checked complete export: "
+                << mFilename << LL_ENDL;
 
             LLSD args;
             args["FILENAME"] = mFilename;
@@ -180,6 +218,17 @@ void FSFloaterObjectExport::onIdle()
         }
         else if (mWaitTimer.getElapsedTimeF32() > MAX_TEXTURE_WAIT_TIME)
         {
+            if (++mTextureTimeouts >= 3)
+            {
+                LL_WARNS("NexVerseExport") << "Export aborted: " << mRequestedTexture.size()
+                    << " textures not downloaded; refusing incomplete .oxp" << LL_ENDL;
+                mAborted = true;
+                mExportState = IDLE;
+                gIdleCallbacks.deleteFunction(onIdle, this);
+                LLNotificationsUtil::add("ExportFailed");
+                closeFloater();
+                return;
+            }
             mWaitTimer.start();
             for (std::map<LLUUID, FSAssetResourceData>::iterator iter = mRequestedTexture.begin(); iter != mRequestedTexture.end(); ++iter)
             {
@@ -304,6 +353,8 @@ bool FSFloaterObjectExport::exportSelection()
 
     mExported = false;
     mAborted = false;
+    mInventoryTimeouts = 0;
+    mTextureTimeouts = 0;
     mInventoryRequests.clear();
     mAssetRequests.clear();
     mTextureChecked.clear();
@@ -705,6 +756,14 @@ void FSFloaterObjectExport::removeRequestedTexture(LLUUID texture_id)
 {
     if (mRequestedTexture.count(texture_id) != 0)
     {
+        // A failed texture cache read can previously produce "ExportFinished"
+        // with an incomplete asset bundle. Preserve rights checks and fail.
+        if (!mManifest["asset"].has(texture_id.asString()))
+        {
+            mAborted = true;
+            LL_WARNS("NexVerseExport") << "Missing permitted texture in export: "
+                << texture_id << LL_ENDL;
+        }
         mRequestedTexture.erase(texture_id);
     }
 }
@@ -854,7 +913,9 @@ void FSFloaterObjectExport::onLoadComplete(const LLUUID& asset_uuid, LLAssetType
 
     if (status != 0)
     {
-        LL_WARNS("export") << "Problem fetching asset: " << asset_uuid << " " << status << " " << (U32)ext_status << LL_ENDL;
+        self->mAborted = true;
+        LL_WARNS("NexVerseExport") << "Missing export asset: " << asset_uuid
+            << " status " << status << ", package will not be written" << LL_ENDL;
         delete data;
         return;
     }

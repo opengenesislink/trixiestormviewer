@@ -128,6 +128,9 @@ private:
     bool mExported;
     bool mAborted;
     bool mDirty;
+    // Abort rather than create a deceptively incomplete .oxp.
+    unsigned mInventoryTimeouts = 0;
+    unsigned mTextureTimeouts = 0;
 
     typedef std::vector<LLUUID> id_list_t;
     typedef std::vector<std::string> string_list_t;
