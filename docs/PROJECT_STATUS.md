@@ -9,6 +9,7 @@ The Firestorm 7.2.4 source is present with TrixieStorm rebranding in the **featu
 - Gen1 profile/cache/crash namespace isolated from original Firestorm.
 - Read-only OGL v1 JSON public discovery attempt on the login panel, with schema/product/version validation and immutable login destination.
 - Existing Firestorm WebRTC used preferentially when OpenSim region advertises the standard voice provisioning/signaling capabilities for server-side OGLVoice.
+- A dedicated German/English Stadt NexVerse service hub menu opens public Portal, WorldMap, Marketplace, OGL public grid discovery, releases and support in an external browser. No privileged World API calls or credentials are embedded.
 - Existing Firestorm OXP export improved to abort and report failure for missing requested assets, timeouts and incomplete disk writes; ownership/permission checks retained.
 
 **Passed:** independent native C++17 grid-policy tests; static branding, XML and Python syntax workflows at their latest completed commits. Static C++ wiring audit is also included. **Not proved:** full Firestorm C++ ReleaseOS build, runtime login/teleport/assets/voice/export tests, redirect/login transport safety.

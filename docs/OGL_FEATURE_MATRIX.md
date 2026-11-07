@@ -16,8 +16,8 @@
 | Grid WebAPI profiles, groups, friends | API exists on server; no viewer-specific authenticated client | OAuth/PKCE and token storage over verified HTTPS; user-scope data |
 | Weather/Seasons and PBR environment | Existing viewer EEP/PBR path retained | Verified simulator feature schema and OGLWeather UI/asset bindings |
 | OGL FastRez/FastMap | Primarily server-side; baseline viewer protocols retained | Live latency/map tests; documented CAPS only |
-| NV$ economy and marketplace | Existing viewer economy/currency UI retained; OGL website links present | Actual authenticated payments and Marketplace backend API contract |
-| WorldMap/land portal | Existing worldmap UI and links; no native OGL map overlay | Region API, tile protocol, owner/permissions and spatial coordinate tests |
+| NV$ economy and marketplace | Existing viewer economy/currency UI retained; NexVerse menu links to Marketplace; no native transactions added | Actual authenticated payments and Marketplace backend API contract |
+| WorldMap/land portal | NexVerse services menu links to WorldMap/portal; existing viewer worldmap retained; no native OGL map overlay | Region API, tile protocol, owner/permissions and spatial coordinate tests |
 | IAR/OAR import and export | Server admin/service API with signed per-node feature rights; no new viewer client | Explicit user-scope OAuth and job lifecycle endpoints, never bypass policy |
 | Discord presence/chat/roles | Firestorm Discord bridge exists; no OGL account/role linking | OAuth mapping and consent with server connector |
 | LiveKit/Discord voice arbitration | Not built | SDK interoperability, privacy controls and fallback tests |

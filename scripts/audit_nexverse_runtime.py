@@ -84,6 +84,9 @@ for path, needles in CHECKS.items():
 startup = (ROOT / "indra/newview/llstartup.cpp").read_text()
 if 'FSCoreHttpUtil::callbackHttpGet(url, last_modified,' in startup:
     errors.append("Old remote Firestorm grid-list HTTP download is still wired into startup")
+for path in ("indra/newview/llstartup.cpp", "indra/newview/llurldispatcher.cpp"):
+    if "slurl.getHypergrid()" in (ROOT / path).read_text():
+        errors.append(f"{path}: LLSLURL has no getHypergrid() method")
 if 'grid_entry->grid[GRID_VALUE]' not in (ROOT / "indra/newview/fsgridhandler.cpp").read_text():
     errors.append("Grid manager no longer has an identifiable grid key")
 
