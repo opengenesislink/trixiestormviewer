@@ -24,6 +24,7 @@
  * $/LicenseInfo$
  */
 #include "llviewerprecompiledheaders.h"
+#include "oglnexversegridpolicy.h"
 
 #include "llurldispatcher.h"
 
@@ -115,6 +116,21 @@ bool LLURLDispatcherImpl::dispatchCore(const LLSLURL& slurl,
                                        LLMediaCtrl* web,
                                        bool trusted_browser)
 {
+#ifdef OPENSIM
+    // Both internal and browser-originated SLURLs must respect the same
+    // NexVerse travel boundary. These checks must run before dispatch.
+    if ((slurl.getType() == LLSLURL::LOCATION &&
+         !OGLNexVerse::isAllowedTravel(slurl.getGrid(), slurl.getRegion(),
+                                      slurl.getHypergrid())) ||
+        (slurl.getType() == LLSLURL::APP &&
+         (slurl.getAppCmd() == "gridmanager" ||
+          (!slurl.getGrid().empty() &&
+           !OGLNexVerse::isAllowedGrid(slurl.getGrid())))))
+    {
+        LL_WARNS("NexVersePolicy") << "Rejected external SLURL" << LL_ENDL;
+        return true; // Handled: do not fall through to a teleport.
+    }
+#endif
     //if (dispatchHelp(slurl, right_mouse)) return true;
     switch(slurl.getType())
     {
@@ -208,6 +224,14 @@ bool LLURLDispatcherImpl::dispatchApp(const LLSLURL& slurl,
 // static
 bool LLURLDispatcherImpl::dispatchRegion(const LLSLURL& slurl, const std::string& nav_type, bool right_mouse)
 {
+#ifdef OPENSIM
+    if (!OGLNexVerse::isAllowedTravel(slurl.getGrid(), slurl.getRegion(),
+                                     slurl.getHypergrid()))
+    {
+        LL_WARNS("NexVersePolicy") << "Rejected foreign region teleport" << LL_ENDL;
+        return true;
+    }
+#endif
     if(slurl.getType() != LLSLURL::LOCATION)
     {
         return false;
@@ -388,6 +412,12 @@ public:
  // <FS:AW optional opensim support>
 #ifdef OPENSIM
         LLSLURL slurl(tokens, true);
+        if (!OGLNexVerse::isAllowedTravel(slurl.getGrid(), slurl.getRegion(),
+                                         slurl.getHypergrid()))
+        {
+            LL_WARNS("NexVersePolicy") << "Rejected external app teleport" << LL_ENDL;
+            return true;
+        }
 
         std::string url_grid = slurl.getGrid();
         std::string gatekeeper = LLGridManager::getInstance()->getGatekeeper(url_grid);

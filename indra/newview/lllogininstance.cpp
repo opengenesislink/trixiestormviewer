@@ -27,6 +27,7 @@
 #include "llviewerprecompiledheaders.h"
 
 #include "lllogininstance.h"
+#include "oglnexversegridpolicy.h"
 
 // llcommon
 #include "llevents.h"
@@ -125,6 +126,13 @@ void LLLoginInstance::connect(LLPointer<LLCredential> credentials)
 
 void LLLoginInstance::connect(const std::string& uri, LLPointer<LLCredential> credentials)
 {
+    if (!OGLNexVerse::isAllowedGrid(LLGridManager::getInstance()->getGrid()) ||
+        !OGLNexVerse::isAllowedLoginURI(uri))
+    {
+        LL_WARNS("NexVersePolicy") << "Authentication to a non-NexVerse login URI blocked" << LL_ENDL;
+        mAttemptComplete = true;
+        return;
+    }
     mAttemptComplete = false; // Reset attempt complete at this point!
     constructAuthParams(credentials);
     mLoginModule->connect(uri, mRequestData);
@@ -136,6 +144,11 @@ void LLLoginInstance::reconnect()
     // request params.
     std::vector<std::string> uris;
     LLGridManager::getInstance()->getLoginURIs(uris);
+    if (uris.empty() || !OGLNexVerse::isAllowedLoginURI(uris.front()))
+    {
+        LL_WARNS("NexVersePolicy") << "Reconnect refused: no trusted login URI" << LL_ENDL;
+        return;
+    }
     mLoginModule->connect(uris.front(), mRequestData);
     gViewerWindow->setShowProgress(true,!gSavedSettings.getBOOL("FSDisableLoginScreens"));
 }

@@ -25,6 +25,7 @@
  */
 
 #include "llviewerprecompiledheaders.h"
+#include "oglnexversegridpolicy.h"
 
 #include "llappviewer.h"
 #include "llstartup.h"
@@ -4359,6 +4360,20 @@ bool LLStartUp::dispatchURL()
 
 void LLStartUp::setStartSLURL(const LLSLURL& slurl)
 {
+#if OPENSIM
+    // Covers CLI --url, stored start locations and external deep links.
+    if ((slurl.getType() == LLSLURL::LOCATION &&
+         !OGLNexVerse::isAllowedTravel(slurl.getGrid(), slurl.getRegion(),
+                                      slurl.getHypergrid())) ||
+        (slurl.getType() == LLSLURL::APP &&
+         (slurl.getAppCmd() == "gridmanager" ||
+          (!slurl.getGrid().empty() &&
+           !OGLNexVerse::isAllowedGrid(slurl.getGrid())))))
+    {
+        LL_WARNS("NexVersePolicy") << "Blocked foreign grid or Hypergrid startup URL" << LL_ENDL;
+        return;
+    }
+#endif
   sStartSLURL = slurl;
   switch(slurl.getType())
     {

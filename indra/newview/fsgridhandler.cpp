@@ -27,6 +27,7 @@
  */
 
 #include "llviewerprecompiledheaders.h"
+#include "oglnexversegridpolicy.h"
 
 #include "llcommandhandler.h"
 #include "lllogininstance.h" // to check if logged in yet
@@ -165,47 +166,28 @@ LLGridManager::LLGridManager() : EGridPlatform(GP_NOTSET), mReadyToLogin(false),
 
 void LLGridManager::resetGrids()
 {
+    // Never restore a connected grid from a user-modified cache.
     initGrids();
-    if (!mGrid.empty())
-    {
-        setGridData(mConnectedGrid);
-    }
 }
 
 void LLGridManager::initGrids()
 {
-    mGridList = LLSD();
-
-#ifndef SINGLEGRID
-    std::string grid_file        = gDirUtilp->getExpandedFilename(LL_PATH_APP_SETTINGS, "grids.xml");
-    std::string grid_user_file   = gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, "grids.user.xml");
-    std::string grid_remote_file = gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, "grids.remote.xml");
-
-    mGridFile = grid_user_file;
-#endif
-
+    // TrixieStorm only exposes the immutable Stadt NexVerse Gen1 realm.
+    // Ignore user/remote grid lists and persisted CLI override values.
+    mGridList = LLSD::emptyMap();
+    mGrid.clear();
+    mStartupGrid.clear();
+    mGridFile.clear();
     initSystemGrids();
-#ifndef SINGLEGRID
-    initGridList(grid_file, FINISH);
-    initGridList(grid_remote_file, FINISH);
-    initGridList(grid_user_file, FINISH);
-#endif
-
-    if (!mCommandLineDone)
-    {
-        initCmdLineGrids();
-    }
-
-    // <FS:ND> FIRE-20112 in case grid was set bt settings/cmd line, set it now
-    if (!mStartupGrid.empty())
-        setGridChoice(mStartupGrid);
-    mStartupGrid = "";
-    // </FS:ND>
+    mCommandLineDone = true;
+    setGridChoice(OGLNexVerse::GEN1_GRID);
 }
 
 void LLGridManager::initSystemGrids()
 {
-    addSystemGrid(LLTrans::getString("LoadingData"), "", "", "", "", DEFAULT_LOGIN_PAGE);
+    addSystemGrid(OGLNexVerse::GEN1_LABEL, OGLNexVerse::GEN1_GRID,
+                  "nexverse", OGLNexVerse::GEN1_LOGIN_URI,
+                  "", "https://stadt-nexverse.de");
 }
 
 void LLGridManager::initGridList(std::string grid_file, AddState state)
@@ -255,80 +237,14 @@ void LLGridManager::initGridList(std::string grid_file, AddState state)
 
 void LLGridManager::initCmdLineGrids()
 {
+    // A --grid argument must never add or select a foreign login realm.
     mCommandLineDone = true;
-
-    // load a grid from the command line.
-    // if the actual grid name is specified from the command line,
-    // set it as the 'selected' grid.
-    std::string grid;
-
-#ifndef SINGLEGRID
-    std::string cmd_line_grid = gSavedSettings.getString("CmdLineGridChoice");
-    if (!cmd_line_grid.empty())
+    const std::string requested = gSavedSettings.getString("CmdLineGridChoice");
+    if (!requested.empty() && !OGLNexVerse::isAllowedGrid(requested))
     {
-        // try to find the grid assuming the command line parameter is
-        // the case-insensitive 'label' of the grid.  ie 'Agni'
-        grid = getGridByGridNick(cmd_line_grid);
-
-        if (grid.empty())
-        {
-            grid = getGridByLabel(cmd_line_grid);
-        }
-        if (grid.empty())
-        {
-            // if we couldn't find it, assume the
-            // requested grid is the actual grid 'name' or index,
-            // which would be the dns name of the grid (for non
-            // linden hosted grids)
-            // If the grid isn't there, that's ok, as it will be
-            // automatically added later.
-            grid = cmd_line_grid;
-        }
+        LL_WARNS("NexVersePolicy") << "Ignoring external command-line grid" << LL_ENDL;
     }
-    else
-    {
-        // if a grid was not passed in via the command line, grab it from the CurrentGrid setting.
-        // if there's no current grid, that's ok as it'll be either set by the value passed
-        // in via the login uri if that's specified, or will default to maingrid
-        grid = gSavedSettings.getString("CurrentGrid");
-        LL_DEBUGS("GridManager") << "Setting grid from last selection " << grid << LL_ENDL;
-    }
-#endif
-
-    if (grid.empty())
-    {
-        // no grid was specified so default to maingrid
-        LL_DEBUGS("GridManager") << "Setting grid to MAINGRID as no grid has been specified " << LL_ENDL;
-        grid = MAINGRID;
-    }
-
-    // generate a 'grid list' entry for any command line parameter overrides
-    // or setting overides that we'll add to the grid list or override
-    // any grid list entries with.
-
-    if (mGridList.has(grid))
-    {
-        LL_DEBUGS("GridManager") << "Setting commandline grid " << grid << LL_ENDL;
-        setGridChoice(grid);
-    }
-    else
-    {
-        LL_DEBUGS("GridManager") << "Trying to fetch commandline grid " << grid << LL_ENDL;
-        GridEntry* grid_entry        = new GridEntry;
-        grid_entry->set_current      = true;
-        grid_entry->grid             = LLSD::emptyMap();
-        grid_entry->grid[GRID_VALUE] = grid;
-
-        // add the grid with the additional values, or update the
-        // existing grid if it exists with the given values
-        try
-        {
-            addGrid(grid_entry, FETCH);
-        }
-        catch (LLInvalidGridName ex)
-        {
-        }
-    }
+    setGridChoice(OGLNexVerse::GEN1_GRID);
 }
 
 LLGridManager::~LLGridManager()
@@ -495,17 +411,49 @@ void LLGridManager::gridInfoResponderCB(GridEntry* grid_entry)
 
 void LLGridManager::addGrid(const std::string& loginuri)
 {
-    GridEntry* grid_entry        = new GridEntry;
-    grid_entry->set_current      = true;
-    grid_entry->grid             = LLSD::emptyMap();
-    grid_entry->grid[GRID_VALUE] = loginuri;
-    addGrid(grid_entry, FETCH);
+    // Public Add Grid is intentionally disabled, including app:// deep links.
+    // Do not resolve, fetch grid_info, or add user-provided endpoints.
+    LL_WARNS("NexVersePolicy") << "Add Grid refused for TrixieStorm" << LL_ENDL;
+    mGridListChangedSignal(false);
 }
 
 /// LLGridManager::addGrid - add a grid to the grid list, populating the needed values
 /// if they're not populated yet.
 void LLGridManager::addGrid(GridEntry* grid_entry, AddState state)
 {
+    if (!grid_entry)
+    {
+        LL_WARNS("NexVersePolicy") << "Refused null grid entry" << LL_ENDL;
+        mGridListChangedSignal(false);
+        return;
+    }
+    const LLSD& candidate = grid_entry->grid;
+    const std::string candidate_grid = candidate[GRID_VALUE].asString();
+    bool approved = OGLNexVerse::isAllowedGrid(candidate_grid) &&
+                    state != REMOVE;
+    if (approved && candidate.has(GRID_LOGIN_URI_VALUE))
+    {
+        const LLSD& login_uris = candidate[GRID_LOGIN_URI_VALUE];
+        if (login_uris.isArray())
+        {
+            for (S32 i = 0; i < login_uris.size(); ++i)
+            {
+                approved = approved && OGLNexVerse::isAllowedLoginURI(login_uris[i].asString());
+            }
+            approved = approved && login_uris.size() > 0;
+        }
+        else
+        {
+            approved = OGLNexVerse::isAllowedLoginURI(login_uris.asString());
+        }
+    }
+    if (!approved)
+    {
+        LL_WARNS("NexVersePolicy") << "Rejected non-NexVerse grid entry or changed login URI" << LL_ENDL;
+        delete grid_entry;
+        mGridListChangedSignal(false);
+        return;
+    }
     if (!grid_entry)
     {
         LL_WARNS() << "addGrid called with NULL grid_entry. Please send a bug report." << LL_ENDL;
@@ -865,7 +813,7 @@ void LLGridManager::addSystemGrid(const std::string& label,
     grid_entry->grid[GRID_LOGIN_IDENTIFIER_TYPES] = LLSD::emptyArray();
     grid_entry->grid[GRID_LOGIN_IDENTIFIER_TYPES].append(CRED_IDENTIFIER_TYPE_AGENT);
 
-    grid_entry->grid[GRID_APP_SLURL_BASE] = SYSTEM_GRID_APP_SLURL_BASE;
+    grid_entry->grid[GRID_APP_SLURL_BASE] = "hop://hg.stadt-nexverse.de/app";
 
     // only add the system grids beyond agni to the visible list
     // if we're building a debug version.
@@ -876,7 +824,7 @@ void LLGridManager::addSystemGrid(const std::string& label,
     }
     else
     {
-        grid_entry->grid[GRID_SLURL_BASE] = llformat(SYSTEM_GRID_SLURL_BASE, label.c_str());
+        grid_entry->grid[GRID_SLURL_BASE] = "hop://hg.stadt-nexverse.de/";
     }
 
     LL_DEBUGS("PanelLogin") << " " << grid_entry->grid[GRID_LOGIN_PAGE_VALUE] << LL_ENDL;
@@ -931,6 +879,10 @@ std::map<std::string, std::string> LLGridManager::getKnownGrids()
 
 std::string LLGridManager::getGrid(const std::string& grid) const
 {
+    if (!OGLNexVerse::isAllowedGrid(grid))
+    {
+        return std::string();
+    }
     std::string grid_name;
 
     if (mGridList.has(grid))
@@ -966,6 +918,11 @@ std::string LLGridManager::getGridLabel(const std::string& grid)
 
 void LLGridManager::setGridChoice(const std::string& grid)
 {
+    if (!OGLNexVerse::isAllowedGrid(grid))
+    {
+        LL_WARNS("NexVersePolicy") << "Foreign grid selection rejected" << LL_ENDL;
+        return;
+    }
     if (grid.empty() || LLLoginInstance::getInstance()->authSuccess())
     {
         return;
@@ -1121,22 +1078,19 @@ std::string LLGridManager::getGridId(const std::string& grid)
 // this assumes that there is anyway only one uri saved
 std::string LLGridManager::getLoginURI(const std::string& grid)
 {
-    return mGridList[grid][GRID_LOGIN_URI_VALUE].beginArray()->asString();
+    if (!OGLNexVerse::isAllowedGrid(grid))
+    {
+        return std::string();
+    }
+    return OGLNexVerse::GEN1_LOGIN_URI;
 }
 
 void LLGridManager::getLoginURIs(std::vector<std::string>& uris)
 {
     uris.clear();
-
-    for (LLSD::array_iterator llsd_uri = mGridList[mGrid][GRID_LOGIN_URI_VALUE].beginArray();
-         llsd_uri != mGridList[mGrid][GRID_LOGIN_URI_VALUE].endArray();
-         llsd_uri++)
+    if (OGLNexVerse::isAllowedGrid(mGrid))
     {
-        std::string current = llsd_uri->asString();
-        if (!current.empty())
-        {
-            uris.push_back(current);
-        }
+        uris.emplace_back(OGLNexVerse::GEN1_LOGIN_URI);
     }
 }
 
@@ -1159,14 +1113,8 @@ std::string LLGridManager::getHelperURI()
 
 std::string LLGridManager::getLoginPage()
 {
-    // override the login page if it was passed in
-    std::string cmd_line_login_page = gSavedSettings.getString("LoginPage");
-    if (!cmd_line_login_page.empty())
-    {
-        return cmd_line_login_page;
-    }
-
-    return mGridList[mGrid][GRID_LOGIN_PAGE_VALUE];
+    // Never load an arbitrary login page passed through command-line options.
+    return "https://stadt-nexverse.de";
 }
 
 std::string LLGridManager::getWebProfileURL(const std::string& grid)
@@ -1268,24 +1216,8 @@ bool LLGridManager::isInAuroraSim() const
 
 void LLGridManager::saveGridList()
 {
-    // filter out just those which are not hardcoded anyway
-    LLSD output_grid_list = LLSD::emptyMap();
-    if (mGridList[mGrid].has("FLAG_TEMPORARY"))
-    {
-        mGridList[mGrid].erase("FLAG_TEMPORARY");
-    }
-    for (LLSD::map_iterator grid_iter = mGridList.beginMap(); grid_iter != mGridList.endMap(); grid_iter++)
-    {
-        if (!(grid_iter->first.empty() || grid_iter->second.isUndefined() || grid_iter->second.has("FLAG_TEMPORARY") ||
-              grid_iter->second.has("DEPRECATED")))
-        {
-            output_grid_list[grid_iter->first] = grid_iter->second;
-        }
-    }
-    llofstream llsd_xml;
-    llsd_xml.open(mGridFile.c_str(), std::ios::out | std::ios::binary);
-    LLSDSerialize::toPrettyXML(output_grid_list, llsd_xml);
-    llsd_xml.close();
+    // Grid definitions are immutable in the official NexVerse viewer.
+    // Saving user grids would reintroduce unsupported login destinations.
 }
 
 //<AW opensim>
@@ -1314,6 +1246,10 @@ std::string LLGridManager::trimHypergrid(const std::string& trim)
 // within the selected grid (LL comment was misleading)
 std::string LLGridManager::getSLURLBase(const std::string& grid)
 {
+    if (!OGLNexVerse::isAllowedGrid(grid))
+    {
+        return std::string();
+    }
     std::string grid_base;
     std::string ret;
 
@@ -1392,6 +1328,10 @@ std::string LLGridManager::getUpdateServiceURL()
 // within the selected grid (LL comment was misleading)
 std::string LLGridManager::getAppSLURLBase(const std::string& grid)
 {
+    if (!OGLNexVerse::isAllowedGrid(grid))
+    {
+        return std::string();
+    }
     std::string grid_base;
     std::string ret;
 

@@ -233,6 +233,8 @@ FSPanelLogin::FSPanelLogin(const LLRect &rect,
 
     LLComboBox* server_choice_combo = getChild<LLComboBox>("server_combo");
     server_choice_combo->setCommitCallback(boost::bind(&FSPanelLogin::onSelectServer, this));
+    // Only Stadt NexVerse Gen1 is enabled; Gen2 will be a separate controlled mode.
+    server_choice_combo->setEnabled(false);
 #ifdef OPENSIM
     server_choice_combo->setToolTip(getString("ServerComboTooltip"));
 #endif
@@ -750,7 +752,7 @@ void FSPanelLogin::updateLocationSelectorsVisibility()
         bool show_start = gSavedSettings.getBOOL("ShowStartLocation");
         sInstance->getChild<LLLayoutPanel>("start_location_panel")->setVisible(show_start);
 
-        bool show_server = gSavedSettings.getBOOL("ForceShowGrid");
+        bool show_server = false; // TrixieStorm has no arbitrary grid selector.
         sInstance->getChild<LLLayoutPanel>("grid_panel")->setVisible(show_server);
         sInstance->addUsersToCombo(show_server);
     }
