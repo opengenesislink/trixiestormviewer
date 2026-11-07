@@ -1,5 +1,5 @@
 # TrixieStorm Viewer – Verified project status
-Updated: 2026-10-31.
+Updated: 2026-11-07.
 
 | Item | Status | Evidence |
 |---|---|---|
@@ -10,12 +10,12 @@ Updated: 2026-10-31.
 | Real login URI/port per generation | Not verified | Service domains are not necessarily login endpoints |
 | External grid and Hypergrid travel blocking | Not implemented | Must cover UI, CLI, deep links and redirects |
 | Gen1/Gen2 cache/profile separation | Not implemented | Required before Gen2 activation |
-| App icon pipeline | Prepared | `scripts/generate_icons.py` (source image must be present) |
+| App icon pipeline | Prepared, not wired to viewer | `scripts/generate_icons.py` (source image must be present) |
 | Firestorm branch/commit | Verified | `Firestorm_7.2.4` → `10bd3c9f930c76e1427ddd4ecece6cdf36b4406d` |
 | Firestorm C++ code in repo | **Not yet** | Local import script + on-demand GitHub Actions PR workflow available; no import executed |
 | Linux x64 ReleaseOS build | Not verified | No build artifact |
 | Windows x64 ReleaseOS build | Not verified | No build artifact |
-| TrixieStorm executable/channel | Not implemented | Needs Firestorm code customization |
+| TrixieStorm executable/channel | Automated renaming patch prepared; **not yet integrated in main C++** | `scripts/rebrand_firestorm.py`, import PR workflow |
 | Separate cache/config/install | Not implemented | Phase M2 |
 | OpenGenesisLINK service adapters | Not implemented | Phase M3 |
 | NextGen UI / renderer | Not implemented | Phases M4/M5 |

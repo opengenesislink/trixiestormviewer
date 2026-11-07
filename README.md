@@ -30,11 +30,16 @@ bash scripts/import_firestorm.sh
 
 This script creates `feature/firestorm-source-import`, fetches and verifies the pinned upstream commit and attempts to merge it, preserving upstream Git ancestry. It may stop for manual conflict resolution. **Review licensing and build requirements before any merge or distribution.** No script force-pushes to `main`.
 
+## TrixieStorm rebranding
+
+The pinned-source import workflow applies [the audited product-name patch](scripts/rebrand_firestorm.py) on its **review branch**. The patch changes the visible app/channel identity, launcher, internal executable name, metadata and profile paths; it preserves original Firestorm/Linden Lab copyright and internal FS* symbols. **It is not yet a tested C++ build, and the custom application icons still need binary integration.** See [the rebranding plan](docs/REBRANDING.md).
+
 ## Documentation
 - [German NextGen roadmap and acceptance criteria](ROADMAP.md)
 - [Current, evidence-based status](docs/PROJECT_STATUS.md)
 - [Developer and build instructions](docs/BUILD.md)
 - [Branding and application icons](docs/BRANDING.md)
+- [Source-level rename and testing](docs/REBRANDING.md)
 - [Stadt NexVerse Generation 1/Generation 2 exclusive-grid policy](docs/GRID_POLICY.md)
 - [Architecture principles](docs/ARCHITECTURE.md)
 - [Licenses, attribution and distribution gate](docs/LEGAL.md)

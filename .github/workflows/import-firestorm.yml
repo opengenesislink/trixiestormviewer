@@ -1,6 +1,10 @@
 name: Import pinned Firestorm source (review PR)
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/rebrand_firestorm.py'
 
 permissions:
   contents: write
@@ -50,6 +54,16 @@ jobs:
             echo "Unexpected source layout after merge; do not publish this branch."
             exit 1
           }
+          # Replace product branding after the pinned release has been merged.
+          # Do not rewrite copyright/third-party notices or internal FS symbols.
+          python3 scripts/rebrand_firestorm.py
+          python3 scripts/rebrand_firestorm.py --check
+          git diff --check
+          git add indra
+          git commit -m "brand: rename application to TrixieStorm Viewer" || {
+            echo "Expected product rename produced no changes."
+            exit 1
+          }
           git push origin "$BRANCH"
 
       - name: Create review pull request (never merge automatically)
@@ -60,5 +74,5 @@ jobs:
           gh pr create \
             --base main \
             --head feature/firestorm-source-import \
-            --title "Import Firestorm 7.2.4 sources for TrixieStorm Viewer" \
-            --body "Imports the pinned official Firestorm_7.2.4 source at 10bd3c9f930c76e1427ddd4ecece6cdf36b4406d. **Not a compiled viewer.** Review all upstream copyright/license and binary dependency notices, source-tree conflict resolution, build requirements and NexVerse-only Gen1/Gen2 policy before merging. No auto-merge. See docs/LEGAL.md and docs/GRID_POLICY.md."
+            --title "Import and rebrand Firestorm 7.2.4 as TrixieStorm Viewer" \
+            --body "Imports the pinned official Firestorm_7.2.4 source at 10bd3c9f930c76e1427ddd4ecece6cdf36b4406d, then applies the scripted TrixieStorm product rename for Win/Linux. **Not a compiled viewer.** Review all upstream copyright/license and binary dependency notices, source-tree conflict resolution, build requirements and NexVerse-only Gen1/Gen2 policy before merging. No auto-merge. See docs/LEGAL.md and docs/GRID_POLICY.md."
