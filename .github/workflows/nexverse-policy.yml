@@ -16,6 +16,8 @@ on:
       - 'indra/newview/llvoiceclient.cpp'
       - 'indra/newview/fsfloaterexport.cpp'
       - 'indra/newview/app_settings/grids.xml'
+      - 'indra/newview/skins/default/xui/en/menu_viewer.xml'
+      - 'indra/newview/skins/default/xui/de/menu_viewer.xml'
       - '.github/workflows/nexverse-policy.yml'
   workflow_dispatch:
 
