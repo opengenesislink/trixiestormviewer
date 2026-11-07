@@ -795,9 +795,9 @@ LLAppViewer::LLAppViewer()
     // <FS:ND> Init our custom directories, not from SecondLife
     // gDirUtilp->initAppDirs("SecondLife");
 #if ADDRESS_SIZE == 64
-    gDirUtilp->initAppDirs("TrixieStormViewer_x64");
+    gDirUtilp->initAppDirs("TrixieStormViewer_G1_x64");
 #else
-    gDirUtilp->initAppDirs("TrixieStormViewer");
+    gDirUtilp->initAppDirs("TrixieStormViewer_G1");
 #endif
     // </FS:ND>
 
@@ -5453,9 +5453,9 @@ void LLAppViewer::purgeCacheImmediate()
 std::string LLAppViewer::getSecondLifeTitle() const
 {
 #if ADDRESS_SIZE == 64
-    return "TrixieStormViewer_x64";
+    return "TrixieStormViewer_G1_x64";
 #else
-    return "TrixieStormViewer";
+    return "TrixieStormViewer_G1";
 #endif
 }
 

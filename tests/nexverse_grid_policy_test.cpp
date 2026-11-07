@@ -10,6 +10,7 @@ int main()
     assert(std::string(GEN2_GRID) == "beta.stadt-nexverse.de");
     assert(!GEN2_ENABLED);
     assert(isAllowedGrid(GEN1_GRID));
+    assert(!isAllowedGrid("nexverse")); // aliases must not create a second realm
     for (const auto& host : {
         "", "beta.stadt-nexverse.de", "secondlife.com",
         "hg.stadt-nexverse.de.evil.test", "evil.hg.stadt-nexverse.de",

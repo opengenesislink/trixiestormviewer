@@ -186,7 +186,7 @@ void LLGridManager::initGrids()
 void LLGridManager::initSystemGrids()
 {
     addSystemGrid(OGLNexVerse::GEN1_LABEL, OGLNexVerse::GEN1_GRID,
-                  "nexverse", OGLNexVerse::GEN1_LOGIN_URI,
+                  OGLNexVerse::GEN1_GRID, OGLNexVerse::GEN1_LOGIN_URI,
                   "", "https://stadt-nexverse.de");
 }
 

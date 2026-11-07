@@ -1011,28 +1011,28 @@ Push $2
 # Required since ProfileImagePath is of type REG_EXPAND_SZ
     ExpandEnvStrings $2 $2
 
-# Delete files in \Users\<User>\AppData\Roaming\TrixieStormViewer
+# Delete files in \Users\<User>\AppData\Roaming\TrixieStormViewer_G1
 # Remove all settings files but leave any other .txt files to preserve the chat logs
-    RMDir /r "$2\AppData\Roaming\TrixieStormViewer\logs"
-    RMDir /r "$2\AppData\Roaming\TrixieStormViewer\browser_profile"
-    RMDir /r "$2\AppData\Roaming\TrixieStormViewer\user_settings"
-    Delete  "$2\AppData\Roaming\TrixieStormViewer\*.xml"
-    Delete  "$2\AppData\Roaming\TrixieStormViewer\*.bmp"
-    Delete  "$2\AppData\Roaming\TrixieStormViewer\search_history.txt"
-    Delete  "$2\AppData\Roaming\TrixieStormViewer\plugin_cookies.txt"
-    Delete  "$2\AppData\Roaming\TrixieStormViewer\typed_locations.txt"
-# Delete files in \Users\<User>\AppData\Local\TrixieStormViewer
+    RMDir /r "$2\AppData\Roaming\TrixieStormViewer_G1\logs"
+    RMDir /r "$2\AppData\Roaming\TrixieStormViewer_G1\browser_profile"
+    RMDir /r "$2\AppData\Roaming\TrixieStormViewer_G1\user_settings"
+    Delete  "$2\AppData\Roaming\TrixieStormViewer_G1\*.xml"
+    Delete  "$2\AppData\Roaming\TrixieStormViewer_G1\*.bmp"
+    Delete  "$2\AppData\Roaming\TrixieStormViewer_G1\search_history.txt"
+    Delete  "$2\AppData\Roaming\TrixieStormViewer_G1\plugin_cookies.txt"
+    Delete  "$2\AppData\Roaming\TrixieStormViewer_G1\typed_locations.txt"
+# Delete files in \Users\<User>\AppData\Local\TrixieStormViewer_G1
     ${If} ${ISOPENSIM} == "0"
         ${If} ${IS64BIT} == "0"
-            RMDir /r "$2\AppData\Local\TrixieStormViewer"				#Delete the Havok cache folder
+            RMDir /r "$2\AppData\Local\TrixieStormViewer_G1"				#Delete the Havok cache folder
         ${Else}
-            RMDir /r "$2\AppData\Local\TrixieStormViewer_x64"			#Delete the OpenSim cache folder
+            RMDir /r "$2\AppData\Local\TrixieStormViewer_G1_x64"			#Delete the OpenSim cache folder
         ${EndIf}
     ${Else}
         ${If} ${IS64BIT} == "0"
-            RMDir /r "$2\AppData\Local\TrixieStormViewer"			#Delete the Havok cache folder
+            RMDir /r "$2\AppData\Local\TrixieStormViewer_G1"			#Delete the Havok cache folder
         ${Else}
-            RMDir /r "$2\AppData\Local\TrixieStormViewer_x64"		#Delete the OpenSim cache folder
+            RMDir /r "$2\AppData\Local\TrixieStormViewer_G1_x64"		#Delete the OpenSim cache folder
         ${EndIf}
     ${EndIf}
 

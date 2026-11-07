@@ -686,9 +686,9 @@ bool LLCrashLogger::init()
 
     // We assume that all the logs we're looking for reside on the current drive
 #if ADDRESS_SIZE == 64
-    gDirUtilp->initAppDirs( "TrixieStormViewer_x64" );
+    gDirUtilp->initAppDirs( "TrixieStormViewer_G1_x64" );
 #else
-    gDirUtilp->initAppDirs("TrixieStormViewer");
+    gDirUtilp->initAppDirs("TrixieStormViewer_G1");
 #endif
 
     LLError::initForApplication(gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, ""), gDirUtilp->getExpandedFilename(LL_PATH_APP_SETTINGS, ""));

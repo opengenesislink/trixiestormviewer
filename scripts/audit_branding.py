@@ -18,8 +18,8 @@ REQUIRED = {
     "indra/newview/skins/default/xui/en/strings.xml": ['name="APP_NAME">TrixieStorm Viewer'],
     "indra/newview/skins/default/textures/textures.xml": ['login_trixiestorm_logo', 'windows/trixiestorm_login.png'],
     "indra/newview/installers/windows/installer_template.nsi": ["OpenGenesisLINK\\TrixieStormViewer", "trixiestormviewer.ico"],
-    "indra/newview/llappviewer.cpp": ['initAppDirs("TrixieStormViewer_x64")'],
-    "indra/llcrashlogger/llcrashlogger.cpp": ['"TrixieStormViewer_x64"'],
+    "indra/newview/llappviewer.cpp": ['initAppDirs("TrixieStormViewer_G1_x64")'],
+    "indra/llcrashlogger/llcrashlogger.cpp": ['"TrixieStormViewer_G1_x64"'],
     "indra/newview/llvelopack.cpp": ['return L"TrixieStorm Viewer";'],
 }
 ASSETS = [
