@@ -2,7 +2,7 @@
 
 **TrixieStorm Viewer** is a Stadt-NexVerse-exclusive viewer project based on the [Firestorm](https://github.com/FirestormViewer/phoenix-firestorm) C++ viewer, with integrated [OpenGenesisLINK](https://github.com/opengenesislink/opengenesislinkserver) support.
 
-**Status (2026-10-31): repository foundation only.** Firestorm source has **not** yet been imported or compiled here. There is no verified downloadable TrixieStorm Viewer build.
+**Status (2026-11-08): complete Firestorm source imported and TrixieStorm product rebranding applied on [`feature/firestorm-source-import`](https://github.com/opengenesislink/trixiestormviewer/tree/feature/firestorm-source-import) / [PR #1](https://github.com/opengenesislink/trixiestormviewer/pull/1).** Windows/Linux runtime icons are generated from a compact representation of the project-supplied logo. Source/branding checks pass; **no verified Windows or Linux C++ `ReleaseOS` build exists yet**, and the NexVerse-only login policy is not yet enforced at runtime.
 
 ## Product goals
 - **Exclusively connect to Stadt NexVerse.** Generation 1: `hg.stadt-nexverse.de`; upcoming Generation 2 beta: `beta.stadt-nexverse.de`. These are service hostnames, not yet verified full viewer login URLs.
@@ -24,15 +24,15 @@ cd trixiestormviewer
 bash scripts/import_firestorm.sh
 ```
 
-**Optional GitHub Actions import:** [Run the reviewed Firestorm import workflow](https://github.com/opengenesislink/trixiestormviewer/actions/workflows/import-firestorm.yml) via **Run workflow**. It attempts to create a source-import pull request, not a release, and requires Actions write permissions. No automatic merge into `main`.
+**Source import:** the pinned Firestorm source and original Git ancestry have already been imported into the linked review branch. Do **not** rerun the import workflow while that branch exists. Review and merge [PR #1](https://github.com/opengenesislink/trixiestormviewer/pull/1) only after relevant checks.
 
 **Grid configuration:** `config/nexverse-generations.json` describes the allowed deployment targets; it is not yet wired into the Firestorm source. The real login URI, TLS/port and redirects for each generation must be verified before shipping, and the Gen2 profile remains disabled until operational.
 
-This script creates `feature/firestorm-source-import`, fetches and verifies the pinned upstream commit and attempts to merge it, preserving upstream Git ancestry. It may stop for manual conflict resolution. **Review licensing and build requirements before any merge or distribution.** No script force-pushes to `main`.
+The script above is for reproducing the initial import from a clean repository, not a routine update. **Review licensing and build requirements before any merge or distribution.** No script force-pushes to `main`.
 
 ## TrixieStorm rebranding
 
-The pinned-source import workflow applies [the audited product-name patch](scripts/rebrand_firestorm.py) on its **review branch**. The patch changes the visible app/channel identity, launcher, internal executable name, metadata and profile paths; it preserves original Firestorm/Linden Lab copyright and internal FS* symbols. **It is not yet a tested C++ build, and the custom application icons still need binary integration.** See [the rebranding plan](docs/REBRANDING.md).
+The [product-name patch](scripts/rebrand_firestorm.py) and additional reviewed commits have **already rebranded the imported source** in the feature branch: channel, CMake targets, NSIS/Velopack metadata, Linux launcher, settings/cache identifiers, primary UI labels and links. [Generated platform artwork](branding/README.md) is present and referenced by the Windows resources, Linux desktop launcher, and login UI. [Static branding audit](scripts/audit_branding.py) and generated-icon workflow pass. Original Firestorm/Linden Lab copyright and internal FS* symbols are preserved. **A successful C++ build, actual Windows/Linux runtime behavior, and strict NexVerse login enforcement remain unverified.** See [rebranding details](docs/REBRANDING.md).
 
 ## Documentation
 - [German NextGen roadmap and acceptance criteria](ROADMAP.md)

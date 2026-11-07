@@ -1,32 +1,33 @@
 # TrixieStorm Viewer branding
 
-- **Product name:** TrixieStorm Viewer
-- **Short name:** TrixieStorm
-- **Proposed viewer channel:** `TrixieStorm Viewer` (to be implemented in the Firestorm C++ build and checked against OGL server compatibility filters)
-- **Caption:** Powered by OpenGenesisLINK
-- **Application ID convention (proposal):** `de.opengenesislink.trixiestormviewer`, subject to per-platform validation
-- **Linux executable (proposal):** `trixiestormviewer`
-- **Windows executable (proposal):** `TrixieStormViewer.exe`
+| Item | Value |
+|---|---|
+| Product display name | **TrixieStorm Viewer** |
+| Short name | **TrixieStorm** |
+| Viewer channel (source) | `TrixieStorm Viewer` |
+| Technology caption | Powered by OpenGenesisLINK |
+| Windows exe (planned packaging) | `TrixieStormViewer.exe` |
+| Linux launcher | `trixiestormviewer` |
+| Internal CMake executable | `trixiestorm-bin` |
+| Windows app paths, x64 | `TrixieStormViewer_x64` |
+| App bundle identifier (provisional) | `de.opengenesislink.trixiestormviewer` |
 
-The project supplied a square neon pink/violet TrixieStorm Viewer graphic featuring its character, globe and "Powered by OpenGenesisLINK" text. It should be retained without replacement by generic Firestorm/Second Life logos.
+The product is **exclusively intended for Stadt NexVerse** Generation 1 (`hg.stadt-nexverse.de`) and upcoming Gen 2 Beta (`beta.stadt-nexverse.de`). Actual login endpoints and runtime restrictions are *not* yet validated. See [GRID_POLICY.md](GRID_POLICY.md).
 
-## Icon generation
+## Original artwork and generated icons
 
-Place the provided original image at `branding/source/trixiestorm-logo.png`, then run:
+The user supplied a 1254×1254 neon pink/violet TrixieStorm Viewer design. A compact development rendition is committed at `branding/source/trixiestorm-logo.webp`, with source processing in `scripts/build_brand_assets.py`. Before the final release, import the original rights-cleared PNG at `branding/source/trixiestorm-logo.png` and regenerate.
 
 ```bash
 python3 -m pip install Pillow
-python3 scripts/generate_icons.py
+python3 scripts/build_brand_assets.py
+python3 scripts/audit_branding.py
 ```
 
-Generated in `branding/generated`: Linux PNGs (16, 32, 48, 64, 128, 256, 512), Windows multi-resolution ICO, and an optimized 256px icon for metadata.
+The GitHub Actions workflow `.github/workflows/generate-brand-assets.yml` has generated and committed actual icon assets. They include Windows ICO, Linux PNG, SDL BMP, Windows/Linux installer and login UI resources. Their file existence, XML references and icon build inputs are statically audited. macOS support remains out of the initial build scope.
 
-**Generation is not yet integration.** After importing upstream, wire the images into Windows resource/packaging, Linux desktop launchers and installers; replace the original Firestorm icon references, and make caches/profiles/updaters separate.
+## Branding boundaries
 
-Icons and naming are application assets, distinct from the program license. See `branding/ASSET_LICENSE.md`.
+Product/UI, executable, installer, desktop, cache and update identities may be replaced. **Do not overwrite** Firestorm/Linden Lab copyright and contributor credits, third-party license notices, or internal C++ identifiers such as `fs*` and inventory integration names without a compatibility audit. Do not imply the official Firestorm team endorses TrixieStorm.
 
-The source graphic should be distributed only by or with permission of its rights holder. Do not claim rights beyond those granted.
-
-## Product exclusivity
-
-The brand is used **only for Stadt NexVerse**. The published application offers Generation 1 (`hg.stadt-nexverse.de`) and, once enabled, Generation 2 Beta (`beta.stadt-nexverse.de`), with **no arbitrary grid selection**. Distinct profiles, credentials and update channels are required for Stable versus Beta. See [GRID_POLICY.md](GRID_POLICY.md).
+The LGPL code license does not automatically authorize redistribution or trademark usage of the project logo; see `branding/ASSET_LICENSE.md`. Platform packaging and parallel-install behavior still require real OS tests.
