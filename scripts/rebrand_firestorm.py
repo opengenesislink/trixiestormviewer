@@ -22,7 +22,7 @@ def edit(relative: str, swaps: list[tuple[str, str]]) -> None:
     path = ROOT / relative
     if not path.is_file():
         raise FileNotFoundError(f"Missing required upstream file: {relative}")
-    old_text = path.read_text(encoding="utf-8")
+    old_text = path.read_bytes().decode("utf-8")
     text = old_text
     for old, new in swaps:
         if old not in text:
@@ -31,19 +31,19 @@ def edit(relative: str, swaps: list[tuple[str, str]]) -> None:
             raise ValueError(f"{relative}: required source fragment not found: {old[:100]!r}")
         text = text.replace(old, new)
     if text != old_text:
-        path.write_text(text, encoding="utf-8")
+        path.write_bytes(text.encode("utf-8"))
         CHANGES.append((relative, len(swaps)))
 
 
 def expression(relative: str, pattern: str, replacement: str) -> None:
     path = ROOT / relative
-    text = path.read_text(encoding="utf-8")
+    text = path.read_bytes().decode("utf-8")
     updated, count = re.subn(pattern, replacement, text, count=1, flags=re.MULTILINE | re.DOTALL)
     if count != 1:
         if replacement in text:
             return
         raise ValueError(f"{relative}: required replacement pattern not found")
-    path.write_text(updated, encoding="utf-8")
+    path.write_bytes(updated.encode("utf-8"))
     CHANGES.append((relative, 1))
 
 
@@ -53,7 +53,7 @@ def edit_language_strings() -> None:
     base = ROOT / "indra/newview/skins"
     found = 0
     for path in base.glob("*/xui/*/strings.xml"):
-        original = path.read_text(encoding="utf-8")
+        original = path.read_bytes().decode("utf-8")
         result = original
         names = {
             "APP_NAME": "TrixieStorm Viewer",
@@ -71,7 +71,7 @@ def edit_language_strings() -> None:
             result = result.replace("https://www.firestormviewer.org/choose-your-platform/",
                                     "https://github.com/opengenesislink/trixiestormviewer/releases")
         if result != original:
-            path.write_text(result, encoding="utf-8")
+            path.write_bytes(result.encode("utf-8"))
             CHANGES.append((str(path.relative_to(ROOT)), 1))
     if found == 0:
         raise ValueError("No localized APP_NAME string found")
