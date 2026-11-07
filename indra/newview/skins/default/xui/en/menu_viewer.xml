@@ -2546,6 +2546,47 @@
         </menu_item_call>        
     </menu>
     
+    <!-- NexVerse services are opened in an external browser.
+         No admin tokens or private session URLs are embedded here. -->
+    <menu create_jump_keys="true" label="Stadt NexVerse"
+          name="NexVerse" tear_off="true" visible="true">
+        <menu_item_call label="NexVerse Portal" name="nexverse_portal">
+            <menu_item_call.on_click
+             function="PromptShowURL"
+             parameter="WebLaunchExternalTarget,https://stadt-nexverse.de" />
+        </menu_item_call>
+        <menu_item_call label="NexVerse WorldMap" name="nexverse_worldmap">
+            <menu_item_call.on_click
+             function="PromptShowURL"
+             parameter="WebLaunchExternalTarget,https://maps.stadt-nexverse.de" />
+        </menu_item_call>
+        <menu_item_call label="NexVerse Marketplace" name="nexverse_marketplace">
+            <menu_item_call.on_click
+             function="PromptShowURL"
+             parameter="WebLaunchExternalTarget,https://marketplace.stadt-nexverse.de" />
+        </menu_item_call>
+        <menu_item_call label="OpenGenesisLINK" name="nexverse_ogl_project">
+            <menu_item_call.on_click
+             function="PromptShowURL"
+             parameter="WebLaunchExternalTarget,https://opengenesislink.de" />
+        </menu_item_call>
+        <menu_item_call label="Server Discovery" name="nexverse_server_discovery">
+            <menu_item_call.on_click
+             function="PromptShowURL"
+             parameter="WebLaunchExternalTarget,http://hg.stadt-nexverse.de/ogl/v1/grid-info" />
+        </menu_item_call>
+        <menu_item_call label="TrixieStorm Releases" name="nexverse_releases">
+            <menu_item_call.on_click
+             function="PromptShowURL"
+             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer/releases" />
+        </menu_item_call>
+        <menu_item_call label="Viewer Support" name="nexverse_support">
+            <menu_item_call.on_click
+             function="PromptShowURL"
+             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer/issues" />
+        </menu_item_call>
+    </menu>
+
     <!-- Content Menu -->
     
     <menu

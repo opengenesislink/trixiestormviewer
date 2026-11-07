@@ -281,6 +281,15 @@
 		<menu_item_call label="Wiederholen" name="Redo"/>
 		<menu_item_call label="Lokaler Bitmap-Browser" name="Local Bitmap Browser"/>
 	</menu>
+	<menu label="Stadt NexVerse" name="NexVerse">
+		<menu_item_call label="Stadt-NexVerse-Portal" name="nexverse_portal"/>
+		<menu_item_call label="Weltkarte" name="nexverse_worldmap"/>
+		<menu_item_call label="Marktplatz" name="nexverse_marketplace"/>
+		<menu_item_call label="OpenGenesisLINK" name="nexverse_ogl_project"/>
+		<menu_item_call label="Server-Informationen" name="nexverse_server_discovery"/>
+		<menu_item_call label="Viewer-Downloads" name="nexverse_releases"/>
+		<menu_item_call label="Support und Fehler melden" name="nexverse_support"/>
+	</menu>
 	<menu label="Inhalt" name="Content">
 		<menu_item_check label="Suchen" name="Search"/>
 		<menu_item_check label="SL-Marktplatz" name="SL Marketplace"/>
