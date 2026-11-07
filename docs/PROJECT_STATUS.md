@@ -1,27 +1,18 @@
-# TrixieStorm Viewer – verified project status
+# TrixieStorm Viewer – verified status (2026-11-08)
 
-Updated: 2026-11-08. Source branch: [feature/firestorm-source-import](https://github.com/opengenesislink/trixiestormviewer/tree/feature/firestorm-source-import); [Draft PR #1](https://github.com/opengenesislink/trixiestormviewer/pull/1) targets `main`.
+The Firestorm 7.2.4 source is present with TrixieStorm rebranding in the **feature branch** `feature/firestorm-source-import` ([draft PR #1](https://github.com/opengenesislink/trixiestormviewer/pull/1)), **not yet on main**.
 
-| Item | Status | Evidence |
-|---|---|---|
-| Pinned Firestorm source (7.2.4) | **Imported into source branch; not yet merged to main** | Upstream commit `10bd3c9f930c76e1427ddd4ecece6cdf36b4406d` retained as ancestor |
-| LGPL-2.1 and copyright attribution | Preserved | Original source headers, Firestorm & Linden Lab credits, `LICENSE` |
-| Product/channel name | **Patched in CMake/manifests/UI** | `TrixieStorm Viewer`, `TrixieStorm` |
-| Windows executable/product metadata | **Patched in source** | `TrixieStormViewer.exe` identity, Windows .rc metadata; actual build unverified |
-| Linux launcher/desktop/installer | **Patched in source** | `trixiestormviewer`, desktop entry, unique application paths |
-| Separate installer/user/cache/crash identifiers | **Partially implemented in source** | Windows registry, profile/cache/crash names; requires runtime validation |
-| Windows/Linux/runtime UI icons | **Generated and committed** | ICO/PNG/BMP/login icon, generated via `scripts/build_brand_assets.py` |
-| Icon quality | Development-grade | Compact WebP rendition (64×64) committed; full 1254×1254 original should replace it before release |
-| Main application UI labels (English and German) | **Patched** | Login, settings, Help, support URLs, notifications; other locale review pending |
-| Static branding consistency, Python, selected XML | **Passed CI** | `scripts/audit_branding.py`, branding audit workflow |
-| Windows x64 ReleaseOS C++ build | **Not verified** | No build artifact or installer smoke test |
-| Linux x64 ReleaseOS C++ build | **Not verified** | No build artifact or launcher smoke test |
-| Exclusive NexVerse Gen1/Gen2 product scope | Specified, **not security-enforced** | `docs/GRID_POLICY.md`, provisional JSON; hiding a UI checkbox is not a login restriction |
-| Actual Gen1/Gen2 login URI and port | Not verified | Hypergrid/service hostnames are not necessarily login URIs |
-| Gen1/Gen2 cache/session isolation | Not complete | Separate per-generation credentials, cache and CAP cleanup still needed |
-| OpenGenesisLINK services and renderer upgrades | Not implemented | Roadmap phases M3+ |
-| Release | **Not available** | No compiled/tested viewer and no signed install artifacts |
+**Implemented at source level:**
+- Branding and generated Windows/Linux/login icon references; German/English viewer text.
+- Gen1-only canonical target `hg.stadt-nexverse.de`, legacy login URI `http://hg.stadt-nexverse.de:80/`, with exact-match checks from grid manager, login/reconnect, startup/SLURL and teleport, remote grid-list download disabled.
+- Gen2 Beta `beta.stadt-nexverse.de` explicitly disabled, future isolated generation.
+- Gen1 profile/cache/crash namespace isolated from original Firestorm.
+- Read-only OGL v1 JSON public discovery attempt on the login panel, with schema/product/version validation and immutable login destination.
+- Existing Firestorm WebRTC used preferentially when OpenSim region advertises the standard voice provisioning/signaling capabilities for server-side OGLVoice.
+- Existing Firestorm OXP export improved to abort and report failure for missing requested assets, timeouts and incomplete disk writes; ownership/permission checks retained.
 
-**Status distinction:** A static XML/branding script that passes does not prove the C++ viewer compiles. The imported code on a draft pull request does not imply it is on `main`.
+**Passed:** independent native C++17 grid-policy tests; static branding, XML and Python syntax workflows at their latest completed commits. Static C++ wiring audit is also included. **Not proved:** full Firestorm C++ ReleaseOS build, runtime login/teleport/assets/voice/export tests, redirect/login transport safety.
 
-**Next release gates:** Review/merge import PR; run Linux/Windows `ReleaseOS` builds; test product identity, icon, installer data isolation, login/inventory/teleport/mesh/PBR; implement verified NexVerse-only Gen1/Gen2 login and security restrictions; complete license/dependency audit and source attribution.
+**Critical security gate:** current Gen1 login URI is HTTP port80. Authenticating with password over unencrypted public HTTP can expose credentials. Server-side [OGL discovery](https://github.com/opengenesislink/opengenesislinkserver/blob/main/doc/NexVerse/OGL_VIEWER_DISCOVERY.md) confirms the legacy route but explicitly requires TLS for new credentialed login. No private tokens are sent by the added read-only discovery. A secure deployed login strategy is required before public release.
+
+**Not yet delivered:** mesh/animesh/PBR export/import, full WebAPI profile/groups/economy marketplace UI, maps, weather dashboard, native IAR, Discord account linking, modern docks, Vulkan/raytracing and Recast navigation. See [function matrix](OGL_FEATURE_MATRIX.md). Every feature remains gated by correct server contract, authorization and full staging verification.

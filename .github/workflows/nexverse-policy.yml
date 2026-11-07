@@ -6,6 +6,16 @@ on:
     paths:
       - 'indra/newview/oglnexversegridpolicy.h'
       - 'tests/nexverse_grid_policy_test.cpp'
+      - 'scripts/audit_nexverse_runtime.py'
+      - 'config/nexverse-generations.json'
+      - 'indra/newview/lllogininstance.cpp'
+      - 'indra/newview/fsgridhandler.cpp'
+      - 'indra/newview/fspanellogin.cpp'
+      - 'indra/newview/llstartup.cpp'
+      - 'indra/newview/llurldispatcher.cpp'
+      - 'indra/newview/llvoiceclient.cpp'
+      - 'indra/newview/fsfloaterexport.cpp'
+      - 'indra/newview/app_settings/grids.xml'
       - '.github/workflows/nexverse-policy.yml'
   workflow_dispatch:
 
@@ -25,3 +35,5 @@ jobs:
             -o /tmp/ogl-nexverse-tests/grid-policy-test
       - name: Test allowlist and bypass rejection
         run: /tmp/ogl-nexverse-tests/grid-policy-test
+      - name: Verify source integration, manifests and XUI XML
+        run: python3 scripts/audit_nexverse_runtime.py
