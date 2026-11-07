@@ -2703,12 +2703,12 @@
         </menu_item_call>
         
         <menu_item_call
-         label="TrixieStorm Support & Issues"
+         label="TrixieStorm Support &amp; Issues"
          name="Troubleshooting">
             <menu_item_call.on_click
              function="PromptShowURL"
              name="wiki_troubleshooting_url"
-             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer/firestorm_troubleshooting" />
+             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer/issues" />
         </menu_item_call>
 	   
         <menu_item_call
