@@ -57,7 +57,7 @@ class FSViewerManifest:
         return "".join(self.fs_channel_unique().split())
 
     def fs_channel_unique(self):
-        return self.channel().replace("TrixieStorm", "").strip()
+        return self.channel().replace("TrixieStorm Viewer", "").strip()
 
     def fs_sign_win_binaries(self):
         signtool_path = os.getenv('SIGNTOOL_PATH')

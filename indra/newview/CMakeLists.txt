@@ -1971,7 +1971,7 @@ if (LINUX)
     message(STATUS "Copying icons for ${ICON_PATH}")
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_CURRENT_SOURCE_DIR}/icons/${ICON_PATH}/firestorm_256.bmp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/res-sdl/trixiestormviewer.BMP"
         "${CMAKE_CURRENT_SOURCE_DIR}/res-sdl/firestorm_icon.BMP"
       )
 endif (LINUX)
@@ -2027,19 +2027,16 @@ if (WINDOWS)
     # <FS:Ansariel>
 
     message(STATUS "Copying icons for ${ICON_PATH}")
+    # TrixieStorm resource ICO is committed by the brand-assets job.
+    # Never overwrite it at configure time with Firestorm's channel icon.
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_CURRENT_SOURCE_DIR}/icons/${ICON_PATH}/firestorm_icon.ico"
-        "${CMAKE_CURRENT_SOURCE_DIR}/res/trixiestormviewer.ico"
-      )
-    execute_process(
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_CURRENT_SOURCE_DIR}/icons/${ICON_PATH}/firestorm_256.BMP"
+        "${CMAKE_CURRENT_SOURCE_DIR}/res-sdl/trixiestormviewer.BMP"
         "${CMAKE_CURRENT_SOURCE_DIR}/res/firestorm_icon.BMP"
       )
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_CURRENT_SOURCE_DIR}/icons/${ICON_PATH}/firestorm_256.BMP"
+        "${CMAKE_CURRENT_SOURCE_DIR}/res-sdl/trixiestormviewer.BMP"
         "${CMAKE_CURRENT_SOURCE_DIR}/res-sdl/firestorm_icon.BMP"
       )
 
@@ -2076,8 +2073,8 @@ if (WINDOWS)
         res/lltooltranslate.cur
         res/lltoolzoomin.cur
         res/lltoolzoomout.cur
-        res/firestorm_icon.BMP
-        res/firestorm_icon.ico
+        res-sdl/trixiestormviewer.BMP
+        res/trixiestormviewer.ico
         res-sdl/firestorm_icon.BMP
         res/ll_icon_small.ico
         res/resource.h
