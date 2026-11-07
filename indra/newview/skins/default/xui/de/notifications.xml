@@ -82,7 +82,7 @@ Fehlerdetails: The notification called &apos;[_NAME]&apos; was not found in noti
 		<usetemplate name="okbutton" yestext="OK"/>
 	</notification>
 	<notification name="BadInstallation">
-		Installation von [APP_NAME] ist defekt. Bitte [https://www.firestormviewer.org/downloads laden Sie neue Kopie des Viewers herunter] und installieren Sie erneut.
+		Installation von [APP_NAME] ist defekt. Bitte [https://github.com/opengenesislink/trixiestormviewer/releases laden Sie neue Kopie des Viewers herunter] und installieren Sie erneut.
 		<usetemplate name="okbutton" yestext="OK"/>
 	</notification>
 	<notification name="LoginFailedNoNetwork">
@@ -1579,7 +1579,7 @@ Falls Sie [CURRENT_GRID] zum ersten Mal verwenden, müssen Sie zuerst ein Konto 
 
 Überprüfen Sie Ihre Internetverbindung und versuchen Sie es dann erneut, oder klicken Sie auf Hilfe, um zu [SUPPORT_SITE] zu gelangen, oder klicken Sie auf Teleportieren, um nach Hause zu teleportieren.
 		<url name="url">
-			https://www.firestormviewer.org/support/
+			https://github.com/opengenesislink/trixiestormviewer/issues
 		</url>
 		<form name="form">
 			<button name="OK" text="OK"/>
@@ -1592,7 +1592,7 @@ Falls Sie [CURRENT_GRID] zum ersten Mal verwenden, müssen Sie zuerst ein Konto 
 
 Überprüfen Sie Ihre Internetverbindung und versuchen Sie es dann erneut, oder klicken Sie auf Hilfe, um zu [SUPPORT_SITE] zu gelangen.
 		<url name="url">
-			https://www.firestormviewer.org/support/
+			https://github.com/opengenesislink/trixiestormviewer/issues
 		</url>
 		<form name="form">
 			<button name="OK" text="OK"/>
@@ -3798,12 +3798,12 @@ Die Schaltfläche wird angezeigt, wenn genügend Platz vorhanden ist.
 	<notification name="MeshUploadErrorDetails">
 		[LABEL] konnte nicht hochgeladen werden: [MESSAGE]
 
-[DETAILS] Siehe Firestorm.log für Details.
+[DETAILS] Siehe TrixieStormViewer.log für Details.
 	</notification>
 	<notification name="MeshUploadError">
 		[LABEL] konnte nicht hochgeladen werden: [MESSAGE]
 
-Siehe Firestorm.log für Details.
+Siehe TrixieStormViewer.log für Details.
 	</notification>
 	<notification name="MeshUploadPermError">
 		Fehler beim Anfordern der Berechtigungen zum Hochladen des Netzes
@@ -5548,7 +5548,7 @@ URL: [AUDIOURL]
 	</notification>
 
 	<notification name="FirstJoinSupportGroup2">
-Willkommen in der Phoenix/Firestorm Viewer Support-Gruppe!
+Willkommen in der Viewer-Supportgruppe!
 
 Um den Support zu vereinfachen wird empfohlen, die aktuelle Version Ihres Viewers der Gruppe mitzuteilen. Diese Information beinhaltet Viewer-Version, Viewer-Skin, Betriebssystem und RLVa-Status. Sie können daher entscheiden, ob Sie die Version Ihres Viewers jeder Nachricht in diesem Gruppenchat voranstellen möchten. Unser Support-Team kann Ihnen eine sinnvollere Hilfestellung geben, wenn es direkt weiß, welche Viewer-Version Sie benutzen.
 
@@ -5559,7 +5559,7 @@ Soll die automatische Anzeige der Viewer-Version aktiviert werden?
 		<form name="form">
 			<button name="OK_okcancelignore" text="Ja"/>
 			<button name="Cancel_okcancelignore" text="Nein"/>
-			<ignore name="ignore" text="Wenn dem Phoenix/Firestorm Support-Gruppenchat beigetreten wird."/>
+			<ignore name="ignore" text="Wenn der Viewer-Supportgruppe beigetreten wird."/>
 		</form>
 	</notification>
 
@@ -5891,8 +5891,8 @@ Diese Einstellung ist für den Fall gedacht, wenn die VRAM-Erkennung inkorrekte 
 	</notification>
 	<notification name="CurrencyURIOverrideReceived">
 Diese Region hat sich dazu entschieden, das Währungsportal eines Drittanbieters zu nutzen.
-Bitte beachten Sie, dass es sich bei Käufen von Währung innerhalb des Firestorm Viewers um Transaktionen zwischen Ihnen (dem Nutzer) und den Anbietern oder Verkäufern der Währung handelt.
-Weder Firestorm Viewer, Phoenix Firestorm Viewer Project Inc. noch dessen Team können für jegliche Kosten oder Schäden haftbar gemacht werden, die direkt oder indirekt aus solchen Transaktionen entstehen.
+Währungskäufe sind Transaktionen zwischen Ihnen und dem jeweiligen Anbieter oder Verkäufer. Prüfen Sie vor dem Kauf dessen Geschäftsbedingungen.
+TrixieStorm Viewer garantiert keine Transaktion eines Drittanbieters. Abbuchung und Lieferung müssen vom Anbieter und vom Grid-Server bestätigt werden.
 Falls Sie diesen Nutzungsbestimmungen nicht zustimmen, sollten keinerlei finanzielle Transaktionen im Rahmen der Nutzung dieses Viewers durchgeführt werden.
 		<usetemplate ignoretext="Warnen, wenn eine Region die URL zum Währungsportal ändert" name="okignore" yestext="OK"/>
 	</notification>
