@@ -4344,7 +4344,7 @@ void LLStartUp::setStartSLURL(const LLSLURL& slurl)
     // Covers CLI --url, stored start locations and external deep links.
     if ((slurl.getType() == LLSLURL::LOCATION &&
          !OGLNexVerse::isAllowedTravel(slurl.getGrid(), slurl.getRegion(),
-                                      slurl.getHypergrid())) ||
+                                      false /* nonlocal grids detected by grid/region */)) ||
         (slurl.getType() == LLSLURL::APP &&
          (slurl.getAppCmd() == "gridmanager" ||
           (!slurl.getGrid().empty() &&

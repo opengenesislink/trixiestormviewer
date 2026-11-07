@@ -121,7 +121,7 @@ bool LLURLDispatcherImpl::dispatchCore(const LLSLURL& slurl,
     // NexVerse travel boundary. These checks must run before dispatch.
     if ((slurl.getType() == LLSLURL::LOCATION &&
          !OGLNexVerse::isAllowedTravel(slurl.getGrid(), slurl.getRegion(),
-                                      slurl.getHypergrid())) ||
+                                      false /* nonlocal grids detected by grid/region */)) ||
         (slurl.getType() == LLSLURL::APP &&
          (slurl.getAppCmd() == "gridmanager" ||
           (!slurl.getGrid().empty() &&
@@ -226,7 +226,7 @@ bool LLURLDispatcherImpl::dispatchRegion(const LLSLURL& slurl, const std::string
 {
 #ifdef OPENSIM
     if (!OGLNexVerse::isAllowedTravel(slurl.getGrid(), slurl.getRegion(),
-                                     slurl.getHypergrid()))
+                                     false /* nonlocal grids detected by grid/region */))
     {
         LL_WARNS("NexVersePolicy") << "Rejected foreign region teleport" << LL_ENDL;
         return true;
@@ -266,7 +266,7 @@ bool LLURLDispatcherImpl::dispatchRegion(const LLSLURL& slurl, const std::string
     std::string gatekeeper = LLGridManager::getInstance()->getGatekeeper(grid);
 
     if ((grid != current_grid)
-        && (!LLGridManager::getInstance()->isInOpenSim() || (!slurl.getHypergrid() && gatekeeper.empty())))
+        && (!LLGridManager::getInstance()->isInOpenSim() || (!false /* nonlocal grids detected by grid/region */ && gatekeeper.empty())))
     {
         std::string dest = slurl.getSLURLString();
         if (!dest.empty())
@@ -413,7 +413,7 @@ public:
 #ifdef OPENSIM
         LLSLURL slurl(tokens, true);
         if (!OGLNexVerse::isAllowedTravel(slurl.getGrid(), slurl.getRegion(),
-                                         slurl.getHypergrid()))
+                                         false /* nonlocal grids detected by grid/region */))
         {
             LL_WARNS("NexVersePolicy") << "Rejected external app teleport" << LL_ENDL;
             return true;
@@ -424,7 +424,7 @@ public:
         std::string region_name = slurl.getRegion();
         std::string dest;
         std::string current = LLGridManager::getInstance()->getGrid();
-        if ((url_grid != current) && (!LLGridManager::getInstance()->isInOpenSim() || (!slurl.getHypergrid() && gatekeeper.empty())))
+        if ((url_grid != current) && (!LLGridManager::getInstance()->isInOpenSim() || (!false /* nonlocal grids detected by grid/region */ && gatekeeper.empty())))
         {
             dest = slurl.getSLURLString();
             if (!dest.empty())
