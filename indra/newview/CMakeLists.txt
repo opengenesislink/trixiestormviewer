@@ -1902,7 +1902,7 @@ if (DARWIN)
 
   # Add resource files to the project.
   set(viewer_RESOURCE_FILES
-    firestorm_icon.icns
+    trixiestormviewer.icns
     Info-Firestorm.plist
     Firestorm.xib
     # CMake doesn't seem to support Xcode language variants well just yet
@@ -2030,7 +2030,7 @@ if (WINDOWS)
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${CMAKE_CURRENT_SOURCE_DIR}/icons/${ICON_PATH}/firestorm_icon.ico"
-        "${CMAKE_CURRENT_SOURCE_DIR}/res/firestorm_icon.ico"
+        "${CMAKE_CURRENT_SOURCE_DIR}/res/trixiestormviewer.ico"
       )
     execute_process(
       COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -2811,7 +2811,7 @@ if (DARWIN)
   set(product "TrixieStormViewer")
   set(MACOSX_EXECUTABLE_NAME "TrixieStormViewer")
   set(MACOSX_BUNDLE_INFO_STRING "TrixieStorm Viewer")
-  set(MACOSX_BUNDLE_ICON_FILE "firestorm_icon.icns")
+  set(MACOSX_BUNDLE_ICON_FILE "trixiestormviewer.icns")
   set(MACOSX_BUNDLE_GUI_IDENTIFIER "de.opengenesislink.trixiestormviewer")
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${VIEWER_CHANNEL} ${VIEWER_SHORT_VERSION}.${VIEWER_VERSION_REVISION}")
   set(MACOSX_BUNDLE_BUNDLE_NAME "TrixieStorm Viewer")

@@ -2141,7 +2141,7 @@ class LinuxManifest(ViewerManifest):
         icon_path = self.icon_path()
         print("DEBUG: icon_path '%s'" % icon_path)
         with self.prefix(src=icon_path) :
-            self.path("firestorm_256.png","legacy-firestorm-thumbnail.png")
+            # TrixieStorm launcher/icon copied from the project resource directory above.
             #with self.prefix(dst="res-sdl") :
             #    self.path("firestorm_256.bmp","ll_icon.BMP")
 
