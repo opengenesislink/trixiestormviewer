@@ -27,6 +27,10 @@
 // Original file: llpanellogin.cpp
 
 #include "llviewerprecompiledheaders.h"
+#include "oglnexversegridpolicy.h"
+#include "fscorehttputil.h"
+#include "llsdjson.h"
+#include <boost/json.hpp>
 
 #include "fspanellogin.h"
 #include "lllayoutstack.h"
@@ -235,6 +239,68 @@ FSPanelLogin::FSPanelLogin(const LLRect &rect,
     server_choice_combo->setCommitCallback(boost::bind(&FSPanelLogin::onSelectServer, this));
     // Only Stadt NexVerse Gen1 is enabled; Gen2 will be a separate controlled mode.
     server_choice_combo->setEnabled(false);
+#ifdef OPENSIM
+    // Public, credential-free OGL JSON discovery. Never use this response to
+    // change the immutable login endpoint or to enable native login.
+    // The server's advertised OGL native login is not yet implemented.
+    static bool discovery_requested = false;
+    if (!discovery_requested)
+    {
+        discovery_requested = true;
+        FSCoreHttpUtil::callbackHttpGetRaw(
+            "http://hg.stadt-nexverse.de:80/ogl/v1/grid-info",
+            [](const LLSD& response)
+            {
+                const LLSD::Binary& bytes =
+                    response[LLCoreHttpUtil::HttpCoroutineAdapter::HTTP_RESULTS_RAW].asBinary();
+                if (bytes.empty() || bytes.size() > 65536)
+                {
+                    LL_WARNS("NexVerseDiscovery") << "Invalid OGL discovery body size" << LL_ENDL;
+                    return;
+                }
+                try
+                {
+                    const std::string payload(bytes.begin(), bytes.end());
+                    LLSD data = LlsdFromJson(boost::json::parse(payload));
+                    if (data["schema"].asString() != "org.opengenesislink.viewer.grid-info.v1" ||
+                        data["protocol_version"].asInteger() != 1 ||
+                        !data["features"]["legacy_login"].asBoolean() ||
+                        !data["features"]["ogl_grid_info_v1"].asBoolean())
+                    {
+                        LL_WARNS("NexVerseDiscovery") << "Incompatible discovery schema or feature flags" << LL_ENDL;
+                        return;
+                    }
+                    const std::string advertised = data["endpoints"]["legacy_login"].asString();
+                    // Server may write the equivalent implicit :80 authority.
+                    if (advertised != "http://hg.stadt-nexverse.de/" &&
+                        advertised != OGLNexVerse::GEN1_LOGIN_URI)
+                    {
+                        LL_WARNS("NexVerseDiscovery") << "Grid advertised a different login endpoint; not adopted" << LL_ENDL;
+                        return;
+                    }
+                    const std::string product = data["server"]["product"].asString();
+                    const std::string version = data["server"]["version"].asString();
+                    if (product != "OpenGenesisLINK" || version.size() > 128)
+                    {
+                        LL_WARNS("NexVerseDiscovery") << "Unrecognized OGL server discovery" << LL_ENDL;
+                        return;
+                    }
+                    LL_INFOS("NexVerseDiscovery") << "OGL JSON v1 discovered: "
+                        << product << " " << version << " (public information only)" << LL_ENDL;
+                }
+                catch (const std::exception& e)
+                {
+                    LL_WARNS("NexVerseDiscovery") << "Could not decode OGL JSON discovery: "
+                        << e.what() << LL_ENDL;
+                }
+            },
+            [](const LLSD&)
+            {
+                LL_WARNS("NexVerseDiscovery") << "Public OGL discovery unavailable; legacy G1 login policy unchanged"
+                    << LL_ENDL;
+            });
+    }
+#endif
 #ifdef OPENSIM
     server_choice_combo->setToolTip(getString("ServerComboTooltip"));
 #endif

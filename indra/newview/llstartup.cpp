@@ -1012,29 +1012,9 @@ bool idle_startup()
         // </FS:Techwolf Lupindo>
 
 // <AW: opensim>
-#ifndef SINGLEGRID
-        if(!gSavedSettings.getBOOL("GridListDownload"))
-        {
-            sGridListRequestReady = true;
-        }
-        else
-        {
-            std::string filename = gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, "grids.remote.xml");
-
-            llstat file_stat; //platform independent wrapper for stat
-            time_t last_modified = 0;
-
-            if(!LLFile::stat(filename, &file_stat))//exists
-            {
-                last_modified = file_stat.st_mtime;
-            }
-
-            std::string url = gSavedSettings.getString("GridListDownloadURL");
-            FSCoreHttpUtil::callbackHttpGet(url, last_modified, boost::bind(downloadGridlistComplete, _1), boost::bind(downloadGridlistError, _1, url));
-        }
-#else
+        // NexVerse is an immutable one-grid product. Do not download remote
+        // grid lists even if a stale Firestorm setting enables that feature.
         sGridListRequestReady = true;
-#endif
 
 #ifdef OPENSIM // <FS:AW optional opensim support>
         // Fetch grid infos as needed
