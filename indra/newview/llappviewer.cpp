@@ -795,9 +795,9 @@ LLAppViewer::LLAppViewer()
     // <FS:ND> Init our custom directories, not from SecondLife
     // gDirUtilp->initAppDirs("SecondLife");
 #if ADDRESS_SIZE == 64
-    gDirUtilp->initAppDirs(APP_NAME + "_x64");
+    gDirUtilp->initAppDirs("TrixieStormViewer_x64");
 #else
-    gDirUtilp->initAppDirs(APP_NAME);
+    gDirUtilp->initAppDirs("TrixieStormViewer");
 #endif
     // </FS:ND>
 
@@ -2677,7 +2677,7 @@ void errorCallback(LLError::ELevel level, const std::string &error_string)
 
         if (error_display_string.find("MissingString(") != std::string::npos)
         {
-            error_display_string = "We are sorry, but Firestorm has crashed and needs to be closed. If you see this issue happening repeatedly, please contact our support team and submit the following message:\n\n[ERROR_DETAILS]";
+            error_display_string = "We are sorry, but TrixieStorm Viewer has crashed and needs to be closed. If you see this issue happening repeatedly, please contact our support team and submit the following message:\n\n[ERROR_DETAILS]";
             LLStringUtil::format(error_display_string, map);
         }
         if (caption.find("MissingString(") != std::string::npos)
@@ -5453,9 +5453,9 @@ void LLAppViewer::purgeCacheImmediate()
 std::string LLAppViewer::getSecondLifeTitle() const
 {
 #if ADDRESS_SIZE == 64
-    return LLTrans::getString( "APP_NAME" ) + "_x64";
+    return "TrixieStormViewer_x64";
 #else
-    return LLTrans::getString("APP_NAME");
+    return "TrixieStormViewer";
 #endif
 }
 

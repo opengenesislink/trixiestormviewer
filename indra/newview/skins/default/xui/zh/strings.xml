@@ -7,18 +7,12 @@
 	<string name="SECOND_LIFE">
 		[當前伺服器]
 	</string>
-	<string name="APP_NAME">
-		Firestorm
-	</string>
-	<string name="CAPITALIZED_APP_NAME">
-		FIRESTORM
-	</string>
+	<string name="APP_NAME">TrixieStorm Viewer</string>
+	<string name="CAPITALIZED_APP_NAME">TRIXIESTORM VIEWER</string>
 	<string name="SECOND_LIFE_GRID">
 		第二人生
 	</string>
-	<string name="SUPPORT_SITE">
-		Firestorm支援網站
-	</string>
+	<string name="SUPPORT_SITE">TrixieStorm Viewer Support</string>
 	<!-- Will be set in fsgridhandler.cpp / llviewernetwork.cpp -->
 	<string name="VIEWER_GENERATION">
 		檢視器[VERSION]
@@ -26,9 +20,7 @@
 	<string name="SHORT_VIEWER_GENERATION">
 		V[VERSION]
 	</string>
-	<string name="APP_NAME_ABBR">
-		FS
-	</string>
+	<string name="APP_NAME_ABBR">TS</string>
 	<string name="StartupLoading">
 		[APP_NAME]載入中...
 	</string>

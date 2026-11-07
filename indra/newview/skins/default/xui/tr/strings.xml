@@ -7,18 +7,12 @@
 	<string name="SECOND_LIFE">
 		Second Life
 	</string>
-	<string name="APP_NAME">
-		Second Life
-	</string>
-	<string name="CAPITALIZED_APP_NAME">
-		SECOND LIFE
-	</string>
+	<string name="APP_NAME">TrixieStorm Viewer</string>
+	<string name="CAPITALIZED_APP_NAME">TRIXIESTORM VIEWER</string>
 	<string name="SECOND_LIFE_GRID">
 		Second Life Ağı
 	</string>
-	<string name="SUPPORT_SITE">
-		Firestorm Destek Portalı
-	</string>
+	<string name="SUPPORT_SITE">TrixieStorm Viewer Support</string>
 	<string name="StartupDetectingHardware">
 		Donanım saptanıyor...
 	</string>

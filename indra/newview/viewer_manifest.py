@@ -344,24 +344,7 @@ class ViewerManifest(LLManifest,FSViewerManifest):
         return "%(channel_vendor_base)s%(channel_variant_underscores)s_%(version_underscores)s_universal" % substitution_strings
 
     def app_name(self):
-        global CHANNEL_VENDOR_BASE
-        channel_type=self.channel_type()
-        #<FS:TS> LL uses "Viewer" in the name of their release package. We use "Release".
-        #if channel_type == 'release':
-        #    app_suffix='Viewer'
-        #else:
-        #    app_suffix=self.channel_variant()
-        app_suffix=self.channel_variant()
-
-        #<FS:ND> tag "OS" after CHANNEL_VENDOR_BASE and before any suffix
-        if self.fs_is_opensim():
-            app_suffix = "OS" + app_suffix
-        #</FS:ND>
-
-        #<FS:ND> Don't separate name by whitespace. This break a lot of things in the old FS installer logic.
-        #return CHANNEL_VENDOR_BASE + ' ' + app_suffix
-        return CHANNEL_VENDOR_BASE + app_suffix
-        #</FS:ND>
+        return "TrixieStorm Viewer"
 
     def exec_name(self):
         # <FS:Ansariel> Same as app_name_oneword()
@@ -374,7 +357,7 @@ class ViewerManifest(LLManifest,FSViewerManifest):
     # <FS:Ansariel> FIRE-30446: Set FriendlyAppName for protocol registrations
     def friendly_app_name(self):
         global CHANNEL_VENDOR_BASE
-        return CHANNEL_VENDOR_BASE
+        return "TrixieStorm Viewer"
     # </FS:Ansariel>
 
     def icon_path(self):
@@ -626,7 +609,7 @@ class Windows_x86_64_Manifest(ViewerManifest):
 
         if self.is_packaging_viewer():
             # Find firestorm-bin.exe in the 'configuration' dir, then rename it to the result of final_exe.
-            self.path(src='%s/firestorm-bin.exe' % self.args['configuration'], dst=self.final_exe())
+            self.path(src='%s/trixiestorm-bin.exe' % self.args['configuration'], dst=self.final_exe())
 
             # <FS:Ansariel> Undo Github-Build stuff - I don't think we need this
             # GITHUB_OUTPUT = os.getenv('GITHUB_OUTPUT')
@@ -989,7 +972,7 @@ class Windows_x86_64_Manifest(ViewerManifest):
         #installer_base = self.installer_base_name()
         #exclude_pattern = r'.*\.pdb|.*\.map|.*\.bat|.*\.exp|.*\.lib|.*\.nsi|.*\.tar\.xz|secondlife-bin\..*|.*_Setup\.exe|.*-Setup\.exe'
         installer_base = self.fs_installer_basename()
-        exclude_pattern = r'.*\.pdb|.*\.map|.*\.bat|.*\.exp|.*\.lib|.*\.nsi|.*\.tar\.xz|firestorm-bin\..*|.*_Setup\.exe|.*-Setup\.exe'
+        exclude_pattern = r'.*\.pdb|.*\.map|.*\.bat|.*\.exp|.*\.lib|.*\.nsi|.*\.tar\.xz|trixiestorm-bin\..*|.*_Setup\.exe|.*-Setup\.exe'
         # </FS:TJ>
 
         # Channel-specific icon for the Velopack installer.
@@ -2145,7 +2128,7 @@ class LinuxManifest(ViewerManifest):
             self.path("FIRESTORM_DESKTOPINSTALL.txt","FIRESTORM_DESKTOPINSTALL.txt")
             self.path("client-readme-voice.txt","README-linux-voice.txt")
             self.path("client-readme-joystick.txt","README-linux-joystick.txt")
-            self.path("wrapper.sh","firestorm")
+            self.path("wrapper.sh","trixiestormviewer")
             with self.prefix(dst="etc"):
                 self.path("handle_secondlifeprotocol.sh")
                 self.path("register_secondlifeprotocol.sh")
@@ -2155,7 +2138,7 @@ class LinuxManifest(ViewerManifest):
 
         with self.prefix(dst="bin"):
             self.path( os.path.join(os.pardir,'build_data.json'), "build_data.json" )
-            self.path("firestorm-bin","do-not-directly-run-firestorm-bin")
+            self.path("trixiestorm-bin","do-not-directly-run-trixiestorm-bin")
             self.path("../linux_crash_logger/linux-crash-logger","linux-crash-logger.bin")
             self.path2basename("../llplugin/slplugin", "SLPlugin")
             #this copies over the python wrapper script, associated utilities and required libraries, see SL-321, SL-322 and SL-323

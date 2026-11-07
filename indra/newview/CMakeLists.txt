@@ -938,7 +938,7 @@ else (OPENSIM)
         )
 endif (OPENSIM)
 
-set(VIEWER_BINARY_NAME "firestorm-bin" CACHE STRING
+set(VIEWER_BINARY_NAME "trixiestorm-bin" CACHE STRING
     "The name of the viewer executable to create.")
 
 set(viewer_HEADER_FILES
@@ -2808,13 +2808,13 @@ if (DARWIN)
   # magically known to CMake -- it's that these names are referenced in the
   # Info-SecondLife.plist file in the configure_file() directive below.
   #set(product "${VIEWER_CHANNEL}")
-  set(product "Firestorm")
-  set(MACOSX_EXECUTABLE_NAME "Firestorm")
-  set(MACOSX_BUNDLE_INFO_STRING "Firestorm Viewer")
+  set(product "TrixieStormViewer")
+  set(MACOSX_EXECUTABLE_NAME "TrixieStormViewer")
+  set(MACOSX_BUNDLE_INFO_STRING "TrixieStorm Viewer")
   set(MACOSX_BUNDLE_ICON_FILE "firestorm_icon.icns")
-  set(MACOSX_BUNDLE_GUI_IDENTIFIER "org.firestormviewer.firestorm")
+  set(MACOSX_BUNDLE_GUI_IDENTIFIER "de.opengenesislink.trixiestormviewer")
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${VIEWER_CHANNEL} ${VIEWER_SHORT_VERSION}.${VIEWER_VERSION_REVISION}")
-  set(MACOSX_BUNDLE_BUNDLE_NAME "Firestorm")
+  set(MACOSX_BUNDLE_BUNDLE_NAME "TrixieStorm Viewer")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${VIEWER_SHORT_VERSION}.${VIEWER_VERSION_REVISION}")
   set(MACOSX_BUNDLE_BUNDLE_VERSION "${VIEWER_SHORT_VERSION}${VIEWER_MACOSX_PHASE}${VIEWER_REVISION}")
   set(MACOSX_BUNDLE_COPYRIGHT "Copyright 2010-2026 The Phoenix Firestorm Project, Inc.")

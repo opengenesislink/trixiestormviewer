@@ -18,8 +18,8 @@ if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.31.0")
     cmake_policy(SET CMP0179 NEW)
 endif()
 
-set(ROOT_PROJECT_NAME "Firestorm" CACHE STRING
-    "The root project/makefile/solution name. Defaults to Firestorm.")
+set(ROOT_PROJECT_NAME "TrixieStorm" CACHE STRING
+    "TrixieStorm root project / solution name.")
 project(${ROOT_PROJECT_NAME})
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake"  "${CMAKE_CURRENT_BINARY_DIR}")
@@ -49,6 +49,8 @@ set(CMAKE_COLOR_DIAGNOSTICS ON)
 set(CMAKE_XCODE_GENERATE_TOP_LEVEL_PROJECT_ONLY ON)
 
 include(Variables)
+# TrixieStorm product identity must be set before BuildVersion.
+set(VIEWER_CHANNEL "TrixieStorm Viewer" CACHE STRING "Viewer Channel Name" FORCE)
 include(BuildVersion)
 
 if (NOT CMAKE_BUILD_TYPE)

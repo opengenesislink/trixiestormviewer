@@ -7,15 +7,15 @@
 
 	<!-- Default Args - these arguments will be replaced in all strings -->
 	<string name="SECOND_LIFE">[CURRENT_GRID]</string>
-	<string name="APP_NAME">Firestorm</string>
-	<string name="CAPITALIZED_APP_NAME">FIRESTORM</string>
+	<string name="APP_NAME">TrixieStorm Viewer</string>
+	<string name="CAPITALIZED_APP_NAME">TRIXIESTORM VIEWER</string>
 	<string name="SECOND_LIFE_GRID">Second Life Grid</string>
-	<string name="SUPPORT_SITE">Firestorm Support Portal</string>
-	<string name="DOWNLOAD_URL">https://www.firestormviewer.org/choose-your-platform/</string>
+	<string name="SUPPORT_SITE">TrixieStorm Viewer Support</string>
+	<string name="DOWNLOAD_URL">https://github.com/opengenesislink/trixiestormviewer/releases</string>
 	<string name="CURRENT_GRID"/> <!-- Will be set in fsgridhandler.cpp / llviewernetwork.cpp -->
 	<string name="VIEWER_GENERATION">Viewer [VERSION]</string>
 	<string name="SHORT_VIEWER_GENERATION">V[VERSION]</string>
-	<string name="APP_NAME_ABBR">FS</string>
+	<string name="APP_NAME_ABBR">TS</string>
 
 	<!-- starting up -->
 	<string name="StartupLoading">Loading [APP_NAME]...</string>
@@ -140,10 +140,10 @@ Voice Server Version: [VOICE_VERSION]
 	<string name="AgniGridLabel">Second Life Main Grid (Agni)</string>
 	<string name="AditiGridLabel">Second Life Beta Test Grid (Aditi)</string>
 	
-	<string name="ViewerDownloadURL">https://www.firestormviewer.org/choose-your-platform/</string>
+	<string name="ViewerDownloadURL">https://github.com/opengenesislink/trixiestormviewer/releases</string>
 	<string name="LoginFailedViewerNotPermitted">
 The viewer you are using can no longer access Second Life. Please visit the following page to download a new viewer:
-https://www.firestormviewer.org/choose-your-platform/
+https://github.com/opengenesislink/trixiestormviewer/releases
 
 For more information, see our FAQ below:
 http://secondlife.com/viewer-access-faq</string>

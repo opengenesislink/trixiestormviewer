@@ -3,18 +3,12 @@
 	<string name="SECOND_LIFE">
 		[CURRENT_GRID]
 	</string>
-	<string name="APP_NAME">
-		Firestorm
-	</string>
-	<string name="CAPITALIZED_APP_NAME">
-		FIRESTORM
-	</string>
+	<string name="APP_NAME">TrixieStorm Viewer</string>
+	<string name="CAPITALIZED_APP_NAME">TRIXIESTORM VIEWER</string>
 	<string name="SECOND_LIFE_GRID">
 		Red de Second Life
 	</string>
-	<string name="SUPPORT_SITE">
-		Portal de Soporte de Firestorm
-	</string>
+	<string name="SUPPORT_SITE">TrixieStorm Viewer Support</string>
 	<string name="StartupDetectingHardware">
 		Identificando el hardware...
 	</string>

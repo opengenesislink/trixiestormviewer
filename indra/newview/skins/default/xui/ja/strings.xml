@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-	<string name="SUPPORT_SITE">
-		Firestormサポートポータル
-	</string>
+	<string name="SUPPORT_SITE">TrixieStorm Viewer Support</string>
 	<string name="StartupLoading">
 		[APP_NAME]をインストールしています…
 	</string>
