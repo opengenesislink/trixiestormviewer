@@ -128,7 +128,7 @@ def main() -> None:
              "components = ['TrixieStormViewer',self.args.get('arch'),'.'.join(self.args['version'])]"),
             ('"firestorm-bin.pdb"', '"trixiestorm-bin.pdb"'),
             ('"firestorm-bin-public.pdb"', '"trixiestorm-bin-public.pdb"'),
-            ('"Firestorm-bin.exe"', '"trixiestorm-bin.exe"'),
+            ('Firestorm-bin.exe', 'trixiestorm-bin.exe'),
             ('"firestorm-bin.exe"', '"trixiestorm-bin.exe"'),
         ])
         expression("indra/newview/llvelopack.cpp",
