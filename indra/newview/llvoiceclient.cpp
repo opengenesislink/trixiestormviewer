@@ -191,8 +191,27 @@ void LLVoiceClient::userAuthorized(const std::string& user_id, const LLUUID &age
 void LLVoiceClient::handleSimulatorFeaturesReceived(const LLSD &simulatorFeatures)
 {
     std::string voiceServerType = simulatorFeatures["VoiceServerType"].asString();
+#ifdef OPENSIM
+    // OpenGenesisLINK OGLVoice uses the standard WebRTC region capabilities
+    // and a server-side Pion/LiveKit bridge. The viewer MUST NOT call the
+    // private /internal/webrtc/v1/exchange endpoint or store service keys.
+    // Prefer WebRTC only when the region actually advertises both CAPS.
     if (voiceServerType.empty())
     {
+        LLViewerRegion* region = gAgent.getRegion();
+        if (region &&
+            !region->getCapability("ProvisionVoiceAccountRequest").empty() &&
+            !region->getCapability("VoiceSignalingRequest").empty())
+        {
+            voiceServerType = WEBRTC_VOICE_SERVER_TYPE;
+            LL_INFOS("NexVerseVoice") << "Selecting server-provisioned WebRTC/OGLVoice"
+                << LL_ENDL;
+        }
+    }
+#endif
+    if (voiceServerType.empty())
+    {
+        // Compatibility fallback for regions without deployed WebRTC CAPS.
         voiceServerType = VIVOX_VOICE_SERVER_TYPE;
     }
 
@@ -206,7 +225,7 @@ void LLVoiceClient::handleSimulatorFeaturesReceived(const LLSD &simulatorFeature
             mSpatialVoiceModule->processChannels(false);
         }
     }
-    setSpatialVoiceModule(simulatorFeatures["VoiceServerType"].asString());
+    setSpatialVoiceModule(voiceServerType);
 
     // if we should be in spatial voice, switch to it and set the creds
     if (mSpatialVoiceModule && !mNonSpatialVoiceModule)
