@@ -3313,7 +3313,7 @@ Your current position: [AVATAR_POS]
   <string name="font_fonts_cascadia_code.xml">Cascadia Code</string>
   <string name="mode_unknown">Unknown Mode</string>
   <string name="mode_settings_firestorm.xml">[APP_NAME]</string>
-  <string name="mode_settings_phoenix.xml">Phoenix</string>
+  <string name="mode_settings_phoenix.xml">Classic</string>
   <string name="mode_settings_v3.xml">[VIEWER_GENERATION]</string>
   <string name="mode_settings_hybrid.xml">Hybrid</string>
   <string name="mode_settings_text.xml">Text</string>

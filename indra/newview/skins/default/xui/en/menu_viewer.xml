@@ -2610,52 +2610,52 @@
        </menu_item_call>
        <menu_item_separator/>
     	<menu_item_call
-             label="Firestorm Blog"
+             label="TrixieStorm Releases"
              name="Firestorm Blog">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="firestorm_blog_url"
-             parameter="WebLaunchExternalTarget,https://www.firestormviewer.org/" />
+             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer/releases" />
        </menu_item_call>
     	<menu_item_call
-             label="Firestorm Primfeed"
+             label="NexVerse Marketplace"
              name="Firestorm Primfeed">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="firestorm_primfeed_url"
-             parameter="WebLaunchExternalTarget,https://www.primfeed.com/firestorm-viewer" />
+             parameter="WebLaunchExternalTarget,https://marketplace.stadt-nexverse.de" />
        </menu_item_call>
     	<menu_item_call
-             label="Firestorm Flickr"
+             label="NexVerse World Map"
              name="Firestorm Flickr">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="firestorm_flickr_url"
-             parameter="WebLaunchExternalTarget,http://www.flickr.com/groups/firestormviewer/pool/" />
+             parameter="WebLaunchExternalTarget,https://maps.stadt-nexverse.de" />
        </menu_item_call>
     	<menu_item_call
-             label="Firestorm YouTube"
+             label="TrixieStorm Source"
              name="Firestorm YouTube">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="firestorm_youtube_url"
-             parameter="WebLaunchExternalTarget,http://www.youtube.com/user/PhoenixViewerSL" />
+             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer" />
        </menu_item_call>
     	<menu_item_call
-             label="Firestorm Twitter"
+             label="OpenGenesisLINK Website"
              name="Firestorm Twitter">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="firestorm_twitter_url"
-             parameter="WebLaunchExternalTarget,https://twitter.com/phoenixviewersl" />
+             parameter="WebLaunchExternalTarget,https://opengenesislink.de" />
        </menu_item_call>
     	<menu_item_call
-             label="Firestorm Plurk"
+             label="Stadt NexVerse Portal"
              name="Firestorm Plurk">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="firestorm_plurk_url"
-             parameter="WebLaunchExternalTarget,http://www.plurk.com/ThePhoenixViewerProject" />
+             parameter="WebLaunchExternalTarget,https://stadt-nexverse.de" />
        </menu_item_call>
        <menu_item_separator/>
        <menu_item_call
@@ -2686,51 +2686,51 @@
         </menu_item_check>
         
         <menu_item_call
-         label="Firestorm Wiki"
+         label="TrixieStorm Documentation"
          name="Firestorm Wiki"
 	     shortcut="F1">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="script_library_url"
-             parameter="WebLaunchExternalTarget,https://wiki.firestormviewer.org" />
+             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer" />
         </menu_item_call>
         
         <menu_item_call
-         label="Troubleshooting"
+         label="TrixieStorm Support & Issues"
          name="Troubleshooting">
             <menu_item_call.on_click
              function="PromptShowURL"
              name="wiki_troubleshooting_url"
-             parameter="WebLaunchExternalTarget,https://wiki.firestormviewer.org/firestorm_troubleshooting" />
+             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer/firestorm_troubleshooting" />
         </menu_item_call>
 	   
         <menu_item_call
-         label="Join Firestorm Support Group"
+         label="TrixieStorm Support"
          name="firestorm_support_group">
             <menu_item_call.on_click
              function="Advanced.WebBrowserTest"
-             parameter="https://wiki.firestormviewer.org/firestorm_support_groups_join" />
+             parameter="https://github.com/opengenesislink/trixiestormviewer/firestorm_support_groups_join" />
             <menu_item_call.on_visible
              function="GridCheck"
              parameter="secondlife" />
         </menu_item_call>
 
         <menu_item_call
-         label="Firestorm Classes Schedule"
+         label="TrixieStorm Build Guide"
          name="Firestorm Classes Schedule">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="wiki_classes_url"
-             parameter="WebLaunchExternalTarget,https://wiki.firestormviewer.org/firestorm_classes" />
+             parameter="WebLaunchExternalTarget,https://github.com/opengenesislink/trixiestormviewer/firestorm_classes" />
         </menu_item_call>
 
         <menu_item_call
-         label="Firestorm Events Calendar"
+         label="Stadt NexVerse Events"
          name="Firestorm Events Calendar">
              <menu_item_call.on_click
              function="PromptShowURL"
              name="events_calendar_url"
-             parameter="WebLaunchExternalTarget,https://teamup.com/ksxdajnbw9mvw7cbwz" />
+             parameter="WebLaunchExternalTarget,https://stadt-nexverse.de" />
         </menu_item_call>
 
         <menu_item_check
