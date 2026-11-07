@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'scripts/rebrand_firestorm.py'
+      - '.github/workflows/import-firestorm.yml'
 
 permissions:
   contents: write
@@ -48,8 +49,44 @@ jobs:
           git switch -c "$BRANCH"
           # Source-tree conflicts are resolved in favor of the existing foundation;
           # every conflict and license must still be reviewed in the PR before merge.
-          git merge --allow-unrelated-histories --no-ff -X ours \
-            -m "import: pinned Firestorm 7.2.4 release source (review required)" "$PIN"
+          if ! git merge --allow-unrelated-histories --no-ff -X ours \
+            -m "import: pinned Firestorm 7.2.4 release source (review required)" "$PIN"; then
+            mapfile -t conflicts < <(git diff --name-only --diff-filter=U)
+            if [[ "${#conflicts[@]}" -eq 0 ]]; then
+              echo "Merge exited nonzero without identifiable unresolved paths."
+              exit 1
+            fi
+            for path in "${conflicts[@]}"; do
+              case "$path" in
+                LICENSE)
+                  # Foundation LICENSE is the same LGPL-2.1 basis as upstream.
+                  # Never rewrite original source file copyright notices.
+                  git checkout --ours -- LICENSE
+                  git add LICENSE
+                  ;;
+                .gitignore)
+                  # Preserve local excludes AND add upstream build excludes.
+                  git show :2:.gitignore > .gitignore
+                  while IFS= read -r line || [[ -n "$line" ]]; do
+                    [[ -z "$line" || "$line" == \#* ]] && continue
+                    if ! grep -Fxq -- "$line" .gitignore; then
+                      printf '%s\n' "$line" >> .gitignore
+                    fi
+                  done < <(git show :3:.gitignore)
+                  git add .gitignore
+                  ;;
+                *)
+                  echo "Unexpected merge conflict: $path; manual audit required."
+                  exit 1
+                  ;;
+              esac
+            done
+            if [[ -n "$(git diff --name-only --diff-filter=U)" ]]; then
+              echo "Unresolved conflicts remain."
+              exit 1
+            fi
+            git commit -m "import: pinned Firestorm 7.2.4 release source (review required)"
+          fi
           test -f indra/CMakeLists.txt || {
             echo "Unexpected source layout after merge; do not publish this branch."
             exit 1

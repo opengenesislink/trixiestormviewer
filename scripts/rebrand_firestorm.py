@@ -193,7 +193,7 @@ def main() -> None:
             (r'\AppData\Local\FirestormOS', r'\AppData\Local\TrixieStormViewer'),
             (r'\AppData\Local\Firestorm_x64', r'\AppData\Local\TrixieStormViewer_x64'),
             (r'\AppData\Local\Firestorm', r'\AppData\Local\TrixieStormViewer'),
-            (r'\ProgramData\Firestorm', r'\ProgramData\TrixieStormViewer'),
+            (r'ProgramData\Firestorm', r'ProgramData\TrixieStormViewer'),
             ('RMDir /r "$0\\Firestorm"', 'RMDir /r "$0\\TrixieStormViewer"'),
             ('"Publisher" "The Phoenix Firestorm Project, Inc."',
              '"Publisher" "OpenGenesisLINK"'),
