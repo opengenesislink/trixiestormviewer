@@ -139,15 +139,15 @@ class FSViewerManifest:
         pdbName = "trixiestorm-bin.pdb"
         try:
             subprocess.check_call( [ "pdbcopy.exe" ,
-                                     self.args['configuration'] + "\\firestorm-bin.pdb", 
-                                     self.args['configuration'] + "\\firestorm-bin-public.pdb",
+                                     self.args['configuration'] + "\\trixiestorm-bin.pdb", 
+                                     self.args['configuration'] + "\\trixiestorm-bin-public.pdb",
                                      "-p"
                                  ], stderr=subprocess.PIPE,stdout=subprocess.PIPE )
             pdbName = "trixiestorm-bin-public.pdb"
         except:
             print("Cannot run pdbcopy, packaging private symbols")
 
-        tarName = "%s/Phoenix_%s_%s_%s_pdbsymbols-windows-%d.tar.xz" % (self.args['configuration'].lower(),
+        tarName = "%s/TrixieStorm_%s_%s_%s_pdbsymbols-windows-%d.tar.xz" % (self.args['configuration'].lower(),
                                                                         self.fs_channel_legacy_oneword(),
                                                                         '-'.join(self.args['version']),
                                                                         self.args['viewer_flavor'],
@@ -189,7 +189,7 @@ class FSViewerManifest:
                                                                        osname,
                                                                        self.address_size))):
             # Rename to add version numbers
-            sName = "%s/Phoenix_%s_%s_%s_symbols-%s-%d.tar.bz2" % (self.args['configuration'].lower(),
+            sName = "%s/TrixieStorm_%s_%s_%s_symbols-%s-%d.tar.bz2" % (self.args['configuration'].lower(),
                                                                        self.fs_channel_legacy_oneword(),
                                                                        '-'.join( self.args['version'] ),
                                                                        self.args['viewer_flavor'],

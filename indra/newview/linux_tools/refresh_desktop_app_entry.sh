@@ -13,9 +13,9 @@ function install_desktop_entry()
     local desktop_entry="\
 [Desktop Entry]\n\
 Name=TrixieStorm Viewer\n\
-Comment=Client for accessing 3D virtual worlds\n\
+Comment=Stadt NexVerse Generation 1 and 2 Viewer\n\
 Exec=${installation_prefix}/trixiestormviewer\n\
-Icon=${installation_prefix}/firestorm_icon.png\n\
+Icon=${installation_prefix}/trixiestormviewer.png\n\
 Terminal=false\n\
 Type=Application\n\
 Categories=Application;Internet;Network;\n\

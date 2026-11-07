@@ -277,9 +277,9 @@ class ViewerManifest(LLManifest,FSViewerManifest):
         #<FS:TS> Somehow, we started leaving the - separating the variant from the app name
         # on the beginning of the channel qualifier. This screws up later processing that
         # depends on the channel type. If it's there, we chop it off.
-        if channel_qualifier[0] == '-':
+        if channel_qualifier.startswith('-'):
             channel_qualifier = channel_qualifier[1:]
-        if channel_qualifier.startswith('release'):
+        if not channel_qualifier or channel_qualifier.startswith('release'):
             channel_type='release'
         elif channel_qualifier.startswith('beta'):
             channel_type='beta'
@@ -321,7 +321,7 @@ class ViewerManifest(LLManifest,FSViewerManifest):
         global CHANNEL_VENDOR_BASE
         # a standard map of strings for replacing in the templates
         #<FS:TS> tag "OS" after CHANNEL_VENDOR_BASE and before any suffix
-        channel_base = "Phoenix-" + CHANNEL_VENDOR_BASE
+        channel_base = CHANNEL_VENDOR_BASE
         if self.fs_is_opensim():
             channel_base = channel_base + "OS"
         #</FS:TS>
@@ -929,21 +929,8 @@ class Windows_x86_64_Manifest(ViewerManifest):
         return result
         # </FS:Ansariel>
     def dl_url_from_channel(self):
-        if self.channel_type() == 'release':
-            return 'https://www.firestormviewer.org/choose-your-platform'
-        elif self.channel_type() == 'beta':
-            return 'https://www.firestormviewer.org/early-access-beta-downloads'
-        elif self.channel_type() == 'alpha':
-            return 'https://www.firestormviewer.org/early-access-alpha-downloads'
-        elif self.channel_type() == 'manual':
-            return 'https://www.firestormviewer.org/early-access-manual-downloads'
-        elif self.channel_type() == 'profiling':
-            return 'https://www.firestormviewer.org/profiling-downloads'
-        elif self.channel_type() == 'nightly':
-            return 'https://www.firestormviewer.org/firestorm-nightly-build-downloads'
-        else:
-            return '<NO-URL>'
-        
+        # Official TrixieStorm distribution only; not the upstream vendor.
+        return 'https://github.com/opengenesislink/trixiestormviewer/releases'
 
     def package_finish(self):
         # Check if we should use Velopack instead of NSIS
@@ -982,7 +969,7 @@ class Windows_x86_64_Manifest(ViewerManifest):
         #icon_path = os.path.join(self.get_src_prefix(), 'res', 'll_icon.ico')
         #if not os.path.exists(icon_path):
         #    icon_path = os.path.join(self.get_src_prefix(), self.icon_path(), 'secondlife.ico')
-        icon_path = os.path.join(self.get_src_prefix(), self.icon_path(), 'firestorm_icon.ico')
+        icon_path = os.path.join(self.get_src_prefix(), 'res', 'trixiestormviewer.ico')
         # </FS:TJ>
 
         # In CI, defer Velopack packaging to the sign step where Azure credentials
@@ -1112,7 +1099,7 @@ class Windows_x86_64_Manifest(ViewerManifest):
         """ % substitution_strings
 
         if self.channel_type() == 'release':
-            substitution_strings['caption'] = CHANNEL_VENDOR_BASE
+            substitution_strings['caption'] = self.app_name()
         else:
             substitution_strings['caption'] = self.app_name() + ' ${VERSION}'
 
@@ -1143,7 +1130,7 @@ class Windows_x86_64_Manifest(ViewerManifest):
         #                dirs_exist_ok=True)
         # </FS:Ansariel>
 
-        tempfile = "firestorm_setup_tmp.nsi"
+        tempfile = "trixiestorm_setup_tmp.nsi"
 
         self.fs_sign_win_binaries() # <FS:ND/> Sign files, step one. Sign compiled binaries
 
@@ -2122,10 +2109,10 @@ class LinuxManifest(ViewerManifest):
         self.path("licenses-linux.txt","licenses.txt")
         self.path("VivoxAUP.txt")
         self.path("LGPL-license.txt")
-        self.path("res/firestorm_icon.png","firestorm_icon.png")
+        self.path("res/trixiestormviewer.png","trixiestormviewer.png")
         with self.prefix("linux_tools"):
             self.path("client-readme.txt","README-linux.txt")
-            self.path("FIRESTORM_DESKTOPINSTALL.txt","FIRESTORM_DESKTOPINSTALL.txt")
+            self.path("FIRESTORM_DESKTOPINSTALL.txt","TRIXIESTORM_DESKTOPINSTALL.txt")
             self.path("client-readme-voice.txt","README-linux-voice.txt")
             self.path("client-readme-joystick.txt","README-linux-joystick.txt")
             self.path("wrapper.sh","trixiestormviewer")
@@ -2154,7 +2141,7 @@ class LinuxManifest(ViewerManifest):
         icon_path = self.icon_path()
         print("DEBUG: icon_path '%s'" % icon_path)
         with self.prefix(src=icon_path) :
-            self.path("firestorm_256.png","firestorm_48.png")
+            self.path("firestorm_256.png","legacy-firestorm-thumbnail.png")
             #with self.prefix(dst="res-sdl") :
             #    self.path("firestorm_256.bmp","ll_icon.BMP")
 

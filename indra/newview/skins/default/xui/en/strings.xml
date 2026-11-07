@@ -135,7 +135,7 @@ Voice Server Version: [VOICE_VERSION]
 	<string name="LoginFailedNoNetwork">Network error: Could not establish connection, please check your network connection.</string>
 	<string name="LoginFailedHeader">Login failed.</string>
 	<string name="Quit">Quit</string>
-	<string name="create_account_url">https://www.firestormviewer.org/join-secondlife/</string>
+	<string name="create_account_url">https://stadt-nexverse.de</string>
 	
 	<string name="AgniGridLabel">Second Life Main Grid (Agni)</string>
 	<string name="AditiGridLabel">Second Life Beta Test Grid (Aditi)</string>
@@ -295,7 +295,7 @@ If you feel this is an error, please contact support@secondlife.com</string>
 	<string name="TooltipMustSingleDrop">Only a single item can be dragged here</string>
 	<string name="TooltipTooManyWearables">You can't wear a folder containing more than [AMOUNT] items.  You can change this limit in Advanced &gt; Show Debug Settings &gt; WearFolderLimit.</string>
 	<string name="TooltipPrice" value="L$[AMOUNT]: "/>
-	<string name="TooltipSLIcon">This links to a page on the official SecondLife.com, LindenLab.com, or firestormviewer.org domain.</string>
+	<string name="TooltipSLIcon">This opens a website in your browser.</string>
 	<string name="TooltipFlagScript">Script</string>
 	<string name="TooltipFlagPhysics">Physics</string>
 	<string name="TooltipFlagTouch">Touch</string>
@@ -404,7 +404,7 @@ are allowed.
 
 	<string name="ReleaseNotes">Release Notes</string>
 	<!-- Always mark translate="false" for strings that are nothing but URLs, as they don't need translation. -->
-	<string name="RELEASE_NOTES_BASE_URL" translate="false">https://wiki.firestormviewer.org/changelog:firestorm_change_log_</string>
+	<string name="RELEASE_NOTES_BASE_URL" translate="false">https://github.com/opengenesislink/trixiestormviewer/releases/tag/</string>
 
 	<!-- Indicates something is being loaded. Maybe should be merged with RetrievingData -->
 	<string name="LoadingData">Loading...</string>
@@ -445,7 +445,7 @@ are allowed.
 	<string name="AssetUploadServerUnavaliable">Service not available or upload timeout was reached.</string>
 	<string name="AssetUploadRequestInvalid">
 Error in upload request.  Please visit 
-https://www.firestormviewer.org/support for help fixing this problem.
+https://github.com/opengenesislink/trixiestormviewer/issues for help fixing this problem.
 </string>
 
 	<!-- Settings errors -->

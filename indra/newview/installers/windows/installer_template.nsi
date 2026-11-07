@@ -89,8 +89,8 @@ Name ${INSTNAME}
 # <FS:Ansariel> FIRE-24335: Use different icon for OpenSim version
 #!define MUI_ICON   "%%SOURCE%%\installers\windows\firestorm_icon_os.ico"
 #!define MUI_UNICON "%%SOURCE%%\installers\windows\firestorm_icon_os.ico"
-!define MUI_ICON   "%%SOURCE%%\installers\windows\firestorm_icon${ICON_SUFFIX}.ico"
-!define MUI_UNICON "%%SOURCE%%\installers\windows\firestorm_icon${ICON_SUFFIX}.ico"
+!define MUI_ICON   "%%SOURCE%%\res\trixiestormviewer.ico"
+!define MUI_UNICON "%%SOURCE%%\res\trixiestormviewer.ico"
 # </FS:Ansariel>
 
 BrandingText " "						# Bottom of window text
@@ -105,7 +105,7 @@ SetOverwrite on							# Overwrite files by default
 #AutoCloseWindow true					# After all files install, close window
 
 # Registry key paths, ours and Microsoft's
-!define LINDEN_KEY      "SOFTWARE\The Phoenix Firestorm Project"
+!define LINDEN_KEY      "SOFTWARE\OpenGenesisLINK\TrixieStormViewer"
 !define INSTNAME_KEY    "${LINDEN_KEY}\${INSTNAME}"
 !define MSCURRVER_KEY   "SOFTWARE\Microsoft\Windows\CurrentVersion"
 !define MSNTCURRVER_KEY "SOFTWARE\Microsoft\Windows NT\CurrentVersion"
@@ -622,7 +622,7 @@ CreateShortCut	"$SMPROGRAMS\$INSTSHORTCUT\$INSTSHORTCUT.lnk" \
 
 WriteINIStr		"$SMPROGRAMS\$INSTSHORTCUT\SL Create Account.url" \
 				"InternetShortcut" "URL" \
-				"https://www.firestormviewer.org/join-secondlife/"
+				"https://stadt-nexverse.de"
 WriteINIStr		"$SMPROGRAMS\$INSTSHORTCUT\SL Your Account.url" \
 				"InternetShortcut" "URL" \
 				"https://www.secondlife.com/account/"
