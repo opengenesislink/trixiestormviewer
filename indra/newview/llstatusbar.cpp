@@ -28,7 +28,9 @@
 #include "llviewerprecompiledheaders.h"
 
 #include "llstatusbar.h"
+#ifdef OPENSIM
 #include "oglnexverseclock.h"
+#endif
 #include <regex>
 
 // viewer includes
@@ -560,6 +562,7 @@ bool LLStatusBar::postBuild()
 // <FS:Zi> FIRE-20390, FIRE-4269 - Option for 12/24 hour clock and seconds display
 void LLStatusBar::updateClockDisplay()
 {
+#ifdef OPENSIM
     // Do not render Pacific (PST/PDT) just because Firestorm's legacy date
     // formatter defaults to SLT. The ROBUST discovery extension supplies the
     // effective UTC offset and zone from [LoginService] DSTZone, refreshed
@@ -596,6 +599,19 @@ void LLStatusBar::updateClockDisplay()
     mTextTime->setText(timeStr);
     std::string tooltip = format_for_server(getString("timeTooltip"));
     mTextTime->setToolTip(tooltip + " (" + zone_id + ", " + zone_label + ")");
+#else
+    // Preserve the unmodified Firestorm/SLS time formatter for builds that
+    // deliberately disable OPENSIM support. TrixieStorm ReleaseOS uses the
+    // server-clock branch above.
+    LLSD substitution;
+    substitution["datetime"] = static_cast<S32>(time_corrected());
+    std::string timeStr = mClockFormatChoices[mClockFormat];
+    LLStringUtil::format(timeStr, substitution);
+    mTextTime->setText(timeStr);
+    std::string tooltip = getString("timeTooltip");
+    LLStringUtil::format(tooltip, substitution);
+    mTextTime->setToolTip(tooltip);
+#endif
 }
 // </FS:Zi>
 
