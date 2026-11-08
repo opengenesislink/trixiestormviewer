@@ -32,7 +32,7 @@
 		<button label="L$ Alışı" name="buyL" tool_tip="L$ almaq üçün basın"/>
 	</panel>
 	<panel name="time_and_media_bg">
-		<text name="TimeText" tool_tip="Cari vaxt (Sakit okean)"/>
+		<text name="TimeText" tool_tip="Cari vaxt (serverin saat qurşağı)"/>
 		<button name="stream_toggle_btn" tool_tip="Axınlayıcı səsli yayımı açıb/söndürün"/>
 		<button name="media_toggle_btn" tool_tip="Bütün media məzmununu oxşatmaq açıb/söndürün (Musiqi, Video, Web)"/>
 		<text name="FPSText" tool_tip="Kadr/saniyə"/>

@@ -21,7 +21,7 @@
 		<button label="KUP L$" name="buyL" tool_tip="Kliknij aby kupić więcej L$"/>
 	</panel>
 	<panel name="time_and_media_bg">
-		<text name="TimeText" tool_tip="Obecny czas (Pacyficzny)"/>
+		<text name="TimeText" tool_tip="Obecny czas (strefa czasowa serwera)"/>
 		<button name="stream_toggle_btn" tool_tip="Odtwórz/Zatrzymaj strumień audio tej działki"/>
 		<button name="media_toggle_btn" tool_tip="Odtwórz/Zatrzymaj wszystkie media (Muzyka, Wideo, WWW)"/>
 		<text name="FPSText" tool_tip="Klatki na sekundę (FPS) - kliknij aby dostosować limit" />

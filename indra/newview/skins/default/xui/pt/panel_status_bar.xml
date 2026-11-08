@@ -24,7 +24,7 @@
 		<button label="Comprar" name="goShop" tool_tip="Abrir Mercado do Second Life" width="80"/>
 	</panel>
 	<panel name="time_and_media_bg">
-		<text name="TimeText" tool_tip="Hora atual (Pacífico)">
+		<text name="TimeText" tool_tip="Hora atual (fuso horário do servidor)">
 			--:-- UTC
 		</text>
 		<button name="media_toggle_btn" tool_tip="Tocar/Pausar todas mídias (música, vídeo, páginas web)"/>

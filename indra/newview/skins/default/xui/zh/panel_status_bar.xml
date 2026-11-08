@@ -30,7 +30,7 @@
 		<button label="購買L$" name="buyL" tool_tip="點擊此處購買更多的L$" />
 	</panel>
 	<panel name="time_and_media_bg" width="229">
-		<text name="TimeText" tool_tip="當前時間（太平洋時間）" width="78">
+		<text name="TimeText" tool_tip="當前時間（伺服器時區）" width="78">
 			--:-- UTC
 		</text>
 		<button name="stream_toggle_btn" tool_tip="啟動/停止地塊音訊串流" />
