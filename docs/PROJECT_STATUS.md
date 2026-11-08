@@ -31,3 +31,28 @@ A missing or stale clock falls back to visibly labelled UTC, never PST/PDT.
 The server feature must be merged, built and deployed to ROBUST first; its
 mere presence in a PR does **not** change a running production server. Full
 Linux/Windows viewer runtime integration is not yet proven.
+
+## Shared 24-hour region environment follows the displayed OGL server time
+
+The standard Firestorm/TrixieStorm **Use Shared Environment** mode already
+loads the region-authoritative EEP sky/water/day-cycle from OpenSim's
+`ExtEnvironment` capability. No per-viewer artificial brightness filter is
+required: all avatars who choose Shared Environment receive the same region
+day/night. The companion OpenGenesisLINK source change is in
+[server PR #405](https://github.com/opengenesislink/opengenesislinkserver/pull/405).
+
+The opt-in `[OGLSharedDayNight]` setting on each **region simulator** enables
+a 24h EEP cycle with offset from that server's configured `TimeZone`. For
+Stadt NexVerse this must match ROBUST's `DSTZone` (Europe/Berlin). On DST
+transitions the server changes EEP offset and sends a refresh. Existing
+custom animated sky/water cycles are preserved; where no region EEP exists,
+the server prefers the balanced default daycycle with sunrise near 06:00,
+daylight at noon, sunset near 18:00 and darkness at midnight. The setting
+does not override a user's personal environment or parcel-specific EEP.
+
+This feature is **code-complete at region source level**, but remains
+**inactive in existing deployed regions** until PR #405 is merged/deployed
+and their actual OpenSim.ini contains `Enabled=true`, after which the
+region simulator is restarted. Full multi-client rendering tests are pending.
+The sunrise/sunset keyframes are fixed civil-hour presets and do not yet use
+Berlin's astronomical sunrise/sunset by date.
