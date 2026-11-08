@@ -27,8 +27,8 @@
 		<button label="L$-Kauf" name="buyL" tool_tip="Hier klicken, um mehr L$ zu kaufen"/>
 	</panel>
 	<panel name="time_and_media_bg" width="229">
-		<text name="TimeText" tool_tip="Aktuelle Zeit (Pazifik)" width="78">
-			24:00:00 PST
+		<text name="TimeText" tool_tip="Aktuelle Zeit (Server-Zeitzone)" width="78">
+			--:-- UTC
 		</text>
 		<button name="stream_toggle_btn" tool_tip="Audiostream der Parzelle starten/stoppen"/>
 		<button name="media_toggle_btn" tool_tip="Alle Medien starten/stoppen (Musik, Video, Webseiten)"/>

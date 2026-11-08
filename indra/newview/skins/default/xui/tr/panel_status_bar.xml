@@ -23,8 +23,8 @@
 		<button label="L$ SatÄ±n Al" name="buyL" tool_tip="Daha fazla L$ satÄ±n almak iÃ§in tÄ±klayÄ±n"/>
 		<button label="AlÄ±ÅŸveriÅŸ yap" name="goShop" tool_tip="Second Life Pazaryeri AÃ§" width="95"/>
 	</panel>
-	<text name="TimeText" tool_tip="GeÃ§erli zaman (Pasifik)">
-		24:00 AM PST
+	<text name="TimeText" tool_tip="GeÃ§erli zaman (Sunucu saat dilimi)">
+		--:-- UTC
 	</text>
 	<button name="media_toggle_btn" tool_tip="TÃ¼m Ortam Ã–ÄŸelerini BaÅŸlat/Durdur (MÃ¼zik, Video, Web sayfalarÄ±)"/>
 	<button name="volume_btn" tool_tip="KÃ¼resel Ses KontrolÃ¼"/>

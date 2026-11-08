@@ -31,7 +31,7 @@
 	</panel>
 	<panel name="time_and_media_bg" width="229">
 		<text name="TimeText" tool_tip="當前時間（太平洋時間）" width="78">
-			24:00:00 PST
+			--:-- UTC
 		</text>
 		<button name="stream_toggle_btn" tool_tip="啟動/停止地塊音訊串流" />
 		<button name="media_toggle_btn" tool_tip="啟動/停止所有媒體（音樂，影片，網站）" />

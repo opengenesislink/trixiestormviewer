@@ -31,3 +31,5 @@
 The server and Viewer operate on separate permission domains. The viewer is always an untrusted client; never embed node HMAC, LiveKit API secret, World API machine-key, simulator ES256 key or user/admin impersonation credentials in published code or installation assets. Never claim a read-only discovery or launcher link is a transactional integration.
 
 Reference server source: `opengenesislink/opengenesislinkserver` `doc/NexVerse/OGL_VIEWER_DISCOVERY.md`, `services/oglvoice-media/README.md`, `doc/NexVerse/WORLD_API.md`, `doc/NexVerse/OGL_FEATURE_CONTROL_09312.md`. Confirm the actual running version before release.
+
+| Server-Zeitzone/Uhrzeit (statt PST) | Implemented in viewer C++ source: OGL discovery `clock` epoch/offset, monotonic extrapolation, 60-sec refresh, 12h/24h/tooltip and localized placeholders; server counterpart in OpenGenesisLINK PR #405 | Merge/deploy ROBUST clock extension; full viewer ReleaseOS test and real Berlin DST verification |

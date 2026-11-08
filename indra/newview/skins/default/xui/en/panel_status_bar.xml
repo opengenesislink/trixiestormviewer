@@ -318,9 +318,9 @@
      layout="topleft"
      left="2"
      name="TimeText"
-     tool_tip="Current time (Pacific)"
+     tool_tip="Current time (grid server timezone)"
      width="96">
-        24:00:00 AM PST
+        --:-- UTC
     </text>
     <button
      follows="right|top"

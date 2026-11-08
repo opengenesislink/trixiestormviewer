@@ -27,8 +27,8 @@
 		<button name="buyL" label="COMPRAR L$" halign="left" tool_tip="Pulsa para comprar más L$" left_pad="-15"/>
 	</panel>
 	<panel name="time_and_media_bg" width="229">
-		<text name="TimeText" tool_tip="Hora actual (costa del Pacífico de EEUU)" width="78">
-			24:00:00 PST
+		<text name="TimeText" tool_tip="Hora actual (zona horaria del servidor)" width="78">
+			--:-- UTC
 		</text>
 		<button name="stream_toggle_btn" tool_tip="Iniciar/detener la reproducción del flujo de audio de la parcela"/>
 		<button name="media_toggle_btn" tool_tip="Iniciar/detener la reproducción de todos los medios (música, vídeo, páginas web)"/>

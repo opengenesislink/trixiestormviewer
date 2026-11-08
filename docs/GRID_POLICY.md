@@ -36,3 +36,11 @@ OGL World API data (maps, profiles, NV$, Marketplace, IAR/OAR, weather, registra
 - **Not proven**: full C++ binary linking, native credentials protection, redirects, real live sessions, region access after login, all language locales, full 3D experience or future Gen2.
 
 Do not confuse **server-side Hypergrid access for visiting users** with TrixieStorm's client product restriction: regular authorized visitors to Stadt NexVerse must still be able to move legitimately purchased transferable content to their own home grids if server policy permits. No server-wide asset export lockdown is part of this change.
+
+## Server civil time is not an authentication feature
+
+TrixieStorm's status clock reads optional UTC epoch, server timezone and effective
+UTC offset from the **same pinned public, credential-free** OGL discovery URL.
+The response never changes the allowed grid, login URI or authorization policy.
+Old ROBUST deployments without the extension show UTC (not guessed Berlin or
+Pacific time). The published extension is tracked in OpenGenesisLINK PR #405.

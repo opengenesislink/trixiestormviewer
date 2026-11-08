@@ -17,3 +17,17 @@ The Firestorm 7.2.4 source is present with TrixieStorm rebranding in the **featu
 **Critical security gate:** current Gen1 login URI is HTTP port80. Authenticating with password over unencrypted public HTTP can expose credentials. Server-side [OGL discovery](https://github.com/opengenesislink/opengenesislinkserver/blob/main/doc/NexVerse/OGL_VIEWER_DISCOVERY.md) confirms the legacy route but explicitly requires TLS for new credentialed login. No private tokens are sent by the added read-only discovery. A secure deployed login strategy is required before public release.
 
 **Not yet delivered:** mesh/animesh/PBR export/import, full WebAPI profile/groups/economy marketplace UI, maps, weather dashboard, native IAR, Discord account linking, modern docks, Vulkan/raytracing and Recast navigation. See [function matrix](OGL_FEATURE_MATRIX.md). Every feature remains gated by correct server contract, authorization and full staging verification.
+
+## Grid server wall-clock display (OGL Viewer Clock v1)
+
+The viewer source now polls the pinned public Gen1 discovery endpoint for the
+optional `clock` contract supplied in **OpenGenesisLINK server PR #405**.
+It converts the server's UTC epoch plus current configured time-zone offset
+into status-bar civil time, independently of the viewer's local PC time zone.
+It preserves the 12/24-hour display settings, shows the server-supplied label
+(e.g. MEZ/MESZ when ROBUST `DSTZone` is Europe/Berlin), and refreshes the
+server sample at approximately 60-second intervals to follow DST changes.
+A missing or stale clock falls back to visibly labelled UTC, never PST/PDT.
+The server feature must be merged, built and deployed to ROBUST first; its
+mere presence in a PR does **not** change a running production server. Full
+Linux/Windows viewer runtime integration is not yet proven.
