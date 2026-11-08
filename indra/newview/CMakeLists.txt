@@ -929,6 +929,7 @@ list(APPEND viewer_SOURCE_FILES ${viewer_GLTF_SOURCE_FILES})
 if (OPENSIM)
     list(APPEND viewer_SOURCE_FILES
                 fsgridhandler.cpp
+                oglnexverseclock.cpp
                 fsslurl.cpp
         )
 else (OPENSIM)
@@ -1009,6 +1010,7 @@ set(viewer_HEADER_FILES
     fsfloaterwhitelisthelper.h
     fsjointpose.h
     fsgridhandler.h
+    oglnexverseclock.h
     fskeywords.h
     fslslbridge.h
     fslslbridgerequest.h

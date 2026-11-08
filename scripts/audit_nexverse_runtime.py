@@ -48,10 +48,22 @@ CHECKS = {
     "indra/newview/fspanellogin.cpp": [
         'server_choice_combo->setEnabled(false)',
         'bool show_server = false',
+        'OGLNexVerseClock::refreshIfDue()',
+    ],
+    "indra/newview/oglnexverseclock.cpp": [
+        'org.opengenesislink.viewer.clock.v1',
+        'clock', 'utc_offset_seconds',
+        'MAX_STALE_AGE', 'REFRESH_INTERVAL',
+        'std::chrono::steady_clock',
         'http://hg.stadt-nexverse.de:80/ogl/v1/grid-info',
-        'org.opengenesislink.viewer.grid-info.v1',
-        'features"]["legacy_login"',
-        'Legacy G1 login policy unchanged',  # Checked below as a variant
+        'OGLNexVerse::GEN1_LOGIN_URI',
+    ],
+    "indra/newview/llstatusbar.cpp": [
+        'OGLNexVerseClock::refreshIfDue()',
+        'OGLNexVerseClock::now(',
+        'civil_epoch = time_corrected()',
+        'std::regex_replace(pattern, slt_token, ", utc]")',
+        'zone_id',
     ],
     "indra/newview/llvoiceclient.cpp": [
         '"VoiceServerType"',

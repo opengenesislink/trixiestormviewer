@@ -28,6 +28,8 @@
 #include "llviewerprecompiledheaders.h"
 
 #include "llstatusbar.h"
+#include "oglnexverseclock.h"
+#include <regex>
 
 // viewer includes
 #include "llagent.h"
@@ -558,23 +560,42 @@ bool LLStatusBar::postBuild()
 // <FS:Zi> FIRE-20390, FIRE-4269 - Option for 12/24 hour clock and seconds display
 void LLStatusBar::updateClockDisplay()
 {
-    // Get current UTC time, adjusted for the user's clock
-    // being off.
-    time_t utc_time;
-    utc_time = time_corrected();
+    // Do not render Pacific (PST/PDT) just because Firestorm's legacy date
+    // formatter defaults to SLT. The ROBUST discovery extension supplies the
+    // effective UTC offset and zone from [LoginService] DSTZone, refreshed
+    // every minute, including DST changes and a later server zone switch.
+    OGLNexVerseClock::refreshIfDue();
+    std::time_t civil_epoch;
+    std::string zone_label, zone_id;
+    if (!OGLNexVerseClock::now(civil_epoch, zone_label, zone_id))
+    {
+        // A legacy/missing discovery response does NOT imply Pacific time.
+        // time_corrected() is UTC corrected by the login server.
+        civil_epoch = time_corrected();
+        zone_label = "UTC";
+        zone_id = "UTC (server timezone unavailable)";
+    }
 
-    std::string timeStr = mClockFormatChoices[mClockFormat];
-    LLSD substitution;
-    substitution["datetime"] = (S32) utc_time;
-    LLStringUtil::format (timeStr, substitution);
+    // All status bar formats are supported (language, 12h/24h, seconds,
+    // tooltip). We give the datetime formatter an offset-adjusted UTC
+    // instant: it must NOT subtract Pacific's hardcoded offset again.
+    static const std::regex timezone_token(R"(\[timezone\s*,\s*datetime\s*,\s*slt\s*\])");
+    static const std::regex slt_token(R"(,\s*slt\s*\])");
+    const auto format_for_server = [&](std::string pattern)
+    {
+        pattern = std::regex_replace(pattern, timezone_token, "OGLSERVERCLOCKZONE");
+        pattern = std::regex_replace(pattern, slt_token, ", utc]");
+        LLSD vars;
+        vars["datetime"] = static_cast<S32>(civil_epoch);
+        LLStringUtil::format(pattern, vars);
+        LLStringUtil::replaceString(pattern, "OGLSERVERCLOCKZONE", zone_label);
+        return pattern;
+    };
+
+    std::string timeStr = format_for_server(mClockFormatChoices[mClockFormat]);
     mTextTime->setText(timeStr);
-
-    // <FS:Ansariel> Add seconds to clock
-    static const std::string tooltip_template = getString("timeTooltip");
-    std::string dtStr = tooltip_template;
-    // </FS:Ansariel>
-    LLStringUtil::format (dtStr, substitution);
-    mTextTime->setToolTip (dtStr);
+    std::string tooltip = format_for_server(getString("timeTooltip"));
+    mTextTime->setToolTip(tooltip + " (" + zone_id + ", " + zone_label + ")");
 }
 // </FS:Zi>
 
