@@ -38,8 +38,7 @@ The standard Firestorm/TrixieStorm **Use Shared Environment** mode already
 loads the region-authoritative EEP sky/water/day-cycle from OpenSim's
 `ExtEnvironment` capability. No per-viewer artificial brightness filter is
 required: all avatars who choose Shared Environment receive the same region
-day/night. The companion OpenGenesisLINK source change is in
-[server PR #405](https://github.com/opengenesislink/opengenesislinkserver/pull/405).
+day/night. The OGL civil-time discovery is merged in OpenGenesisLINK [PR #405](https://github.com/opengenesislink/opengenesislinkserver/pull/405). The separate region EEP synchronization change is in [server PR #408](https://github.com/opengenesislink/opengenesislinkserver/pull/408).
 
 The opt-in `[OGLSharedDayNight]` setting on each **region simulator** enables
 a 24h EEP cycle with offset from that server's configured `TimeZone`. For
@@ -51,7 +50,7 @@ daylight at noon, sunset near 18:00 and darkness at midnight. The setting
 does not override a user's personal environment or parcel-specific EEP.
 
 This feature is **code-complete at region source level**, but remains
-**inactive in existing deployed regions** until PR #405 is merged/deployed
+**inactive in existing deployed regions** until PR #408 is merged/deployed
 and their actual OpenSim.ini contains `Enabled=true`, after which the
 region simulator is restarted. Full multi-client rendering tests are pending.
 The sunrise/sunset keyframes are fixed civil-hour presets and do not yet use

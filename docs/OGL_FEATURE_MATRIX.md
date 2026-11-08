@@ -14,7 +14,7 @@
 | Authorized OXP export (objects, textures, animations, sounds, scripts) | Firestorm OXP path retained, improved abort/error-on-missing-assets and timeout handling | Runtime test of every asset class and permissions |
 | **Mesh/animesh export + LOD/PBR materials** | **Not implemented**; existing Firestorm OXP code explicitly aborts on mesh | New format/serializer, upload/import cost and rights checks |
 | Grid WebAPI profiles, groups, friends | API exists on server; no viewer-specific authenticated client | OAuth/PKCE and token storage over verified HTTPS; user-scope data |
-| Shared EEP 24h day/night aligned to OGL server time | Existing viewer Shared Environment consumes EEP, while OpenGenesisLINK server PR #405 adds opt-in regional day_length/day_offset and DST-aware refresh | Enable `[OGLSharedDayNight]` on simulator, deploy PR #405 and multi-client smoke test; animated day cycle required |
+| Shared EEP 24h day/night aligned to OGL server time | Existing viewer Shared Environment consumes EEP, while OpenGenesisLINK server PR #408 adds opt-in regional day_length/day_offset and DST-aware refresh | Enable `[OGLSharedDayNight]` on simulator, deploy PR #408 and multi-client smoke test; animated day cycle required |
 | Weather/Seasons and PBR environment | Existing viewer EEP/PBR path retained | Verified simulator feature schema and OGLWeather UI/asset bindings |
 | OGL FastRez/FastMap | Primarily server-side; baseline viewer protocols retained | Live latency/map tests; documented CAPS only |
 | NV$ economy and marketplace | Existing viewer economy/currency UI retained; NexVerse menu links to Marketplace; no native transactions added | Actual authenticated payments and Marketplace backend API contract |
