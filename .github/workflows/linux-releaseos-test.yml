@@ -85,52 +85,10 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          autobuild configure -A 64 -c ReleaseOS -- -DOPENSIM:BOOL=ON -DPACKAGE:BOOL=ON -DLL_TESTS:BOOL=OFF             2>&1 | tee /tmp/trixiestorm-configure.log
+          autobuild configure -A 64 -c ReleaseOS -- -DOPENSIM:BOOL=ON -DROOT_PROJECT_NAME:STRING=TrixieStorm -DPACKAGE:BOOL=ON -DLL_TESTS:BOOL=OFF             2>&1 | tee /tmp/trixiestorm-configure.log
           df -h /
           grep -E '^(OPENSIM|VIEWER_BINARY_NAME|PACKAGE):' build-linux-x86_64/CMakeCache.txt
-          grep -q '^OPENSIM:BOOL=ON
-
-      - name: Compile actual OpenSimulator viewer and package it
-        shell: bash
-        run: |
-          set -o pipefail
-          cmake --build build-linux-x86_64 --parallel 2             2>&1 | tee /tmp/trixiestorm-build.log
-          df -h /
-
-      - name: Validate produced Linux viewer tarball
-        shell: bash
-        run: |
-          set -euxo pipefail
-          mkdir -p out
-          find build-linux-x86_64/newview -maxdepth 3 -type f ( -name '*.tar.xz' -o -name '*.tar.bz2' -o -name '*.tar.gz' ) -print
-          archive="$(find build-linux-x86_64/newview -maxdepth 3 -type f ( -name '*.tar.xz' -o -name '*.tar.bz2' -o -name '*.tar.gz' ) | head -n 1)"
-          test -n "$archive"
-          tar -tf "$archive" | head -n 25 || test "$?" -eq 141
-          cp "$archive" out/
-          sha256sum out/* | tee out/SHA256SUMS.txt
-          printf 'Source Git SHA: %s\nTarget: Ubuntu 22.04 x86_64 ReleaseOS\n' "$GITHUB_SHA" > out/BUILD-INFO.txt
-
-      - name: Upload compiled Linux test viewer
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: TrixieStorm-Linux-x86_64-ReleaseOS-Test
-          path: out/
-          if-no-files-found: error
-          retention-days: 14
-          compression-level: 0
-
-      - name: Upload configure/build diagnostic logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: TrixieStorm-Linux-ReleaseOS-build-logs
-          path: |
-            /tmp/trixiestorm-configure.log
-            /tmp/trixiestorm-build.log
-          if-no-files-found: ignore
-          retention-days: 7
- build-linux-x86_64/CMakeCache.txt
+          grep -q '^OPENSIM:BOOL=ON$' build-linux-x86_64/CMakeCache.txt
           find build-linux-x86_64 -maxdepth 2 -name CMakeCache.txt -print
 
       - name: Compile actual OpenSimulator viewer and package it
@@ -145,8 +103,8 @@ jobs:
         run: |
           set -euxo pipefail
           mkdir -p out
-          find build-linux-x86_64/newview -maxdepth 3 -type f ( -name '*.tar.xz' -o -name '*.tar.bz2' -o -name '*.tar.gz' ) -print
-          archive="$(find build-linux-x86_64/newview -maxdepth 3 -type f ( -name '*.tar.xz' -o -name '*.tar.bz2' -o -name '*.tar.gz' ) | head -n 1)"
+          find build-linux-x86_64/newview -maxdepth 3 -type f \( -name '*.tar.xz' -o -name '*.tar.bz2' -o -name '*.tar.gz' \) -print
+          archive="$(find build-linux-x86_64/newview -maxdepth 3 -type f \( -name '*.tar.xz' -o -name '*.tar.bz2' -o -name '*.tar.gz' \) | head -n 1)"
           test -n "$archive"
           tar -tf "$archive" | head -n 25 || test "$?" -eq 141
           cp "$archive" out/
