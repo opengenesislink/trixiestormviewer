@@ -145,6 +145,15 @@
 		</combo_box>
 		<text name="TrixieStormBackendHelp">Vulkan-Vorschau: OpenGL wird über Mesa Zink an den Vulkan-Treiber weitergeleitet. Noch kein nativer Vulkan-Renderer. Geeigneter Linux-Mesa-Treiber erforderlich. Nach Auswahl Viewer neu starten.</text>
 		<text name="TrixieStormBackendRecovery">Bei Problemen mit TRIXIESTORM_FORCE_OPENGL=1 den sicheren OpenGL-Modus erzwingen.</text>
+		<check_box name="TrixieStormEnhancedClouds" label="Weiche, detaillierte EEP-Wolken (experimentell; Neustart)"/>
+		<text name="TrixieStormCloudsHelp">Weichere Wolkenränder, natürlichere Strukturen und sanfte Lichtschatten. Weiterhin eine EEP-Wolkenschicht, noch keine echten 3D-Volumenwolken. Zum Vergleich deaktivieren und Viewer neu starten.</text>
+	</panel>
+	<panel label="Wetter" name="TrixieStorm Weather">
+		<check_box name="TrixieStormWeatherEffects" label="NexVerse Regen und Schnee automatisch darstellen"/>
+		<check_box name="TrixieStormWeatherXmlFallback" label="Grid-Wetter-XML verwenden, wenn Regions-CAPS fehlen"/>
+		<text name="TrixieStormWeatherDensityLabel">Partikeldichte des Niederschlags:</text>
+		<slider name="TrixieStormWeatherDensity"/>
+		<text name="TrixieStormWeatherInfo">TrixieStorm empfängt OGLWeatherState pro Region und zeigt Regen und Schnee ohne zusätzliche Prims an. Bei aktiven alten Wetteremittern werden doppelte Effekte unterdrückt. Der allgemeine XML-Ersatz kann sich mit Inworld-Regen überschneiden.</text>
 	</panel>
 	<panel label="Hardware" name="Hardware Settings">
 		<check_box label="Anisotropische Filterung (langsamer, wenn aktiviert)" name="ani" tool_tip="Aktiviert anisotropischen Filter, wodurch die Qualität von Texturen verbessert wird, wenn sie im relativ großen Winkel in Abhängigkeit der Kameraposition betrachtet werden. Üblicherweise erscheinen sie dadurch in größerer Entfernung weniger verwaschen."/>

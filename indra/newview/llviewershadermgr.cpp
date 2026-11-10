@@ -2916,7 +2916,12 @@ bool LLViewerShaderMgr::loadShadersDeferred()
 
     if (success)
     {
-        gDeferredWLCloudProgram.mName = "Deferred Windlight Cloud Program";
+        // Distinct shader program/cache identities are critical: the viewer's
+        // disk cache hashes program + shader filenames, not GLSL file bytes.
+        const bool enhanced_clouds = gSavedSettings.getBOOL("TrixieStormEnhancedClouds");
+        gDeferredWLCloudProgram.mName = enhanced_clouds
+            ? "TrixieStorm Enhanced EEP Cloud Program v1"
+            : "Deferred Windlight Cloud Program (legacy)";
         gDeferredWLCloudProgram.mShaderFiles.clear();
         gDeferredWLCloudProgram.mFeatures.calculatesAtmospherics = true;
         gDeferredWLCloudProgram.mFeatures.hasAtmospherics = true;
@@ -2924,7 +2929,11 @@ bool LLViewerShaderMgr::loadShadersDeferred()
         gDeferredWLCloudProgram.mFeatures.hasSrgb = true;
 
         gDeferredWLCloudProgram.mShaderFiles.push_back(make_pair("deferred/cloudsV.glsl", GL_VERTEX_SHADER));
-        gDeferredWLCloudProgram.mShaderFiles.push_back(make_pair("deferred/cloudsF.glsl", GL_FRAGMENT_SHADER));
+        gDeferredWLCloudProgram.mShaderFiles.push_back(make_pair(
+            enhanced_clouds ? "deferred/cloudsF.glsl" : "deferred/cloudsLegacyF.glsl",
+            GL_FRAGMENT_SHADER));
+        LL_INFOS("TrixieStormClouds") << "Cloud shader selected: "
+            << (enhanced_clouds ? "enhanced EEP" : "legacy EEP") << LL_ENDL;
         gDeferredWLCloudProgram.mShaderLevel = mShaderLevel[SHADER_DEFERRED];
         gDeferredWLCloudProgram.mShaderGroup = LLGLSLShader::SG_SKY;
         gDeferredWLCloudProgram.addConstant( LLGLSLShader::SHADER_CONST_CLOUD_MOON_DEPTH ); // SL-14113

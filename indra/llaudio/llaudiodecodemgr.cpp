@@ -214,12 +214,19 @@ bool LLVorbisDecodeState::initDecode()
         return(false);
     }
 
-    S32 sample_count = (S32)ov_pcm_total(&mVF, -1);
-    size_t size_guess = (size_t)sample_count;
+    // Vorbis reports 64-bit sample counts. Validate before converting to
+    // size_t or multiplying by channels, especially for long OpenSim sounds.
+    const ogg_int64_t pcm_samples = ov_pcm_total(&mVF, -1);
     vorbis_info* vi = ov_info(&mVF, -1);
-    size_guess *= (vi? vi->channels : 1);
-    size_guess *= 2;
-    size_guess += 2048;
+    const bool valid_samples = pcm_samples > 0 &&
+        pcm_samples <= static_cast<ogg_int64_t>(LLVORBIS_CLIP_REJECT_SAMPLES);
+    size_t size_guess = 0;
+    if (valid_samples && vi && vi->channels >= 1 &&
+        vi->channels <= LLVORBIS_CLIP_MAX_CHANNELS)
+    {
+        size_guess = static_cast<size_t>(pcm_samples) *
+            static_cast<size_t>(vi->channels) * 2u + 2048u;
+    }
 
     bool abort_decode = false;
 
@@ -237,14 +244,13 @@ bool LLVorbisDecodeState::initDecode()
         LL_WARNS("AudioEngine") << "No default bitstream found" << LL_ENDL;
     }
 
-    if( (size_t)sample_count > LLVORBIS_CLIP_REJECT_SAMPLES ||
-        (size_t)sample_count <= 0)
+    if (!valid_samples)
     {
         abort_decode = true;
-        LL_WARNS("AudioEngine") << "Illegal sample count: " << sample_count << LL_ENDL;
+        LL_WARNS("AudioEngine") << "Illegal PCM sample count: " << pcm_samples << LL_ENDL;
     }
 
-    if( size_guess > LLVORBIS_CLIP_REJECT_SIZE )
+    if (size_guess == 0 || size_guess > LLVORBIS_CLIP_REJECT_SIZE)
     {
         abort_decode = true;
         LL_WARNS("AudioEngine") << "Illegal sample size: " << size_guess << LL_ENDL;

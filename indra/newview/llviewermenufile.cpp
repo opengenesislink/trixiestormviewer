@@ -509,7 +509,10 @@ void upload_single_file(
                 LL_INFOS() << error_msg << ": " << filename << LL_ENDL;
                 LLSD args;
                 args["FILE"] = filename;
-                args["MAX_LENGTH"] = llformat("%.0f", (LLGridManager::instance().isInSecondLife() ? LLVORBIS_CLIP_MAX_TIME : LLVORBIS_CLIP_MAX_TIME_OPENSIM));
+                // Only Second Life imposes a fixed maximum WAV duration.
+                // OpenGenesisLINK accepts longer sound files and still
+                // performs codec/file-size validation on upload.
+                args["MAX_LENGTH"] = llformat("%.0f", LLVORBIS_CLIP_MAX_TIME);
                 LLNotificationsUtil::add(error_msg, args);
                 return;
             }

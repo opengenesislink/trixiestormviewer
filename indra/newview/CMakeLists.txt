@@ -930,6 +930,7 @@ if (OPENSIM)
     list(APPEND viewer_SOURCE_FILES
                 fsgridhandler.cpp
                 oglnexverseclock.cpp
+                oglnexverseweather.cpp
                 fsslurl.cpp
         )
 else (OPENSIM)
@@ -1011,6 +1012,7 @@ set(viewer_HEADER_FILES
     fsjointpose.h
     fsgridhandler.h
     oglnexverseclock.h
+    oglnexverseweather.h
     fskeywords.h
     fslslbridge.h
     fslslbridgerequest.h

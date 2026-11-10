@@ -86,31 +86,39 @@ void main()
 
     cloudDensity *= 1.0 - (density_variance * density_variance);
 
-    // Compute alpha1, the main cloud opacity
+    // TrixieStorm: layered cloud silhouettes with soft edges and lighting.
+    // EEP cloud texture, coverage, scale and user-custom cloud textures are
+    // preserved. This is enhanced 2-D shading, not volumetric raymarching.
+    float large_noise = cloudNoise(uv1).x;
+    float middle_noise = cloudNoise(uv1 * 2.35 + vec2(0.137, 0.319)).x;
+    float fine_noise = cloudNoise(uv3).x;
 
-    float alpha1 = (cloudNoise(uv1).x - 0.5) + (cloudNoise(uv3).x - 0.5) * cloud_pos_density2.z;
-    alpha1 = min(max(alpha1 + cloudDensity, 0.) * 10 * cloud_pos_density1.z, 1.);
+    // Low-frequency masses give cloud silhouettes; mid- and high-frequency
+    // noise introduce billowy edges without replacing custom EEP imagery.
+    float cloud_shape = (large_noise - 0.5)
+        + (middle_noise - 0.5) * 0.24
+        + (fine_noise - 0.5) * cloud_pos_density2.z * 0.73;
 
-    // And smooth
-    alpha1 = 1. - alpha1 * alpha1;
-    alpha1 = 1. - alpha1 * alpha1;
-
+    float coverage = clamp((cloud_shape + cloudDensity) *
+                           9.0 * max(cloud_pos_density1.z, 0.0), 0.0, 1.0);
+    float alpha1 = coverage * coverage * (3.0 - 2.0 * coverage);
     alpha1 *= altitude_blend_factor;
     alpha1 = clamp(alpha1, 0.0, 1.0);
 
-    // Compute alpha2, for self shadowing effect
-    // (1 - alpha2) will later be used as percentage of incoming sunlight
-    float alpha2 = (cloudNoise(uv2).x - 0.5);
-    alpha2 = min(max(alpha2 + cloudDensity, 0.) * 2.5 * cloud_pos_density1.z, 1.);
+    // Offset samples mimic light filtering through uneven cloud thickness:
+    // lit puff tops are brighter while broad interiors have soft shadows.
+    float shadow_large = cloudNoise(uv2).x;
+    float shadow_fine = cloudNoise(uv4).x;
+    float thickness = clamp(((shadow_large - 0.5) +
+                             (shadow_fine - 0.5) * 0.28 + cloudDensity)
+                            * 2.8 * max(cloud_pos_density1.z, 0.0), 0.0, 1.0);
+    thickness = thickness * thickness * (3.0 - 2.0 * thickness);
+    float puff_highlight = clamp((middle_noise - 0.42) * 0.24, 0.0, 0.14);
+    float sun_visibility = 1.12 - thickness * 0.64 + puff_highlight;
 
-    // And smooth
-    alpha2 = 1. - alpha2;
-    alpha2 = 1. - alpha2 * alpha2;
-
-    // Combine
-    vec3 color;
-    color = (cloudColorSun*(1.-alpha2) + cloudColorAmbient);
-    color.rgb = clamp(color.rgb, vec3(0), vec3(1));
+    vec3 color = cloudColorSun * sun_visibility
+               + cloudColorAmbient * (0.90 + middle_noise * 0.12);
+    color.rgb = clamp(color.rgb, vec3(0.0), vec3(1.0));
     color.rgb *= 2.0;
 
     /// Gamma correct for WL (soft clip effect).

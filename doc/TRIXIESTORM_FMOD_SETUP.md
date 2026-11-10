@@ -1,43 +1,49 @@
-# FMOD Studio for TrixieStorm (optional, SDK required)
+# FMOD Studio SDK – TrixieStorm local Linux build
 
-TrixieStorm's ReleaseOS Linux build currently uses OpenAL for world audio,
-sound effects and streaming audio. WebRTC is a separate spatial voice client;
-it does not replace FMOD or OpenAL.
+The user-supplied FMOD Studio 2.03.15 Linux x86_64 SDK has been installed
+locally on PC-Bomlitz:
 
-The source contains an FMOD Studio backend and already includes the official
-`skins/default/textures/3p_icons/fmod_logo.png` startup mark. That mark is
-displayed only when the C++ target was actually compiled with
-`LL_FMODSTUDIO=1` via `USE_FMODSTUDIO=ON`.
+`~/Projekte/TrixieStorm/fmod-sdk-2.03.15/`
 
-The official FMOD SDK is proprietary and was not found on PC-Bomlitz.
-Do not bundle or download unauthorized SDK copies, and do not claim FMOD is
-active without a working library. Before distribution, review the licensing
-terms and attribution requirements at:
+The SDK supplies `libfmod.so.14.15`, `libfmodstudio.so.14.15`,
+their Linux SONAME aliases and the C/C++ headers.
 
-- https://www.fmod.com/licensing
-- https://www.fmod.com/attribution
-- https://www.fmod.com/download
-
-Once the correct licensed **Linux x64 FMOD Studio Engine API** has been
-obtained and unpacked, configure a *separate* ReleaseOS build, pointing
-CMake at the complete installed SDK:
+Install or refresh the local SDK from the user-provided archive:
 
 ```bash
-# Replace the examples with paths to your legitimate SDK installation.
-FMOD_INCLUDE_DIR="/path/to/fmod/api/core/inc"
-FMOD_LIBRARY="/path/to/fmod/api/core/lib/x86_64/libfmod.so"
-
-# These options are appended after the standard autobuild configure -- flags:
--DUSE_FMODSTUDIO:BOOL=ON \
--DFMODSTUDIO_INCLUDE_DIR:PATH="$FMOD_INCLUDE_DIR" \
--DFMODSTUDIO_LIBRARY:FILEPATH="$FMOD_LIBRARY"
+cd ~/Projekte/TrixieStorm/trixiestormviewer
+bash scripts/install_fmod_local.sh \
+    ~/Downloads/TrixieStorm-FMOD-2.03.15-Linux-x64-SDK.tar.gz
 ```
 
-Verify the actual SDK path and sonames first; the FMOD packaging step needs
-the matching `libfmod.so` copied into the Linux viewer's `lib` directory,
-with its dependent libraries if applicable. Test audio startup, sound
-playback, streaming and viewer shutdown before enabling this profile.
+The installer keeps proprietary binaries outside Git tracking. It stages
+the SONAME symlink chain inside both local build directories for packaging.
+The viewer itself links only to the FMOD Core library required by the
+existing `LLAudioEngine_FMODSTUDIO`; the Studio library is staged as a
+compatible optional runtime dependency, not evidence that Studio banks
+have been integrated.
 
-If the SDK is absent, retain `-DUSE_FMODSTUDIO=OFF` and OpenAL; never force
-the FMOD mark to appear purely for branding. Licensing and attribution remain
-the responsibility of the distributor.
+Configure with these exact existing CMake options:
+
+```text
+-DUSE_FMODSTUDIO:BOOL=ON
+-DUSE_OPENAL:BOOL=ON
+-DFMODSTUDIO_INCLUDE_DIR:PATH=/home/slmm/Projekte/TrixieStorm/fmod-sdk-2.03.15/include
+-DFMODSTUDIO_LIBRARY:FILEPATH=/home/slmm/Projekte/TrixieStorm/fmod-sdk-2.03.15/lib/libfmod.so
+```
+
+For the optimized local profile also enable:
+
+```text
+-DUSE_AVX2_OPTIMIZATION:BOOL=ON
+-DUSE_LTO:BOOL=ON
+```
+
+The viewer tries FMOD first and falls back to OpenAL if FMOD device
+initialization fails. Voice chat (WebRTC) is a separate subsystem.
+
+**Licensing:** This third-party SDK is proprietary. Keep it out of
+GitHub, CI artifacts and public ReleaseOS downloads unless the specific
+distribution use is authorized under FMOD licensing. Confirm license
+terms at https://www.fmod.com/licensing and attribution requirements
+at https://www.fmod.com/attribution before public distribution.

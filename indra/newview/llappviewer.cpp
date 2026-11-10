@@ -29,6 +29,9 @@
 #include <cstdlib>
 
 #include "llappviewer.h"
+#ifdef OPENSIM
+#include "oglnexverseweather.h"
+#endif
 
 // Viewer includes
 #include "llversioninfo.h"
@@ -2024,6 +2027,11 @@ void LLAppViewer::flushLFSIO()
 
 bool LLAppViewer::cleanup()
 {
+#ifdef OPENSIM
+    // Invalidate per-region weather CAPS callbacks and retire native emitters
+    // before the viewer particle simulator and agent objects are destroyed.
+    OGLNexVerseWeather::shutdown();
+#endif
 #if LL_VELOPACK
     // Apply any pending Velopack update before shutdown
     if (velopack_is_update_pending())
@@ -5850,6 +5858,12 @@ void LLAppViewer::idle()
         gGLActive = false;
     }
 
+
+#ifdef OPENSIM
+    // OGLWeatherState is requested per region; the local precipitation
+    // source uses the existing GPU-batched viewer particle renderer.
+    OGLNexVerseWeather::update();
+#endif
 
     F32 yaw = 0.f;              // radians
 

@@ -2,6 +2,38 @@
 <llsd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="llsd.xsd">
 <map>
+  <key>TrixieStormWeatherEffects</key>
+  <map>
+    <key>Comment</key>
+    <string>Enable native viewer rain and snow from the OpenGenesisLINK OGLWeatherState region capability. Automatically suppress native particles when legacy region emitters are active.</string>
+    <key>Persist</key><integer>1</integer>
+    <key>Type</key><string>Boolean</string>
+    <key>Value</key><integer>1</integer>
+  </map>
+  <key>TrixieStormWeatherXmlFallback</key>
+  <map>
+    <key>Comment</key>
+    <string>When a region does not advertise OGLWeatherState, optionally show grid-wide weather from https://world.stadt-nexverse.de/weather/xml. That XML does not indicate legacy emitter activity and may overlap in-world rain or snow.</string>
+    <key>Persist</key><integer>1</integer>
+    <key>Type</key><string>Boolean</string>
+    <key>Value</key><integer>1</integer>
+  </map>
+  <key>TrixieStormWeatherDensity</key>
+  <map>
+    <key>Comment</key>
+    <string>Client precipitation particle density multiplier, from 0.1 to 2.0. Applies immediately; particles remain bounded by viewer global caps.</string>
+    <key>Persist</key><integer>1</integer>
+    <key>Type</key><string>F32</string>
+    <key>Value</key><real>1.0</real>
+  </map>
+  <key>TrixieStormEnhancedClouds</key>
+  <map>
+    <key>Comment</key>
+    <string>Enable experimental multi-frequency EEP clouds with softer silhouettes and additional self-shadow shading. Restart to reload the cloud shader.</string>
+    <key>Persist</key><integer>1</integer>
+    <key>Type</key><string>Boolean</string>
+    <key>Value</key><integer>1</integer>
+  </map>
   <key>TrixieStormGraphicsBackend</key>
   <map>
     <key>Comment</key>

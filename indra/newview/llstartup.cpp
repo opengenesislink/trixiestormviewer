@@ -1112,7 +1112,21 @@ bool idle_startup()
 #else
                 void* window_handle = NULL;
 #endif
-                if (gAudiop->init(window_handle, LLAppViewer::instance()->getSecondLifeTitle()))
+                bool audio_ready = gAudiop->init(window_handle,
+                    LLAppViewer::instance()->getSecondLifeTitle());
+#if defined(LL_FMODSTUDIO) && defined(LL_OPENAL)
+                if (!audio_ready && NULL == getenv("LL_BAD_OPENAL_DRIVER"))
+                {
+                    // Optional FMOD may fail to initialize on a particular
+                    // sound device; preserve sound output via OpenAL.
+                    LL_WARNS("TrixieStormAudio") << "FMOD init failed; falling back to OpenAL" << LL_ENDL;
+                    delete gAudiop;
+                    gAudiop = new LLAudioEngine_OpenAL();
+                    audio_ready = gAudiop->init(window_handle,
+                        LLAppViewer::instance()->getSecondLifeTitle());
+                }
+#endif
+                if (audio_ready)
                 {
                     if (false == gSavedSettings.getBOOL("UseMediaPluginsForStreamingAudio"))
                     {

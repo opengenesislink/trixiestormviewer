@@ -152,18 +152,17 @@ S32 check_for_invalid_wav_formats(const std::string& in_fname, std::string& erro
         return(LLVORBISENC_UNSUPPORTED_WORD_SIZE);
     }
 
-    if (!raw_data_length)
+    if (!raw_data_length || !bytes_per_sec)
     {
         error_msg = "SoundFileInvalidHeader";
-        return(LLVORBISENC_CLIP_TOO_LONG);
+        return LLVORBISENC_WAV_FORMAT_ERR;
     }
 
     F32 clip_length = (F32)raw_data_length/(F32)bytes_per_sec;
 
-    // <FS:Ansariel> FIRE-17812: Increase sounds length to 60s on OpenSim
-    //if (clip_length > LLVORBIS_CLIP_MAX_TIME)
-    if (clip_length > (is_in_secondlife ? LLVORBIS_CLIP_MAX_TIME : LLVORBIS_CLIP_MAX_TIME_OPENSIM))
-    // </FS:Ansariel>
+    // TrixieStorm: retain Second Life's limit, but no fixed duration cap on
+    // OpenGenesisLINK sound uploads. File size and decoder memory are bounded.
+    if (is_in_secondlife && clip_length > LLVORBIS_CLIP_MAX_TIME)
     {
         error_msg = "SoundFileInvalidTooLong";
         return(LLVORBISENC_CLIP_TOO_LONG);
