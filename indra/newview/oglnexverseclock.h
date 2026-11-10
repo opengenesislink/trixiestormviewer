@@ -20,8 +20,14 @@ void refreshIfDue();
 
 // A valid server sample is extrapolated using a monotonic timer, so it
 // remains correct even when the user's operating-system clock is wrong.
-// Returns false when the optional clock extension is missing or stale.
+// Continues using a recent server sample when discovery is temporarily down.
+// Without a usable sample, falls back to Europe/Berlin with EU DST rules;
+// no Pacific/UTC-only fallback is displayed on the NexVerse status bar.
 bool now(std::time_t& civilEpoch, std::string& abbreviation,
          std::string& zoneId);
+
+// Convert an arbitrary UTC instant (including historical chat timestamps)
+// to the grid's civil time. On NexVerse this is MEZ/MESZ with DST.
+std::time_t civilTimeFromUTC(std::time_t utcEpoch);
 }
 #endif

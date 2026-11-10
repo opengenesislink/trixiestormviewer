@@ -916,7 +916,12 @@ LLIMModel::LLIMSession::LLIMSession(const LLUUID& session_id,
 
     if (IM_NOTHING_SPECIAL == mType || IM_SESSION_P2P_INVITE == mType)
     {
-        mP2PAsAdhocCall = (LLVoiceClient::getInstance()->getOutgoingCallInterface(voice_channel_info) == NULL);
+        // NexVerse: opening a text IM must never require a WebRTC P2P
+        // voice capability. Only an explicit outgoing voice call may use
+        // the ad-hoc voice-session handshake. Otherwise an empty
+        // ChatSessionRequest CAP makes ordinary IM tabs time out after 30s.
+        mP2PAsAdhocCall = mStartedAsIMCall &&
+            (LLVoiceClient::getInstance()->getOutgoingCallInterface(voice_channel_info) == NULL);
     }
     else
     {
@@ -2493,9 +2498,19 @@ bool LLIMModel::sendStartSession(
             std::string url = region->getCapability(
                 "ChatSessionRequest");
 
-            LLCoros::instance().launch("startConferenceCoro",
-                boost::bind(&startConferenceCoro, url,
-                temp_session_id, gAgent.getID(), other_participant_id, agents));
+            if (!url.empty())
+            {
+                LLCoros::instance().launch("startConferenceCoro",
+                    boost::bind(&startConferenceCoro, url,
+                    temp_session_id, gAgent.getID(), other_participant_id, agents));
+            }
+            else
+            {
+                // OpenSim regions may not provide ChatSessionRequest. The
+                // existing legacy conference message path remains available.
+                start_deprecated_conference_chat(temp_session_id,
+                    gAgent.getID(), other_participant_id, agents);
+            }
         }
         else
         {
@@ -2515,9 +2530,15 @@ bool LLIMModel::sendStartSession(
         if (region)
         {
             std::string url = region->getCapability("ChatSessionRequest");
-            LLCoros::instance().launch("startP2PVoiceCoro", boost::bind(&startP2PVoiceCoro, url, temp_session_id, gAgent.getID(), other_participant_id));
+            if (!url.empty())
+            {
+                LLCoros::instance().launch("startP2PVoiceCoro", boost::bind(&startP2PVoiceCoro, url, temp_session_id, gAgent.getID(), other_participant_id));
+                return true;
+            }
+            LL_WARNS("NexVerseVoice") << "No ChatSessionRequest CAP for an outgoing voice call; "
+                                      << "not posting to an empty URL" << LL_ENDL;
         }
-        return true;
+        return false;
     }
     return false;
 }

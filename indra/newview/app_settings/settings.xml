@@ -2,6 +2,14 @@
 <llsd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="llsd.xsd">
 <map>
+  <key>TrixieStormGraphicsBackend</key>
+  <map>
+    <key>Comment</key>
+    <string>Linux renderer selection: opengl is native OpenGL; zink is experimental OpenGL translated to Vulkan through Mesa Zink. Restart required. Set TRIXIESTORM_FORCE_OPENGL=1 to recover.</string>
+    <key>Persist</key><integer>1</integer>
+    <key>Type</key><string>String</string>
+    <key>Value</key><string>opengl</string>
+  </map>
   <key>FSLandmarkCreatedNotification</key>
   <map>
     <key>Comment</key>

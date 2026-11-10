@@ -526,14 +526,42 @@ void LLProgressView::initLogos()
     texture_start_x += icon_width + default_pad;
 #endif //LL_HAVOK
 
-    // 108x41
+#if defined(OPENSIM)
+    // Stadt NexVerse uses server-provisioned WebRTC/OGLVoice, not Vivox.
+    // The artwork comes from the WebRTC project (BSD-3-Clause notice).
+    icon_width = 112;
+    icon_height = 20;
+    loadLogo(temp_str + "webrtc_logo.png",
+        image_codec,
+        LLRect(texture_start_x, texture_start_y + 4 + icon_height,
+               texture_start_x + icon_width, texture_start_y + 4),
+        default_clip, default_clip);
+    texture_start_x += icon_width + default_pad;
+
+#if LL_LINUX
+    // Display the Vulkan trademark only if the active Mesa GL renderer is
+    // actually Zink. Merely selecting the experimental option is insufficient.
+    // This marks the active Vulkan driver path, not native Vulkan compliance.
+    if (gGLManager.mGLRenderer.find("zink") != std::string::npos)
+    {
+        icon_width = 104;
+        icon_height = 28;
+        loadLogo(temp_str + "vulkan_logo.png", image_codec,
+            LLRect(texture_start_x, texture_start_y + icon_height,
+                   texture_start_x + icon_width, texture_start_y),
+            default_clip, default_clip);
+    }
+#endif
+#else
+    // Non-OpenSimulator builds retain their existing legacy Vivox branding.
     icon_width = 74;
     icon_height = default_height;
     loadLogo(temp_str + "vivox_logo.png",
         image_codec,
-        LLRect(texture_start_x, texture_start_y + icon_height, texture_start_x + icon_width, texture_start_y),
-        default_clip,
-        default_clip);
+        LLRect(texture_start_x, texture_start_y + icon_height,
+               texture_start_x + icon_width, texture_start_y),
+        default_clip, default_clip);
+#endif
 }
 
 void LLProgressView::initStartTexture(S32 location_id, bool is_in_production)

@@ -26,6 +26,8 @@
 
 #include "llviewerprecompiledheaders.h"
 
+#include <cstdlib>
+
 #include "llappviewer.h"
 
 // Viewer includes
@@ -984,6 +986,33 @@ bool LLAppViewer::init()
     }
 
     LL_INFOS("InitInfo") << "Configuration initialized." << LL_ENDL ;
+#if LL_LINUX
+    // Select the Mesa graphics driver before LLViewerWindow initializes GLX.
+    // This experimental backend still runs the OpenGL renderer, translated to
+    // Vulkan by Zink; it is NOT a native Vulkan renderer.
+    const std::string graphics_backend = gSavedSettings.getString("TrixieStormGraphicsBackend");
+    const char* force_gl = std::getenv("TRIXIESTORM_FORCE_OPENGL");
+    const bool override_gl = force_gl && std::string(force_gl) == "1";
+    if (graphics_backend == "zink" && !override_gl)
+    {
+        setenv("MESA_LOADER_DRIVER_OVERRIDE", "zink", 1);
+        // Required on Mesa 25.2 + the Radeon Vega X11 setup tested for TrixieStorm.
+        setenv("LIBGL_KOPPER_DRI2", "true", 1);
+        LL_INFOS("TrixieStormGraphics") << "Experimental Mesa Zink Vulkan translation selected; "
+            << "restart into OpenGL using TRIXIESTORM_FORCE_OPENGL=1 if initialization fails"
+            << LL_ENDL;
+    }
+    else
+    {
+        if (override_gl)
+        {
+            unsetenv("MESA_LOADER_DRIVER_OVERRIDE");
+            unsetenv("LIBGL_KOPPER_DRI2");
+        }
+        LL_INFOS("TrixieStormGraphics") << "Standard OpenGL graphics backend selected"
+            << LL_ENDL;
+    }
+#endif
     //set the max heap size.
     initMaxHeapSize() ;
     LLCoros::instance().setStackSize(gSavedSettings.getS32("CoroutineStackSize"));
@@ -3916,7 +3945,11 @@ LLSD LLAppViewer::getViewerInfo() const
     //  info["BUILD_CONFIG"] = build_config;
     //}
 #ifdef USE_AVX2_OPTIMIZATION
+#ifdef TRIXIESTORM_LTO_ENABLED
+    info["SIMD"] = "AVX2-LTO";
+#else
     info["SIMD"] = "AVX2";
+#endif
 #elif USE_AVX_OPTIMIZATION
     info["SIMD"] = "AVX";
 #else

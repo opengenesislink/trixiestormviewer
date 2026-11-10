@@ -39,6 +39,9 @@
 #include "fsfloaterim.h"
 #include "fsfloaterimcontainer.h"
 #include "fsnearbychathub.h"
+#include "oglnexverseclock.h"
+
+#include <regex>
 #include "llagent.h"            // gAgent
 #include "llagentcamera.h"  // gAgentCamera
 #include "llanimationstates.h"  // ANIM_AGENT_WHISPER, ANIM_AGENT_TALK, ANIM_AGENT_SHOUT
@@ -250,7 +253,7 @@ void FSFloaterNearbyChat::setChatMentionPickerEnabled(bool enabled)
 
 static std::string appendTime()
 {
-    time_t utc_time = time_corrected();
+    const time_t utc_time = time_corrected();
     std::string timeStr{};
 
     if (gSavedSettings.getBOOL("Use24HourClock"))
@@ -271,8 +274,17 @@ static std::string appendTime()
 
     LLSD substitution;
 
-    substitution["datetime"] = (S32) utc_time;
-    LLStringUtil::format (timeStr, substitution);
+    // Firestorm's stock chat tokens use Pacific time (SLT). Convert the
+    // UTC instant to the NexVerse civil time first and format as UTC tokens
+    // so the formatter does not subtract Pacific's offset again.
+#ifdef OPENSIM
+    substitution["datetime"] = (S32)OGLNexVerseClock::civilTimeFromUTC(utc_time);
+    static const std::regex slt_token(R"(,\s*slt\s*\])");
+    timeStr = std::regex_replace(timeStr, slt_token, ", utc]");
+#else
+    substitution["datetime"] = (S32)utc_time;
+#endif
+    LLStringUtil::format(timeStr, substitution);
 
     return timeStr;
 }

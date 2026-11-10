@@ -16,9 +16,10 @@ for needle in (
     'OGLNexVerse::GEN1_LOGIN_URI',
     'org.opengenesislink.viewer.grid-info.v1',
     'std::chrono::steady_clock',
-    'state.unixSeconds + elapsed + state.utcOffsetSeconds',
+    'state.unixSeconds +',
+    'berlinUtcOffset(utcEpoch)',
     'std::chrono::seconds(60)',
-    'std::chrono::minutes(5)',
+    'std::chrono::hours(24)',
     'void OGLNexVerseClock::refreshIfDue()',
 ):
     assert needle in clock, f"Missing clock implementation: {needle}"
@@ -28,7 +29,7 @@ for needle in (
     'OGLNexVerseClock::now(',
     'std::regex_replace(pattern, slt_token, ", utc]")',
     'LLStringUtil::replaceString(pattern, "OGLSERVERCLOCKZONE", zone_label)',
-    'civil_epoch = time_corrected()',
+    'Never revert to raw UTC on network errors.',
 ):
     assert needle in status, f"Missing status-bar integration: {needle}"
 

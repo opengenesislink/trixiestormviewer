@@ -30,6 +30,9 @@
 #include "llagentui.h"
 #include "llavatarnamecache.h"
 #include "lllogchat.h"
+#include "oglnexverseclock.h"
+
+#include <regex>
 #include "llregex.h"
 #include "lltrans.h"
 #include "llurlaction.h"
@@ -399,16 +402,19 @@ std::string LLLogChat::timestamp2LogString(U32 timestamp, bool withdate)
     }
 
     LLSD substitution;
-    if (timestamp == 0)
-    {
-        substitution["datetime"] = (S32)time_corrected();
-    }
-    else
-    {   // timestamp is correct utc already
-        substitution["datetime"] = (S32)timestamp;
-    }
+    const std::time_t utcEpoch = timestamp == 0
+        ? time_corrected() : static_cast<std::time_t>(timestamp);
+#ifdef OPENSIM
+    // IMs, group chat and transcript timestamps use the same grid civil
+    // clock as the status bar. Historical timestamps retain their own DST.
+    substitution["datetime"] = (S32)OGLNexVerseClock::civilTimeFromUTC(utcEpoch);
+    static const std::regex slt_token(R"(,\s*slt\s*\])");
+    timeStr = std::regex_replace(timeStr, slt_token, ", utc]");
+#else
+    substitution["datetime"] = (S32)utcEpoch;
+#endif
 
-    LLStringUtil::format (timeStr, substitution);
+    LLStringUtil::format(timeStr, substitution);
     return timeStr;
 }
 

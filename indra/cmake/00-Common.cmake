@@ -54,6 +54,7 @@ endif()
 set(USE_LTO OFF CACHE BOOL "Enable Link Time Optimization")
 if(USE_LTO)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
+  add_compile_definitions(TRIXIESTORM_LTO_ENABLED=1)
 endif()
 
 # Don't bother with a MinSizeRel or Debug builds.
@@ -142,6 +143,19 @@ endif (WINDOWS)
 
 
 if (LINUX)
+  # Optional CPU-specific build profile. Keep generic x86_64 on the SSE2
+  # baseline: binaries built with AVX2 will crash on older processors.
+  # Use -DUSE_AVX2_OPTIMIZATION=ON for an explicitly targeted Linux build.
+  if (USE_AVX2_OPTIMIZATION)
+    include(CheckCXXCompilerFlag)
+    check_cxx_compiler_flag("-mavx2" TRIXIESTORM_COMPILER_HAS_AVX2)
+    if (NOT TRIXIESTORM_COMPILER_HAS_AVX2)
+      message(FATAL_ERROR "TrixieStorm AVX2 build requested but compiler lacks -mavx2")
+    endif()
+    add_compile_options(-mavx2)
+    message(STATUS "TrixieStorm Linux AVX2 optimization enabled (requires AVX2 CPU)")
+  endif()
+
   set(CMAKE_SKIP_RPATH TRUE)
 
   # <FS:ND/>

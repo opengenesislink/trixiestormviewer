@@ -570,14 +570,9 @@ void LLStatusBar::updateClockDisplay()
     OGLNexVerseClock::refreshIfDue();
     std::time_t civil_epoch;
     std::string zone_label, zone_id;
-    if (!OGLNexVerseClock::now(civil_epoch, zone_label, zone_id))
-    {
-        // A legacy/missing discovery response does NOT imply Pacific time.
-        // time_corrected() is UTC corrected by the login server.
-        civil_epoch = time_corrected();
-        zone_label = "UTC";
-        zone_id = "UTC (server timezone unavailable)";
-    }
+    // The clock supplies a server sample or a daylight-saving-aware
+    // Europe/Berlin fallback. Never revert to raw UTC on network errors.
+    OGLNexVerseClock::now(civil_epoch, zone_label, zone_id);
 
     // All status bar formats are supported (language, 12h/24h, seconds,
     // tooltip). We give the datetime formatter an offset-adjusted UTC

@@ -72,6 +72,9 @@ class ViewerManifest(LLManifest,FSViewerManifest):
     def construct(self):
         super(ViewerManifest, self).construct()
         self.path(src="../../scripts/messages/message_template.msg", dst="app_settings/message_template.msg")
+        # Include the required license/trademark notices for startup logos
+        # in every packaged build (WebRTC, Vulkan preview, optional FMOD).
+        self.path(src="../../doc/THIRD_PARTY_BRANDING.md", dst="THIRD_PARTY_BRANDING.md")
         
         # <FS:LO> Copy dictionaries to a place where the viewer can find them if ran from visual studio
         pkgdir = os.path.join(self.args['build'], os.pardir, 'packages')
@@ -2142,6 +2145,7 @@ class LinuxManifest(ViewerManifest):
         print("DEBUG: icon_path '%s'" % icon_path)
         with self.prefix(src=icon_path) :
             # TrixieStorm launcher/icon copied from the project resource directory above.
+            pass
             #with self.prefix(dst="res-sdl") :
             #    self.path("firestorm_256.bmp","ll_icon.BMP")
 

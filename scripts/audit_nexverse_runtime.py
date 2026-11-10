@@ -61,7 +61,7 @@ CHECKS = {
     "indra/newview/llstatusbar.cpp": [
         'OGLNexVerseClock::refreshIfDue()',
         'OGLNexVerseClock::now(',
-        'civil_epoch = time_corrected()',
+        'Never revert to raw UTC on network errors.',
         'std::regex_replace(pattern, slt_token, ", utc]")',
         'zone_id',
     ],

@@ -124,6 +124,15 @@ std::string LLVoiceClientStatusObserver::status2string(LLVoiceClientStatusObserv
 
 LLVoiceModuleInterface *getVoiceModule(const std::string &voice_server_type)
 {
+#ifdef OPENSIM
+    // Stadt NexVerse uses server-provisioned WebRTC only. Never silently
+    // select Vivox when a region omits or misreports VoiceServerType.
+    if (voice_server_type == WEBRTC_VOICE_SERVER_TYPE)
+        return (LLVoiceModuleInterface *)LLWebRTCVoiceClient::getInstance();
+    LL_WARNS("NexVerseVoice") << "Unsupported voice provider: "
+                              << voice_server_type << LL_ENDL;
+    return nullptr;
+#else
     if (voice_server_type == VIVOX_VOICE_SERVER_TYPE || voice_server_type.empty())
     {
         return (LLVoiceModuleInterface *) LLVivoxVoiceClient::getInstance();
@@ -137,6 +146,7 @@ LLVoiceModuleInterface *getVoiceModule(const std::string &voice_server_type)
         LLNotificationsUtil::add("VoiceVersionMismatch");
         return nullptr;
     }
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,7 +195,10 @@ void LLVoiceClient::userAuthorized(const std::string& user_id, const LLUUID &age
     }
     mRegionChangedCallbackSlot = gAgent.addRegionChangedCallback(boost::bind(&LLVoiceClient::onRegionChanged, this));
     LLWebRTCVoiceClient::getInstance()->userAuthorized(user_id, agentID);
+#ifndef OPENSIM
+    // Legacy Vivox authorization is only needed for non-NexVerse builds.
     LLVivoxVoiceClient::getInstance()->userAuthorized(user_id, agentID);
+#endif
 }
 
 void LLVoiceClient::handleSimulatorFeaturesReceived(const LLSD &simulatorFeatures)
@@ -211,9 +224,25 @@ void LLVoiceClient::handleSimulatorFeaturesReceived(const LLSD &simulatorFeature
 #endif
     if (voiceServerType.empty())
     {
-        // Compatibility fallback for regions without deployed WebRTC CAPS.
+#ifdef OPENSIM
+        LL_WARNS("NexVerseVoice") << "Region did not advertise WebRTC voice; "
+                                  << "legacy Vivox fallback disabled" << LL_ENDL;
+        if (mSpatialVoiceModule && !mNonSpatialVoiceModule)
+            mSpatialVoiceModule->processChannels(false);
+        mSpatialVoiceModule = nullptr;
+        return;
+#else
         voiceServerType = VIVOX_VOICE_SERVER_TYPE;
+#endif
     }
+#ifdef OPENSIM
+    if (voiceServerType != WEBRTC_VOICE_SERVER_TYPE)
+    {
+        LL_WARNS("NexVerseVoice") << "Rejecting non-WebRTC voice provider: "
+                                  << voiceServerType << LL_ENDL;
+        return;
+    }
+#endif
 
     if (mSpatialVoiceModule && !mNonSpatialVoiceModule)
     {

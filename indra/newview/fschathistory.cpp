@@ -1725,8 +1725,9 @@ void FSChatHistory::appendMessage(const LLChat& chat, const LLSD &args, const LL
                 name_params.use_default_link_style = false;
                 name_params.link_href = LLSLURL(from_me ? "agentself" : "agent", chat.mFromID, "inspect").getSLURLString();
 
-                // Add link to avatar's inspector and delimiter to message.
-                appendText(std::string(name_params.link_href), prependNewLineState, name_params);
+                // Keep the inspector URL in the link style, but render the
+                // actual avatar name instead of the internal /agent/UUID path.
+                appendText(chat.mFromName, prependNewLineState, name_params);
 
                 prependNewLineState = false;
 
