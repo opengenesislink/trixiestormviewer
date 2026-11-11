@@ -84,6 +84,7 @@ jobs:
           python3 scripts/audit_nexverse_renderer.py
           python3 scripts/audit_nexverse_clouds.py
           python3 scripts/audit_nexverse_weather_audio.py
+          python3 scripts/audit_nexverse_weather_visuals.py
 
       - name: Fetch and configure complete ReleaseOS dependencies
         shell: bash

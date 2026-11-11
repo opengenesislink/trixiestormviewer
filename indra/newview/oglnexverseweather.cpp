@@ -34,6 +34,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <chrono>
+#include <cmath>
 #include <cstdint>
 #include <mutex>
 #include <sstream>
@@ -69,6 +70,8 @@ struct WeatherState
     Clock::time_point lastAttempt{};
     std::uint64_t serial = 0;
     WeatherSnapshot weather;
+    OGLNexVerseWeather::VisualState visual;
+    Clock::time_point lastVisualUpdate{};
     LLPointer<WeatherPartSource> emitter;
 };
 
@@ -132,42 +135,69 @@ public:
         const F32 quality = llclamp(
             static_cast<F32>(gSavedSettings.getF32("TrixieStormWeatherDensity")),
             0.1f, 2.0f);
-        const F32 rate = (snow ? 30.f : 85.f) *
-            (0.15f + 0.85f * llclamp(w.intensity, 0, 100) / 100.f) * quality;
-        mBudget = llmin(mBudget + llclamp(dt, 0.f, 0.13f) * rate, 30.f);
-        const S32 count = llmin(static_cast<S32>(mBudget), 12);
+        const F32 strength = llclamp(w.intensity / 100.f, 0.f, 1.f);
+        if (strength < 0.005f)
+        {
+            mBudget = 0.f;
+            return;
+        }
+        // Intensity governs particle counts nonlinearly: light showers stay
+        // sparse, heavy rain fills the near field. Per-frame and scene limits
+        // guard frame time on integrated GPUs (including Radeon Vega).
+        const F32 weighted = strength * strength * (3.f - 2.f * strength);
+        const F32 rate = (snow ? 35.f + 240.f * weighted
+                               : 65.f + 650.f * weighted) * quality;
+        mBudget = llmin(mBudget + llclamp(dt, 0.f, 0.12f) * rate, 64.f);
+        const S32 count = llmin(static_cast<S32>(mBudget), 40);
         mBudget -= static_cast<F32>(count);
 
-        // Weather is simulated around the camera so particles remain visible
-        // on large 256m and varregions without rez or simulator object updates.
-        // Wind direction isn't in the v1 weather contract; use a modest drift.
-        mPosAgent = LLViewerCamera::getInstance()->getOrigin();
+        // Populate the camera's visible volume rather than a wide square
+        // largely behind the player. The source still creates no inworld prim.
+        LLViewerCamera* camera = LLViewerCamera::getInstance();
+        mPosAgent = camera->getOrigin();
+        LLVector3 forward = camera->getAtAxis();
+        forward.mV[VZ] = 0.f;
+        if (forward.magVecSquared() < 0.01f)
+            forward = LLVector3(1.f, 0.f, 0.f);
+        forward.normalize();
+        const LLVector3 side(-forward.mV[VY], forward.mV[VX], 0.f);
+        // Weather v1 specifies wind speed only, so drift direction is a
+        // consistent visual approximation until the CAPS adds a wind vector.
         const F32 wind = llclamp(static_cast<F32>(w.windKmh), 0.f, 100.f) / 3.6f;
         for (S32 i = 0; i < count; ++i)
         {
             if (!LLViewerPartSim::shouldAddPart())
+            {
+                mBudget = 0.f;
                 break;
+            }
+            const F32 depth = snow ? 1.5f + ll_frand(13.f)
+                                   : 1.5f + ll_frand(15.f);
+            const F32 breadth = (ll_frand(2.f) - 1.f) * (2.8f + depth * 0.58f);
             LLViewerPart* particle = new LLViewerPart;
             particle->init(this, mImagep.get(), nullptr);
-            particle->mPosAgent = mPosAgent +
-                LLVector3(ll_frand(26.f) - 13.f, ll_frand(26.f) - 13.f,
-                          (snow ? 5.f : 13.f) + ll_frand(snow ? 9.f : 7.f));
-            particle->mMaxAge = snow ? 4.f + ll_frand(2.f) : 0.9f + ll_frand(0.5f);
+            particle->mPosAgent = mPosAgent + forward * depth + side * breadth +
+                LLVector3(0.f, 0.f, snow ? (1.5f + ll_frand(7.f))
+                                          : (2.f + ll_frand(9.f)));
+            particle->mMaxAge = snow ? 4.0f + ll_frand(2.f)
+                                     : 0.85f + ll_frand(0.45f);
             particle->mVelocity = LLVector3(
-                wind * 0.20f + (snow ? ll_frand(1.4f) - 0.7f : 0.f),
-                wind * 0.06f + (snow ? ll_frand(1.2f) - 0.6f : 0.f),
-                snow ? -1.2f - ll_frand(0.7f) : -12.f - ll_frand(6.f));
-            particle->mAccel = LLVector3(0.f, 0.f, snow ? -0.10f : -1.8f);
+                wind * (snow ? 0.32f : 0.48f) +
+                    (snow ? ll_frand(1.4f) - 0.7f : 0.f),
+                wind * 0.12f + (snow ? ll_frand(1.2f) - 0.6f : 0.f),
+                snow ? -1.2f - ll_frand(0.8f) : -12.f - ll_frand(8.f));
+            particle->mAccel = LLVector3(0.f, 0.f, snow ? -0.08f : -2.0f);
             particle->mFlags = LLPartData::LL_PART_INTERP_COLOR_MASK |
                 (snow ? 0 : LLPartData::LL_PART_FOLLOW_VELOCITY_MASK);
-            particle->mStartColor = snow ? LLColor4(1.f, 1.f, 1.f, 0.86f)
-                                        : LLColor4(0.78f, 0.86f, 1.f, 0.52f);
+            particle->mStartColor = snow ? LLColor4(0.96f, 0.98f, 1.f, 0.94f)
+                                        : LLColor4(0.77f, 0.85f, 0.95f,
+                                                   0.60f + weighted * 0.18f);
             particle->mEndColor = particle->mStartColor;
             particle->mEndColor.mV[3] = 0.0f;
             particle->mColor = particle->mStartColor;
             particle->mScale = snow
-                ? LLVector2(0.17f + ll_frand(0.12f), 0.17f + ll_frand(0.12f))
-                : LLVector2(0.035f, 0.52f);
+                ? LLVector2(0.14f + ll_frand(0.17f), 0.14f + ll_frand(0.17f))
+                : LLVector2(0.055f, 0.66f + weighted * 0.64f);
             particle->mStartScale = particle->mScale;
             particle->mEndScale = particle->mScale;
             particle->mStartGlow = 0.f;
@@ -286,6 +316,8 @@ void cancelWeather(WeatherState& s)
         s.emitter = nullptr;
     }
     s.weather = WeatherSnapshot{};
+    s.visual = OGLNexVerseWeather::VisualState{};
+    s.lastVisualUpdate = Clock::time_point{};
 }
 
 } // namespace
@@ -294,10 +326,12 @@ void OGLNexVerseWeather::update()
 {
     WeatherState& s = state();
     LLViewerRegion* region = gAgent.getRegion();
+    const bool weatherNeeded = gSavedSettings.getBOOL("TrixieStormWeatherEffects") ||
+        gSavedSettings.getBOOL("TrixieStormWeatherSkySync");
     const bool allowed = !gDisconnected &&
         LLStartUp::getStartupState() == STATE_STARTED &&
         OGLNexVerse::isAllowedGrid(LLGridManager::getInstance()->getGrid()) &&
-        region && gSavedSettings.getBOOL("TrixieStormWeatherEffects");
+        region && weatherNeeded;
     const LLUUID regionId = allowed ? region->getRegionID() : LLUUID::null;
     const auto now = Clock::now();
 
@@ -320,7 +354,24 @@ void OGLNexVerseWeather::update()
         }
         if (s.weather.valid && now - s.weather.received > WEATHER_STALE_AFTER)
             s.weather.valid = false;
-        const bool display = s.weather.valid && !s.weather.legacyEmitters &&
+        // Smooth weather fronts so abrupt updates don't flash the skydome.
+        const F32 elapsed = s.lastVisualUpdate == Clock::time_point{}
+            ? 0.0f : llclamp(
+                std::chrono::duration<F32>(now - s.lastVisualUpdate).count(),
+                0.f, 1.0f);
+        s.lastVisualUpdate = now;
+        const F32 blend = 1.f - std::exp(-elapsed * 0.38f);
+        const F32 strength = s.weather.valid
+            ? llclamp(s.weather.intensity / 100.f, 0.f, 1.f) : 0.f;
+        const F32 targetRain = s.weather.condition == Condition::Rain ? strength : 0.f;
+        const F32 targetSnow = s.weather.condition == Condition::Snow ? strength : 0.f;
+        const F32 targetWind = s.weather.valid
+            ? llclamp(s.weather.windKmh / 100.f, 0.f, 1.f) : 0.f;
+        s.visual.rain += (targetRain - s.visual.rain) * blend;
+        s.visual.snow += (targetSnow - s.visual.snow) * blend;
+        s.visual.wind += (targetWind - s.visual.wind) * blend;
+        const bool display = gSavedSettings.getBOOL("TrixieStormWeatherEffects") &&
+            s.weather.valid && !s.weather.legacyEmitters &&
             (s.weather.condition == Condition::Rain ||
              s.weather.condition == Condition::Snow);
         if (display && s.emitter.isNull())
@@ -370,4 +421,11 @@ void OGLNexVerseWeather::shutdown()
     ++s.serial;
     s.regionId = LLUUID::null;
     cancelWeather(s);
+}
+
+OGLNexVerseWeather::VisualState OGLNexVerseWeather::visualState()
+{
+    WeatherState& s = state();
+    std::lock_guard<std::mutex> lock(s.mutex);
+    return s.visual;
 }

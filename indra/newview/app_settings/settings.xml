@@ -2,6 +2,22 @@
 <llsd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="llsd.xsd">
 <map>
+  <key>TrixieStormWeatherSkySync</key>
+  <map>
+    <key>Comment</key>
+    <string>Link weather-front clouds to current NexVerse OGLWeather state. Smooth rain/snow skies while respecting the current EEP sky and custom textures.</string>
+    <key>Persist</key><integer>1</integer>
+    <key>Type</key><string>Boolean</string>
+    <key>Value</key><integer>1</integer>
+  </map>
+  <key>TrixieStormZinkVisualBoost</key>
+  <map>
+    <key>Comment</key>
+    <string>Add optional fine cloud details to the Mesa Zink renderer. Extra shader cost; not native Vulkan. Switch without restart when using enhanced EEP clouds.</string>
+    <key>Persist</key><integer>1</integer>
+    <key>Type</key><string>Boolean</string>
+    <key>Value</key><integer>1</integer>
+  </map>
   <key>TrixieStormWeatherEffects</key>
   <map>
     <key>Comment</key>

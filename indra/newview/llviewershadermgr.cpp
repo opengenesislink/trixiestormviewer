@@ -2920,7 +2920,7 @@ bool LLViewerShaderMgr::loadShadersDeferred()
         // disk cache hashes program + shader filenames, not GLSL file bytes.
         const bool enhanced_clouds = gSavedSettings.getBOOL("TrixieStormEnhancedClouds");
         gDeferredWLCloudProgram.mName = enhanced_clouds
-            ? "TrixieStorm Enhanced EEP Cloud Program v1"
+            ? "TrixieStorm Weatherfront EEP Cloud Program v2"
             : "Deferred Windlight Cloud Program (legacy)";
         gDeferredWLCloudProgram.mShaderFiles.clear();
         gDeferredWLCloudProgram.mFeatures.calculatesAtmospherics = true;

@@ -13,11 +13,12 @@ settings = ET.parse(nv / "app_settings/settings.xml").getroot()
 assert any(t.text == "TrixieStormEnhancedClouds" for t in settings.iter("key"))
 assert 'gSavedSettings.getBOOL("TrixieStormEnhancedClouds")' in shader_manager
 assert '"deferred/cloudsF.glsl" : "deferred/cloudsLegacyF.glsl"' in shader_manager
-for flag in ("multi-frequency", "cloud_shape", "middle_noise", "thickness", "sun_visibility"):
-    if flag != "multi-frequency":
-        assert flag in enhanced, flag
+for flag in ("trixie_weather", "trixie_weather_time", "frontalCover",
+             "middleNoise", "thickness", "rainBase", "snowBase",
+             "highQuality"):
+    assert flag in enhanced, flag
 assert "float alpha1 = (cloudNoise(uv1).x - 0.5)" in legacy
-assert "cloud_shape" not in legacy
+assert "trixie_weather" not in legacy
 for loc in ("en", "de"):
     tree = ET.parse(nv / f"skins/default/xui/{loc}/panel_preferences_graphics1.xml")
     controls = [x for x in tree.iter("check_box")

@@ -50,3 +50,17 @@ Compare exactly the same location, time of day, avatar load, camera angle,
 render distance, graphics preset and resolution. Measure frame times
 (CPU/GPU) and 1% lows in addition to average FPS. On integrated GPUs Zink
 may be slower or less stable than direct OpenGL.
+
+## Enhanced weather visuals in Zink (v2)
+With `TrixieStormEnhancedClouds` and `TrixieStormZinkVisualBoost` both
+selected, the active Mesa Zink renderer samples additional cloud-noise
+octaves for more varied cloud edges and frontal forms. Rain fronts are
+blue-charcoal; snow systems are diffuse grey-white. Density and tint follow
+smoothed OGLWeather intensity; wind speed controls the approximate cloud
+front drift. Toggle `TrixieStormZinkVisualBoost` to compare, and compare
+to OpenGL using the same EEP preset and precipitation intensity.
+
+This changes **cloud appearance only**, not reflections, terrain, PBR
+materials or the underlying Firestorm rendering pipeline. The optional
+Zink path will not always outperform native OpenGL, especially on small
+integrated GPUs. TrixieStorm still has no native Vulkan rasterizer.

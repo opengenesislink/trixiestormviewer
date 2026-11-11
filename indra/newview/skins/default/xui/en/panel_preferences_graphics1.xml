@@ -974,8 +974,12 @@
                    height="19" layout="topleft" left="14" top="310"
                    name="TrixieStormEnhancedClouds" width="460"
                    label="Soft, detailed EEP clouds (experimental; restart required)" />
+        <check_box control_name="TrixieStormZinkVisualBoost" follows="left|top"
+                   height="19" layout="topleft" left="14" top="337"
+                   name="TrixieStormZinkVisualBoost" width="480"
+                   label="Additional cloud detail when Mesa Vulkan/Zink is active" />
         <text follows="left|top" height="80" layout="topleft" left="14"
-              top="338" width="490" name="TrixieStormCloudsHelp" word_wrap="true">
+              top="372" width="490" name="TrixieStormCloudsHelp" word_wrap="true">
           Softer cloud edges, multi-scale cloud shapes and gentle sunlight shading. Uses the existing EEP sky layer, not true volumetric 3D clouds. Disable and restart to compare with the original shader.
         </text>
     </panel>
@@ -987,21 +991,25 @@
                    follows="left|top" height="20" layout="topleft" left="14"
                    top="25" name="TrixieStormWeatherEffects" width="495"
                    label="Show native NexVerse rain and snow (automatic)" />
+        <check_box control_name="TrixieStormWeatherSkySync"
+                   follows="left|top" height="20" layout="topleft" left="14"
+                   top="61" name="TrixieStormWeatherSkySync" width="495"
+                   label="Show moving rain/snow cloud fronts in the EEP sky" />
         <check_box control_name="TrixieStormWeatherXmlFallback"
                    follows="left|top" height="20" layout="topleft" left="14"
-                   top="62" name="TrixieStormWeatherXmlFallback" width="495"
+                   top="99" name="TrixieStormWeatherXmlFallback" width="495"
                    label="Use grid weather XML when the region lacks OGLWeatherState" />
         <text follows="left|top" height="18" layout="topleft" left="14"
-              top="99" width="400" name="TrixieStormWeatherDensityLabel">
+              top="139" width="400" name="TrixieStormWeatherDensityLabel">
           Precipitation particle density:
         </text>
         <slider control_name="TrixieStormWeatherDensity"
                 follows="left|top" height="20" layout="topleft" left="14"
-                top="125" name="TrixieStormWeatherDensity" width="345"
+                top="168" name="TrixieStormWeatherDensity" width="345"
                 min_val="0.1" max_val="2.0" increment="0.1" initial_value="1.0"
                 decimal_digits="1" show_text="true" />
         <text follows="left|top" height="160" layout="topleft" left="14"
-              top="175" width="490" word_wrap="true" name="TrixieStormWeatherInfo">
+              top="218" width="490" word_wrap="true" name="TrixieStormWeatherInfo">
           TrixieStorm checks the OpenGenesisLINK OGLWeatherState region capability and renders local precipitation without inworld objects. Rain and snow follow the current region and intensity. If legacy weather emitters are active, duplicate effects are automatically suppressed. Grid XML fallback is less precise and may overlap existing inworld rain.
         </text>
     </panel>

@@ -66,6 +66,9 @@ uniform float sun_moon_glow_factor;
 uniform vec3 cloud_color;
 
 uniform float cloud_scale;
+// A region with 0 EEP cloud scale can still have OGLWeather storm clouds.
+// Without the clamp, a rainy skydome would divide texture UVs by zero.
+uniform vec4 trixie_weather;
 
 // NOTE: Keep these in sync!
 //       indra\newview\app_settings\shaders\class1\deferred\skyV.glsl
@@ -83,7 +86,9 @@ void main()
     vary_texcoord0 = vec2(-texcoord0.x, texcoord0.y);  // See: LLSettingsVOSky::applySpecial
 
     vary_texcoord0.xy -= 0.5;
-    vary_texcoord0.xy /= cloud_scale;
+    float activeCloudScale = max(cloud_scale,
+        max(trixie_weather.x, trixie_weather.y) * 0.42);
+    vary_texcoord0.xy /= max(activeCloudScale, 0.001);
     vary_texcoord0.xy += 0.5;
 
     vary_texcoord1 = vary_texcoord0;

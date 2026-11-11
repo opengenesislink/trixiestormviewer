@@ -146,10 +146,12 @@
 		<text name="TrixieStormBackendHelp">Vulkan-Vorschau: OpenGL wird über Mesa Zink an den Vulkan-Treiber weitergeleitet. Noch kein nativer Vulkan-Renderer. Geeigneter Linux-Mesa-Treiber erforderlich. Nach Auswahl Viewer neu starten.</text>
 		<text name="TrixieStormBackendRecovery">Bei Problemen mit TRIXIESTORM_FORCE_OPENGL=1 den sicheren OpenGL-Modus erzwingen.</text>
 		<check_box name="TrixieStormEnhancedClouds" label="Weiche, detaillierte EEP-Wolken (experimentell; Neustart)"/>
+		<check_box name="TrixieStormZinkVisualBoost" label="Zusaetzliche Wolkendetails mit Vulkan/Mesa Zink"/>
 		<text name="TrixieStormCloudsHelp">Weichere Wolkenränder, natürlichere Strukturen und sanfte Lichtschatten. Weiterhin eine EEP-Wolkenschicht, noch keine echten 3D-Volumenwolken. Zum Vergleich deaktivieren und Viewer neu starten.</text>
 	</panel>
 	<panel label="Wetter" name="TrixieStorm Weather">
 		<check_box name="TrixieStormWeatherEffects" label="NexVerse Regen und Schnee automatisch darstellen"/>
+		<check_box name="TrixieStormWeatherSkySync" label="Bewegte Regen- und Schneewolken nach OGLWeather darstellen"/>
 		<check_box name="TrixieStormWeatherXmlFallback" label="Grid-Wetter-XML verwenden, wenn Regions-CAPS fehlen"/>
 		<text name="TrixieStormWeatherDensityLabel">Partikeldichte des Niederschlags:</text>
 		<slider name="TrixieStormWeatherDensity"/>

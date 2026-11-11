@@ -44,11 +44,16 @@
 #include "llvowlsky.h"
 #include "llsettingsvo.h"
 #include "llviewercontrol.h"
+#ifdef OPENSIM
+#include "oglnexverseweather.h"
+#endif
 
 extern bool gCubeSnapshot;
 
 static LLStaticHashedString sCamPosLocal("camPosLocal");
 static LLStaticHashedString sCustomAlpha("custom_alpha");
+static LLStaticHashedString sTrixieWeather("trixie_weather");
+static LLStaticHashedString sTrixieWeatherTime("trixie_weather_time");
 
 static LLGLSLShader* cloud_shader = NULL;
 static LLGLSLShader* sky_shader   = NULL;
@@ -337,6 +342,24 @@ void LLDrawPoolWLSky::renderSkyCloudsDeferred(const LLVector3& camPosLocal, F32 
             }
         }
 
+#ifdef OPENSIM
+        // Zink remains OpenGL-to-Vulkan translation; the optional extra
+        // detail samples are a separate visual quality preset, not a native
+        // Vulkan-specific renderer implementation.
+        const bool activeZink = gGLManager.mGLRenderer.find("zink") != std::string::npos;
+        const F32 hqClouds = activeZink &&
+            gSavedSettings.getBOOL("TrixieStormZinkVisualBoost") ? 1.f : 0.f;
+        const bool skyWeather = gSavedSettings.getBOOL("TrixieStormWeatherSkySync");
+        const OGLNexVerseWeather::VisualState weather =
+            OGLNexVerseWeather::visualState();
+        cloudshader->uniform4f(sTrixieWeather,
+            skyWeather ? weather.rain : 0.f,
+            skyWeather ? weather.snow : 0.f,
+            skyWeather ? weather.wind : 0.f,
+            hqClouds);
+        cloudshader->uniform1f(sTrixieWeatherTime,
+            static_cast<F32>(LLFrameTimer::getElapsedSeconds()));
+#endif
         cloudshader->uniform1f(LLShaderMgr::BLEND_FACTOR, blend_factor);
         cloudshader->uniform1f(LLShaderMgr::CLOUD_VARIANCE, cloud_variance);
         cloudshader->uniform1f(LLShaderMgr::SUN_MOON_GLOW_FACTOR, psky->getSunMoonGlowFactor());

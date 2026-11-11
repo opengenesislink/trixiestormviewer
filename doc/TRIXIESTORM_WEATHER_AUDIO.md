@@ -28,9 +28,24 @@ uses only the fixed trusted grid endpoint:
 The XML is grid-wide and does not report legacy emitter state. It can
 duplicate older inworld weather; disable the fallback if needed.
 
+Visual weather v2: precipitation is spawned in a camera-forward volume instead
+of a broad square around the player. Rain and snow have separate visual
+rates, sizes, velocities and colors. Rain scales from roughly 65 to 715
+particles/second at intensities from >0% to 100%, before the density slider
+and per-frame/global caps. Snow scales approximately 35 to 275/second.
+At 0% precipitation, no new droplets/flakes are emitted. A 40-particle
+per-frame spawn cap protects the Ryzen/Radeon Vega class of hardware.
+
+Weather-front EEP clouds use smoothed precipitation intensity, dark layered
+rain fronts, brighter snow strata, several frequencies of detail, daytime
+lighting, soft edges and gentle advective movement. The server's EEP sky
+and custom cloud textures remain the base. Rain fronts leave smoothly when
+weather clears. This is a 2D cloud approximation, not raymarched 3D clouds;
+roofs do not yet shield the particle simulation.
+
 Controls: Preferences → Graphics → Weather (`TrixieStorm Weather`).
-They allow toggling native precipitation, toggling XML fallback and
-selecting density (0.1–2.0). Changes are live. Effect rendering requires
+They allow toggling native precipitation, toggling synchronized weather-front
+clouds, toggling XML fallback and selecting density (0.1–2.0). Changes are live. Effect rendering requires
 that particles are enabled in the main viewer graphics preferences.
 
 The grid must remain the authorized Stadt NexVerse grid. Only the
