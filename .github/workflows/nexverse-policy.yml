@@ -1,0 +1,54 @@
+name: NexVerse destination-policy tests
+
+on:
+  push:
+    branches: [feature/firestorm-source-import]
+    paths:
+      - 'indra/newview/oglnexversegridpolicy.h'
+      - 'tests/nexverse_grid_policy_test.cpp'
+      - 'scripts/audit_nexverse_runtime.py'
+      - 'config/nexverse-generations.json'
+      - 'indra/newview/lllogininstance.cpp'
+      - 'indra/newview/fsgridhandler.cpp'
+      - 'indra/newview/fspanellogin.cpp'
+      - 'indra/newview/llstartup.cpp'
+      - 'indra/newview/llurldispatcher.cpp'
+      - 'indra/newview/llvoiceclient.cpp'
+      - 'indra/newview/oglnexverseclock.cpp'
+      - 'indra/newview/oglnexverseclock.h'
+      - 'indra/newview/llstatusbar.cpp'
+      - 'indra/newview/skins/default/xui/*/panel_status_bar.xml'
+      - 'tests/nexverse_clock_format_test.cpp'
+      - 'scripts/audit_nexverse_clock.py'
+      - 'indra/newview/fsfloaterexport.cpp'
+      - 'indra/newview/app_settings/grids.xml'
+      - 'indra/newview/skins/default/xui/en/menu_viewer.xml'
+      - 'indra/newview/skins/default/xui/de/menu_viewer.xml'
+      - '.github/workflows/nexverse-policy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-policy-test:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile isolated policy tests
+        run: |
+          mkdir -p /tmp/ogl-nexverse-tests
+          g++ -std=c++17 -Wall -Wextra -Werror -pedantic \
+            tests/nexverse_grid_policy_test.cpp \
+            -o /tmp/ogl-nexverse-tests/grid-policy-test
+      - name: Test allowlist and bypass rejection
+        run: /tmp/ogl-nexverse-tests/grid-policy-test
+      - name: Verify civil-clock regex and UTC-offset arithmetic (C++17)
+        run: |
+          g++ -std=c++17 -Wall -Wextra -Werror -pedantic \
+            tests/nexverse_clock_format_test.cpp -o /tmp/ogl-nexverse-tests/clock-format-test
+          /tmp/ogl-nexverse-tests/clock-format-test
+      - name: Verify server clock wiring and Berlin DST fixtures
+        run: python3 scripts/audit_nexverse_clock.py
+      - name: Verify source integration, manifests and XUI XML
+        run: python3 scripts/audit_nexverse_runtime.py

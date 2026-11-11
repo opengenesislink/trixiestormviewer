@@ -1,42 +1,46 @@
-# Stadt NexVerse-only grid policy
+# Stadt NexVerse grid policy — source implementation
 
-**Product:** TrixieStorm Viewer  
-**Decision date:** 2026-10-31  
-**Status:** Specification only; restrictions are NOT yet implemented in the C++ viewer.
+**Source status: 8 November 2026.** Changes are committed to `feature/firestorm-source-import` ([PR #1](https://github.com/opengenesislink/trixiestormviewer/pull/1)), not verified by a full Windows/Linux ReleaseOS build or integrated into `main`.
 
-## 1. Allowed deployment generations
+## Approved login realms
 
-| Mode | Identity | Provided hostname | Rollout |
+| Realm | Grid ID | Login | Current availability |
 |---|---|---|---|
-| Generation 1 | Stadt NexVerse Gen 1 | `hg.stadt-nexverse.de` | Current Stable |
-| Generation 2 | Stadt NexVerse Gen 2 | `beta.stadt-nexverse.de` | Future Beta; disabled until enabled |
+| Gen1 (G1) | `hg.stadt-nexverse.de` | `http://hg.stadt-nexverse.de:80/` | Hardcoded source candidate; full runtime login and redirects unverified |
+| Gen2 (G2 Beta) | `beta.stadt-nexverse.de` | None | Disabled; separate testing and release required |
 
-These hostnames identify the user-requested grid deployments; **do not assume they are actual viewer login endpoints**. In OpenSim, a Hypergrid entry address and the login-service URL can differ. For each generation, operations must verify the actual `login_uri` including scheme, port and route, server certificate and redirect behavior. Do not guess or silently substitute `http://host:80` or `http://host:8002`.
+`indra/newview/oglnexversegridpolicy.h` defines the canonical allowlist. It rejects foreign grid ID aliases, alternate authorities/ports and Hypergrid locations. The policy is called from grid-manager selection, add-grid, login connect/reconnect, startup URL and external teleport handlers. The main login UI disables manual server changes, and the old remote Firestorm grid-list downloader is no longer started.
 
-The provisional machine-readable manifest `config/nexverse-generations.json` intentionally contains `login_uri: null` until that verification is completed. The mere presence of this manifest does not configure Firestorm.
+`config/nexverse-generations.json` mirrors the current source policy, **not** a trusted runtime configuration source. The G1 program profile/cache namespace is `TrixieStormViewer_G1_x64` (or G1 without x64); G2 has no active realm or credentials. Do not auto-migrate user passwords/cookies, account credentials, inventory caches or region caps across generations.
 
-## 2. Exclusive application behavior
+## OGL discovery, authentication and security
 
-1. The released viewer allows login **only** to authorized Gen1 or Gen2 endpoints. No "Add Grid", custom login URL or third-party grid manager in the public client.
-2. Validate every effective login destination, including the initial command-line arguments, programmatic invocation, imported viewer/grid settings, deep links, SSO paths, redirects and alternative login UI controls.
-3. Do not expose external Hypergrid teleport in TrixieStorm. Region teleports inside the active NexVerse generation remain functional. Ensure the grid server enforces the intended outbound travel policy rather than relying solely on an editable local viewer.
-4. Restrict only grid login/travel destinations. Authorized asset CDN, CAPTCHA, media, voice, CAPS, marketplace and update URLs may be on other hosts; validate and authorize those services separately.
-5. The Generation 2 Beta profile must be hidden or disabled until its actual endpoint and security configuration are confirmed and released.
+The ROBUST server source provides public, read-only `GET http://hg.stadt-nexverse.de/ogl/v1/grid-info` with schema `org.opengenesislink.viewer.grid-info.v1`. The viewer sends a credential-free GET when the login panel opens and validates schema, version, advertised legacy login and product identity. On failure it does not pick another grid; discovery must not supply a new login URI. The server documentation explicitly lists `ogl_native_login: false`; native OGL login and OAuth are **not** implemented in this patch.
 
-## 3. Session segregation
+**Release blocker:** the only currently specified Gen1 legacy endpoint is plain HTTP port 80. Passwords sent via this protocol are not protected against network eavesdropping unless an authenticated TLS front end or separate secure login is deployed and verified. A public release must resolve this issue; changing just the Viewer to HTTPS without a working server is not a fix. Never send World API bearer tokens, API keys or LiveKit signing secrets over public HTTP.
 
-Treat Gen1 and Gen2 as separate security realms until proven otherwise. Allocate independent user settings, caches, credential/session storage, logs, installation/update channels where relevant. Never carry CAP URLs, JWTs, cookies or inventory IDs across generations implicitly. Remove all generation-scoped capabilities on logout or mode switch.
+Client restrictions are not cryptographic server authorization. Real operator-side viewer access/allowlists, permission checks, login audit, account bans and parcel/group enforcement remain in OpenGenesisLINK. A modified open-source client can change this product policy.
 
-## 4. Validation gates (M2)
+## Capability-safe voice and services
 
-- Correct Gen1 login and subsequent asset/inventory/teleport/voice in a real build.
-- Gen2 profile hidden/unavailable before launch; after launch, real login only to verified Gen2 endpoint.
-- Negative tests for external login via UI, CLI, `secondlife://` links, HG URLs, saved grid configuration, redirects and code-level alternate entry points.
-- Ensure that allowed non-login services still work (authorized CAPS, assets, voice, marketplace).
-- No mixing Gen1 and Gen2 session tokens, cache, settings or inventory namespace.
-- Feature flags, updater and error messages identify the active generation.
-- Client restrictions are not a security boundary: server authorization and network-side policy are necessary where exclusivity/security is required.
+OGLVoice's media bridge is **server-side** Pion/LiveKit. When the region exposes standard `ProvisionVoiceAccountRequest` and `VoiceSignalingRequest` CAPS, `llvoiceclient.cpp` prefers its existing WebRTC implementation. Voice still requires a deployed bridge, valid server provisions, HTTPS where applicable, reachable ICE/TURN and live voice tests. No private `/internal/webrtc/v1/exchange` requests or LiveKit service secrets are made from the Viewer.
 
-## 5. License clarification
+OGL World API data (maps, profiles, NV$, Marketplace, IAR/OAR, weather, registration) require their documented versioned OAuth/capability contracts, rights and running services. No client-side fake ownership or private backend tokens are introduced.
 
-LGPL-2.1 source code remains modifiable and redistributable subject to its license. A distributed **official TrixieStorm Viewer application** can restrict the visible login choices to NexVerse, but the project cannot ensure forks of published source cannot change a client-side restriction. The server must not trust application/channel strings as proof of authentic TrixieStorm software.
+## Safety and test gates
+
+- Isolated C++17 allowlist tests: `tests/nexverse_grid_policy_test.cpp`.
+- Static wiring audit: `python3 scripts/audit_nexverse_runtime.py`.
+- CI: `.github/workflows/nexverse-policy.yml` and branding audit.
+- Required staging: passwordless discovery; authorized G1 login; failed foreign CLI/UI/SLURL/HG/redirect login attempts; region teleports; asset/inventory/PBR/mesh; server-owned ownership and NV$ calculations; end-to-end WebRTC voice; Gen1 cache isolation.
+- **Not proven**: full C++ binary linking, native credentials protection, redirects, real live sessions, region access after login, all language locales, full 3D experience or future Gen2.
+
+Do not confuse **server-side Hypergrid access for visiting users** with TrixieStorm's client product restriction: regular authorized visitors to Stadt NexVerse must still be able to move legitimately purchased transferable content to their own home grids if server policy permits. No server-wide asset export lockdown is part of this change.
+
+## Server civil time is not an authentication feature
+
+TrixieStorm's status clock reads optional UTC epoch, server timezone and effective
+UTC offset from the **same pinned public, credential-free** OGL discovery URL.
+The response never changes the allowed grid, login URI or authorization policy.
+Old ROBUST deployments without the extension show UTC (not guessed Berlin or
+Pacific time). The published extension is tracked in OpenGenesisLINK PR #405.

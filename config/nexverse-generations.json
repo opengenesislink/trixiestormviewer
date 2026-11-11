@@ -2,7 +2,7 @@
   "schema_version": 1,
   "product": "TrixieStorm Viewer",
   "policy": "stadt-nexverse-only",
-  "description": "Specification manifest only. Not yet wired to Firestorm C++.",
+  "description": "Source-level exclusive-grid gates integrated in feature branch. Static tests do not establish runtime/security completeness.",
   "allow_custom_grids": false,
   "allow_external_grid_logins": false,
   "allow_outbound_external_hypergrid_teleports": false,
@@ -11,10 +11,15 @@
       "id": "gen1",
       "name": "Stadt NexVerse - Generation 1",
       "hostname": "hg.stadt-nexverse.de",
-      "login_uri": null,
+      "login_uri": "http://hg.stadt-nexverse.de:80/",
       "login_uri_verified": false,
       "release_channel": "stable",
-      "state": "current"
+      "state": "current",
+      "profile_namespace": "TrixieStormViewer_G1_x64",
+      "discovery_url": "http://hg.stadt-nexverse.de:80/ogl/v1/grid-info",
+      "auth_transport": "legacy-http-xmlrpc",
+      "credential_transport_tls": false,
+      "public_distribution_security_blocker": "HTTP login sends credentials without end-to-end TLS unless a secure supported proxy path is deployed"
     },
     {
       "id": "gen2",
@@ -23,12 +28,17 @@
       "login_uri": null,
       "login_uri_verified": false,
       "release_channel": "beta",
-      "state": "future-disabled"
+      "state": "future-disabled",
+      "profile_namespace": "TrixieStormViewer_G2_x64",
+      "auth_transport": null,
+      "credential_transport_tls": null
     }
   ],
   "notes": [
-    "Hostnames are not automatically viewer login URLs.",
-    "Verify scheme, port, path, TLS certificates, CAPS and redirects before implementing the allowlist.",
-    "This manifest does not enforce runtime restrictions until integrated into the Firestorm source."
+    "Generation 1 login URI is compiled into the current feature branch; exact live authentication and redirect behavior still require staging verification.",
+    "The public v1 OGL discovery endpoint must never override the approved XML-RPC login URI or advertise unavailable native login.",
+    "Gen2 is intentionally disabled and no G2 authentication or CAP state exists in the current source.",
+    "Viewer-side allowlisting is not server-side authentication or a copy-protection mechanism.",
+    "Password transmission over HTTP is a deployment security risk; published release should require a verified TLS-enabled login route before authentication."
   ]
 }

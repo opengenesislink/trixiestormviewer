@@ -1,8 +1,8 @@
 # Build and source import
 
-**Current state:** Foundation only. There is no bundled C++ viewer in this repository yet.
+**Current state (2026-11-08):** Firestorm C++ source and TrixieStorm rebranding are present in `feature/firestorm-source-import` ([PR #1](https://github.com/opengenesislink/trixiestormviewer/pull/1)), but **not merged to main**. No compiled viewer has been verified.
 
-## 1. Import pinned Firestorm code into a review branch
+## 1. Pinned Firestorm source (already imported into review branch)
 
 ```bash
 git clone https://github.com/opengenesislink/trixiestormviewer.git
@@ -10,7 +10,7 @@ cd trixiestormviewer
 bash scripts/import_firestorm.sh
 ```
 
-The import uses official Firestorm `Firestorm_7.2.4` at SHA `10bd3c9f930c76e1427ddd4ecece6cdf36b4406d`; it never changes `main` or pushes remotely. Existing files and the upstream history must be reviewed. Resolve merge conflicts manually if prompted; do not blindly replace license headers or notice files.
+The completed review-branch import uses official Firestorm `Firestorm_7.2.4` at SHA `10bd3c9f930c76e1427ddd4ecece6cdf36b4406d`; it never changes `main` or pushes remotely. Existing files and the upstream history must be reviewed. Resolve merge conflicts manually if prompted; do not blindly replace license headers or notice files.
 
 ## 2. Establish reproducible baseline
 
@@ -22,9 +22,9 @@ Upstream's Linux guide specifies Ubuntu 22.04 LTS x86_64, GCC 11, at least 16 GB
 
 Record commit SHA, exact SDK/compiler/autobuild versions, dependency revisions, build log, hashes and platform.
 
-## 3. Rebrand after baseline works
+## 3. Confirm source-level rebranding after baseline works
 
-Set executable/product/channel IDs to `TrixieStorm Viewer`. Keep TrixieStorm paths, settings, cache, crash reports and updater independent from Firestorm. Use icons produced by `scripts/generate_icons.py` for installers, desktop files and executable resources.
+Executable/product/channel IDs, principal menus and generated icons have been patched. Run `python3 scripts/audit_branding.py` to validate static identity and asset links. Verify **real** installed executable filename, app icons, Windows registration, cache isolation and Linux desktop launcher in the built packages before shipping. The original supplied high-resolution icon must replace the compact rendition.
 
 OpenGenesisLINK integration is available only when connected to Stadt NexVerse Generation 1 or Generation 2. The public TrixieStorm build must not expose arbitrary grid management, login URL overrides or foreign Hypergrid travel. Do not disable HTTPS certificate verification or trust arbitrary server-supplied URLs without authorization.
 

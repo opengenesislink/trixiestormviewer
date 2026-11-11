@@ -1,0 +1,52 @@
+name: Generate TrixieStorm application artwork
+on:
+  push:
+    branches: [feature/firestorm-source-import]
+    paths:
+      - branding/source/trixiestorm-logo.webp
+      - branding/source/trixiestorm-logo.png
+      - scripts/build_brand_assets.py
+      - .github/workflows/generate-brand-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-icons:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Install image generation dependency
+        run: python3 -m pip install --user Pillow
+      - name: Generate executable, Linux and UI icons
+        run: python3 scripts/build_brand_assets.py
+      - name: Verify expected assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s indra/newview/res/trixiestormviewer.ico
+          test -s indra/newview/res/trixiestormviewer.png
+          test -s indra/newview/skins/default/textures/windows/trixiestorm_login.png
+      - name: Commit generated application artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f indra/newview/res/trixiestormviewer.ico \
+                     indra/newview/res/trixiestormviewer.png \
+                     indra/newview/res-sdl/trixiestormviewer.BMP \
+                     indra/newview/skins/default/textures/windows/trixiestorm_login.png \
+                     indra/newview/icons/release-os/trixiestorm_256.png \
+                     indra/newview/icons/beta-os/trixiestorm_256.png \
+                     indra/newview/icons/private-os/trixiestorm_256.png
+          if [[ -s indra/newview/trixiestormviewer.icns ]]; then
+            git add -f indra/newview/trixiestormviewer.icns
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m "brand: add generated TrixieStorm platform and login icons"
+            git push origin HEAD:feature/firestorm-source-import
+          fi

@@ -1,0 +1,25 @@
+name: TrixieStorm source branding checks
+on:
+  push:
+    branches: [feature/firestorm-source-import]
+    paths-ignore:
+      - .github/workflows/generate-brand-assets.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python syntax
+        run: |
+          python3 -m py_compile scripts/rebrand_firestorm.py
+          python3 -m py_compile scripts/build_brand_assets.py
+          python3 -m py_compile scripts/audit_branding.py
+      - name: Static identity, XML and icon audit
+        run: python3 scripts/audit_branding.py
+      - name: Changes are not viewer builds
+        run: echo "Firestorm/OpenSimulator C++ compilation and real login still require platform CI."

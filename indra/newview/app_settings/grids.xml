@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<llsd><map>
+  <key>hg.stadt-nexverse.de</key>
+  <map>
+    <key>name</key><string>hg.stadt-nexverse.de</string>
+    <key>gridname</key><string>Stadt NexVerse - Generation 1</string>
+    <key>gridnick</key><string>hg.stadt-nexverse.de</string>
+    <key>grid_login_id</key><string>hg.stadt-nexverse.de</string>
+    <key>loginuri</key><array><string>http://hg.stadt-nexverse.de:80/</string></array>
+    <key>login_identifier_types</key><array><string>agent</string><string>account</string></array>
+    <key>slurl_base</key><string>hop://hg.stadt-nexverse.de/</string>
+    <key>loginpage</key><string>https://stadt-nexverse.de</string>
+    <key>system_grid</key><integer>1</integer>
+  </map>
+</map></llsd>
